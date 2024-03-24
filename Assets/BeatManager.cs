@@ -12,12 +12,27 @@ public class BeatManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textMeshPro;
     private int tmp=0;
 
+    private bool isStarted=false;
+
     private void Update()
     {
         foreach(Intervals interval in _intervals)
         {
             float sampledTime = _audioSource.timeSamples / (_audioSource.clip.frequency * interval.GetIntervalLength(_bpm));
             interval.CheckForNewInterval(sampledTime);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            if(isStarted)
+            {
+                _audioSource.Pause();
+            }
+            else
+            {
+                _audioSource.Play();
+            }
+            isStarted = !isStarted;
         }
     }
 
