@@ -1,41 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class PulseToBeat : MonoBehaviour
+public class PulseToBeat : RythmedObject
 {
-    [SerializeField] bool _useTestBeat;
-    [SerializeField] float _pulseSize = 1.15f;
-    [SerializeField] float _returnSpeed = 5f;
+    [SerializeField] float pulseSize = 1.15f;
+    [SerializeField] float returnSpeed = 5f;
 
-    private Vector3 _startSize;
+    private Vector3 startSize;
 
-    private void Start()
+    private new void Start()
     {
-        _startSize = transform.localScale;
+        startSize = transform.localScale;
 
-        if(_useTestBeat)
-        {
-            StartCoroutine(TestBeat());
-        }
+        base.Start();
     }
 
     private void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, _startSize, Time.deltaTime * _returnSpeed);
+        transform.localScale = Vector3.Lerp(transform.localScale, startSize, Time.deltaTime * returnSpeed);
     }
 
     public void Pulse()
     {
-        transform.localScale = _startSize * _pulseSize;
+        transform.localScale = startSize * pulseSize;
     }
 
-    IEnumerator TestBeat()
+    public override void Trigger()
     {
-        while(true)
-        {
-            yield return new WaitForSeconds(1f);
-            Pulse();
-        }
+        Pulse();
     }
 }
