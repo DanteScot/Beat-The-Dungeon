@@ -15,7 +15,9 @@ enum AttackDirection
 public class PlayerManager : RythmedObject
 {
     [Header("Player Settings")]
+    [SerializeField] private GameObject bulletPrefab;
     public float critWindowTime = 0.1f;
+    
 
     [Space(10)]
 
@@ -53,18 +55,22 @@ public class PlayerManager : RythmedObject
     {
         if(Input.GetKeyDown(KeyCode.UpArrow))
         {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             StartCoroutine(PrepareAttack(AttackDirection.Up));
         }
         else if(Input.GetKeyDown(KeyCode.DownArrow))
         {
+            transform.rotation = Quaternion.Euler(0, 0, 180);
             StartCoroutine(PrepareAttack(AttackDirection.Down));
         }
         else if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            transform.rotation = Quaternion.Euler(0, 0, 90);
             StartCoroutine(PrepareAttack(AttackDirection.Left));
         }
         else if(Input.GetKeyDown(KeyCode.RightArrow))
         {
+            transform.rotation = Quaternion.Euler(0, 0, 270);
             StartCoroutine(PrepareAttack(AttackDirection.Right));
         }
     }
@@ -98,6 +104,8 @@ public class PlayerManager : RythmedObject
 
     void Attack(){
         Debug.Log("Direction: " + attackDirection + "Is Crit: " + isCrit);
+        // Attack
+        Instantiate(bulletPrefab, transform.position, transform.rotation).GetComponent<BulletScript>().SetBullet(attackSpeed, attackDamage, attackRange);
 
         // Reset attack
         attackDirection = AttackDirection.None;

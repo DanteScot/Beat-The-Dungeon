@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &267700945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,12 +253,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  bulletPrefab: {fileID: 3332463527052981838, guid: 6da53788072771a429a411df30a1568e, type: 3}
   critWindowTime: 0.25
   baseAttackDamage: 10
   damageMultiplier: 1
   critMultiplier: 2
   attackSpeed: 1
-  attackRange: 1
+  attackRange: 50
   moveSpeed: 1
   health: 3
   luck: 1
@@ -386,7 +387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1292821380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,7 +487,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1568382635
 MonoBehaviour:
   m_ObjectHideFlags: 0
