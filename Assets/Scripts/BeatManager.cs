@@ -48,6 +48,7 @@ public class BeatManager : MonoBehaviour
     private void Start()
     {
         audioSource.Play();
+        Application.targetFrameRate = 60;
     }
 
     private void Update()
