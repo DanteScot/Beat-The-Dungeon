@@ -19,6 +19,6 @@ public class RythmedObject : MonoBehaviour
 
     public virtual void Trigger()
     {
-        Debug.Log("Triggered");
+        // Debug.Log("Triggered");
     }
 }
