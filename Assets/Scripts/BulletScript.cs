@@ -10,28 +10,20 @@ public class BulletScript : MonoBehaviour
     private float speed;
     private float damage;
     private float range;
-    private float speedX;
-    private float speedY;
 
-    private Vector2 direction;
-
-    public void SetBullet(float speed, float damage, float range, bool isContinuos, float speedX, float speedY)
+    public void SetBullet(float speed, float damage, float range, bool isContinuos)
     {
-        this.speed = speed+=speedX;
+        this.speed = speed;
         this.damage = damage;
         this.range = range;
         this.isContinuos=isContinuos;
-        this.speedX=speedX;
-        this.speedY=speedY;
 
-        direction=Vector2.up;
-        direction.y+=speedY;
-        Debug.Log("bullet "+direction+" "+speed);
+        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"))/1.25f;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(direction * speed * Time.deltaTime);
+        transform.Translate(Vector2.up * speed * Time.deltaTime);
         range -= speed * Time.deltaTime;
         if(range <= 0)
         {

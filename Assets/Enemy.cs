@@ -12,6 +12,26 @@ public class Enemy : RythmedObject
     [SerializeField] private float damage;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackSpeed;
+
+    protected bool canAttack = false;
+    protected bool isAttacking = false;
+
+    public new void Start()
+    {
+        base.Start();
+    }
+
+    public override void Trigger()
+    {
+        StartCoroutine(AttackWindow());
+    }
+
+    private IEnumerator AttackWindow()
+    {
+        canAttack = true;
+        yield return new WaitForSeconds(0.1f);
+        canAttack = false;
+    }
     
     public void TakeDamage(float damage){
         health-=damage;

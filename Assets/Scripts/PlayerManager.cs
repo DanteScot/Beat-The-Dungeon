@@ -9,7 +9,7 @@ public class PlayerManager : MonoBehaviour
     public float health = 3f;
     public float luck = 1f;
 
-    void Update()
+    void FixedUpdate()
     {
         float deltaX = Input.GetAxis("Horizontal") * moveSpeed;
         float deltaY = Input.GetAxis("Vertical") * moveSpeed;

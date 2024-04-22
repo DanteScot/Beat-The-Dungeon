@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class RythmedObject : MonoBehaviour
+public abstract class RythmedObject : MonoBehaviour
 {
     protected enum intervalIndex{
         EveryQuarterBeat,
@@ -17,8 +17,5 @@ public class RythmedObject : MonoBehaviour
         BeatManager.Instance.GetInterval((int)index).AddListener(Trigger);
     }
 
-    public virtual void Trigger()
-    {
-        // Debug.Log("Triggered");
-    }
+    public abstract void Trigger();
 }
