@@ -8,10 +8,7 @@ public class Enemy : RythmedObject
 {
     [Header("Common Stats")]
     [SerializeField] private float health;
-    [SerializeField] private float speed;
     [SerializeField] private float damage;
-    [SerializeField] private float attackRange;
-    [SerializeField] private float attackSpeed;
 
     protected bool canAttack = false;
     protected bool isAttacking = false;

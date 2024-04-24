@@ -1724,11 +1724,11 @@ GameObject:
   m_Component:
   - component: {fileID: 463724141}
   - component: {fileID: 463724140}
-  - component: {fileID: 463724139}
   - component: {fileID: 463724138}
   - component: {fileID: 463724137}
+  - component: {fileID: 463724142}
   m_Layer: 0
-  m_Name: Square
+  m_Name: ShootingEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1806,24 +1806,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &463724139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 463724136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c87072afac1447a41a88dde19fbba4d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  health: 10
-  speed: 0
-  damage: 0
-  attackRange: 0
-  attackSpeed: 0
 --- !u!212 &463724140
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1885,12 +1867,30 @@ Transform:
   m_GameObject: {fileID: 463724136}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.22, y: 0.14999998, z: 0}
+  m_LocalPosition: {x: -3, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &463724142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463724136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee90238c6d043c469c2e022912284a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  health: 0
+  damage: 0
+  attackSpeed: 0
+  speed: 3
+  attackRange: 0
 --- !u!1001 &979207586
 PrefabInstance:
   m_ObjectHideFlags: 0
