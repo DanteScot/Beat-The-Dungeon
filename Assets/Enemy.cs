@@ -7,8 +7,8 @@ using UnityEngine;
 public class Enemy : RythmedObject
 {
     [Header("Common Stats")]
-    [SerializeField] private float health;
-    [SerializeField] private float damage;
+    [SerializeField] protected float health;
+    [SerializeField] protected float damage;
 
     protected bool canAttack = false;
     protected bool isAttacking = false;
@@ -26,7 +26,7 @@ public class Enemy : RythmedObject
     private IEnumerator AttackWindow()
     {
         canAttack = true;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForEndOfFrame();
         canAttack = false;
     }
     

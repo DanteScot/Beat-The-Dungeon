@@ -4,10 +4,10 @@ using UnityEngine;
 
 public enum Direction
 {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
+    UP=0,
+    LEFT=90,
+    DOWN=180,
+    RIGHT=270
 }
 
 public static class DirectionExtensions
@@ -36,6 +36,7 @@ public class ShootingEnemy : Enemy
     [SerializeField] private float attackSpeed;
     [SerializeField] private float speed;
     [SerializeField] private float attackRange;
+    [SerializeField] private GameObject bulletPrefab;
 
     //verrà usato per dire dove si muove/attacca
     Direction direction;
@@ -54,10 +55,29 @@ public class ShootingEnemy : Enemy
         
         //check if it is going to hit the wall
         Vector2 raycastStartPoint = new Vector2(transform.position.x, transform.position.y) + direction.ToVector2();
-        RaycastHit2D hit = Physics2D.Raycast(raycastStartPoint, direction.ToVector2(), 0.1f);
+        RaycastHit2D hit = Physics2D.Raycast(raycastStartPoint, direction.ToVector2(), attackRange);
         if(hit.collider != null){
-            ChangeDirection();
+            if(hit.collider.CompareTag("Player")){
+                if(!isAttacking && canAttack)
+                    StartCoroutine(Attack());
+            }
+            else if(hit.distance < 0.1f)
+                ChangeDirection();
         }
+    }
+
+    IEnumerator Attack(){
+        isAttacking=true;
+        canAttack=false;
+
+        float tmp=speed;
+        speed=0;
+
+        Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)direction)).GetComponent<BulletScript>().SetBullet(attackSpeed, damage, attackRange, false);
+
+        yield return new WaitForSeconds(1f);
+        isAttacking=false;
+        speed=tmp;
     }
 
     private void ChangeDirection(){
@@ -77,12 +97,5 @@ public class ShootingEnemy : Enemy
                 direction = Direction.RIGHT;
                 break;
         }
-    }
-
-    public void OnGizmosDraw()
-    {
-        Gizmos.color = Color.green;
-        //draw raycast
-        Gizmos.DrawRay(transform.position, direction.ToVector2());
     }
 }

@@ -5,20 +5,21 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    public bool isContinuos;
+    public bool isPlayerShooting;
     
     private float speed;
     private float damage;
     private float range;
 
-    public void SetBullet(float speed, float damage, float range, bool isContinuos)
+    public void SetBullet(float speed, float damage, float range, bool isPlayerShooting)
     {
         this.speed = speed;
         this.damage = damage;
         this.range = range;
-        this.isContinuos=isContinuos;
+        this.isPlayerShooting=isPlayerShooting;
 
-        gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"))/1.25f;
+        if(isPlayerShooting)
+            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"))/1.25f;
     }
 
     void FixedUpdate()
@@ -33,11 +34,19 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        var enemy=other.GetComponent<Enemy>();
-        if(enemy!=null){
-            enemy.TakeDamage(damage);
-            if(!isContinuos)
-                Destroy(gameObject);
+        if(isPlayerShooting){
+            var enemy=other.GetComponent<Enemy>();
+            if(enemy!=null){
+                enemy.TakeDamage(damage);
+            }
         }
+        else{
+            var player=other.GetComponent<PlayerManager>();
+            if(player!=null){
+                player.TakeDamage(damage);
+            }
+        }
+        
+        Destroy(gameObject);
     }
 }

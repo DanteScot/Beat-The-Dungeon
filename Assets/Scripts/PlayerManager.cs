@@ -11,12 +11,23 @@ public class PlayerManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        float deltaX = Input.GetAxis("Horizontal") * moveSpeed;
-        float deltaY = Input.GetAxis("Vertical") * moveSpeed;
+        Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
 
-        Vector2 movement = new Vector2(deltaX, deltaY);
-        movement = Vector2.ClampMagnitude(movement, moveSpeed);
+        GetComponent<Rigidbody2D>().velocity = Vector2.ClampMagnitude(movement, moveSpeed);
+        // transform.Translate(movement * Time.deltaTime);
+    }
 
-        transform.Translate(movement * Time.deltaTime);
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        Destroy(gameObject);
     }
 }

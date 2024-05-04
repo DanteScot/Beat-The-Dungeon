@@ -112,7 +112,7 @@ public class ShootingScript : RythmedObject
         if(isCrit)
             dmg*=critMultiplier;
 
-        Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, dmg, attackRange, false);
+        Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, dmg, attackRange, true);
 
         // Reset attack
         attackDirection = AttackDirection.NONE;
