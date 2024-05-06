@@ -18,4 +18,9 @@ public abstract class RythmedObject : MonoBehaviour
     }
 
     public abstract void Trigger();
+
+    public void OnDestroy()
+    {
+        BeatManager.Instance.GetInterval((int)index).RemoveListener(Trigger);
+    }
 }

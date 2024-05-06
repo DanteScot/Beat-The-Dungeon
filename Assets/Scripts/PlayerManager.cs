@@ -5,16 +5,29 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager Instance { get; private set; }
+
     public float moveSpeed = 1f;
     public float health = 3f;
     public float luck = 1f;
+    public float baseAttackDamage = 3.5f;
+    public float critMultiplier = 2f;
+    public float attackSpeed = 1f;
+    public float attackRange = 1f;
+    public int critFrameWindow = 2;
 
-    void FixedUpdate()
+    private void Awake()
     {
-        Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
-
-        GetComponent<Rigidbody2D>().velocity = Vector2.ClampMagnitude(movement, moveSpeed);
-        // transform.Translate(movement * Time.deltaTime);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("PlayerManager already exists, destroying new one");
+            Destroy(gameObject);
+        }
     }
 
     public void TakeDamage(float damage)

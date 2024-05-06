@@ -108,4 +108,9 @@ public class Interval
     {
         beatEvent.AddListener(action);
     }
+
+    public void RemoveListener(UnityAction action)
+    {
+        beatEvent.RemoveListener(action);
+    }
 }

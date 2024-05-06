@@ -38,15 +38,16 @@ public class BulletScript : MonoBehaviour
             var enemy=other.GetComponent<Enemy>();
             if(enemy!=null){
                 enemy.TakeDamage(damage);
+                Destroy(gameObject);
             }
         }
         else{
             var player=other.GetComponent<PlayerManager>();
             if(player!=null){
                 player.TakeDamage(damage);
+                Destroy(gameObject);
             }
         }
         
-        Destroy(gameObject);
     }
 }
