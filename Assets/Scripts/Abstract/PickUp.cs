@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
+
 public abstract class PickUp : MonoBehaviour
 {
     public void OnValidate()
@@ -15,6 +17,7 @@ public abstract class PickUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            other.GetComponentInChildren<Animator>().SetTrigger("PickUp");
             PickUpItem();
             Destroy(gameObject);
         }
