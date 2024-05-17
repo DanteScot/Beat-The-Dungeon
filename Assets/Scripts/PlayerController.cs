@@ -112,10 +112,11 @@ public class PlayerController : RythmedObject
         // Attack
         var dmg=(float)(3.5*Mathf.Sqrt(1+PlayerManager.Instance.baseAttackDamage));
 
-        if(isCrit)
-            dmg*=PlayerManager.Instance.critMultiplier;
+        if(isCrit){
+            // dmg*=PlayerManager.Instance.critMultiplier;
+            Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(PlayerManager.Instance.attackSpeed, dmg, PlayerManager.Instance.attackRange, true);
+        }
 
-        Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(PlayerManager.Instance.attackSpeed, dmg, PlayerManager.Instance.attackRange, true);
 
         // Reset attack
         attackDirection = AttackDirection.NONE;

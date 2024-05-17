@@ -25,7 +25,7 @@ public class PassiveItem : PickUp
         if(passiveItemSelected == PassiveItemSelected.random)
         {
             System.Array values = System.Enum.GetValues(typeof(PassiveItemSelected));
-            passiveItemSelected = (PassiveItemSelected)values.GetValue(Random.Range(0, values.Length));
+            passiveItemSelected = (PassiveItemSelected)values.GetValue(Random.Range(1, values.Length));
         }
 
 
