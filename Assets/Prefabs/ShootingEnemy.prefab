@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3827246811075564659}
   - component: {fileID: 7169994243000424386}
   - component: {fileID: 5370455728673566823}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ShootingEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,8 +172,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
-  health: 0
-  damage: 0
+  health: 1
+  damage: 1
   attackSpeed: 0
   speed: 3
-  attackRange: 0
+  attackRange: 5
+  bulletPrefab: {fileID: 3332463527052981838, guid: 6da53788072771a429a411df30a1568e, type: 3}
