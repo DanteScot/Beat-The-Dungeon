@@ -12,15 +12,13 @@ public class CamBoundary : MonoBehaviour
         var x=tilemapCollider.bounds.size.x/2;
         var y=tilemapCollider.bounds.size.y/2;
 
-        var tmp = tilemapCollider.bounds.center;
-        Vector2 mapCenter = new Vector2(tmp.x,tmp.y);
+        // faccio -1 per "correggere" il fatto che non esiste un vero e proprio centro del tilemap
+        Vector2 point1 = new Vector2(-x,y-1);
+        Vector2 point2 = new Vector2(x,y-1);
+        Vector2 point3 = new Vector2(x,-y-1);
+        Vector2 point4 = new Vector2(-x,-y-1);
 
-        Vector2 point1 = new Vector2(-x,y);
-        Vector2 point2 = new Vector2(x,y);
-        Vector2 point3 = new Vector2(x,-y);
-        Vector2 point4 = new Vector2(-x,-y);
-
-        polygonCollider.points = new[]{mapCenter+point1,mapCenter+point2,mapCenter+point3,mapCenter+point4};
+        polygonCollider.points = new[]{point1,point2,point3,point4};
     }
     void Awake()
     {
