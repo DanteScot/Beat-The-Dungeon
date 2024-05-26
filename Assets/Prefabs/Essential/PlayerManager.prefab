@@ -49,6 +49,6 @@ MonoBehaviour:
   luck: 1
   baseAttackDamage: 3.5
   critMultiplier: 2
-  attackSpeed: 1
-  attackRange: 1
-  critFrameWindow: 6
+  attackSpeed: 3
+  attackRange: 10
+  critFrameWindow: 8
