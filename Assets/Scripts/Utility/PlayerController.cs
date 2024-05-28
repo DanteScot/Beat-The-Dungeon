@@ -43,17 +43,18 @@ public class PlayerController : RythmedObject, Observer
     {
         base.Start();
         Notify();
+        PlayerManager.Instance.Attach(this);
         attackDirection = AttackDirection.NONE;
         lowerCritFrameWindow = Mathf.RoundToInt(critFrameWindow/2);
     }
 
     public void Notify()
     {
-        critFrameWindow = PlayerManager.Instance.critFrameWindow;
-        attackSpeed = PlayerManager.Instance.attackSpeed;
-        baseAttackDamage = PlayerManager.Instance.baseAttackDamage;
-        attackRange = PlayerManager.Instance.attackRange;
-        moveSpeed = PlayerManager.Instance.moveSpeed;
+        critFrameWindow = PlayerManager.Instance.CritFrameWindow;
+        attackSpeed = PlayerManager.Instance.AttackSpeed;
+        baseAttackDamage = PlayerManager.Instance.BaseAttackDamage;
+        attackRange = PlayerManager.Instance.AttackRange;
+        moveSpeed = PlayerManager.Instance.MoveSpeed;
     }
 
     void Update()
@@ -157,6 +158,7 @@ public class PlayerController : RythmedObject, Observer
     {
         animator.SetTrigger("Die");
         yield return new WaitForSeconds(1);
+        PlayerManager.Instance.Detach(this);
         Time.timeScale = 0;
     }
 }
