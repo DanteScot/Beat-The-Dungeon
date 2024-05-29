@@ -21,8 +21,10 @@ public class Items : PickUp
     private MethodInfo method;
 
 
-    public void Start()
+    public new void Start()
     {
+        base.Start();
+        
         if(itemSelected == ItemSelected.random)
         {
             System.Array values = System.Enum.GetValues(typeof(ItemSelected));

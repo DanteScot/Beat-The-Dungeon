@@ -4,13 +4,6 @@ using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[System.Serializable]
-public struct RoomItem
-{
-    public GameObject itemPrefab;
-    public ItemSelected itemSelected;
-}
-
 public class RoomManager : MonoBehaviour
 {
     /// <summary>
@@ -19,7 +12,7 @@ public class RoomManager : MonoBehaviour
     /// only active rooms can drop items
     /// </summary>
     [SerializeField] private bool isRoomActive;
-    [SerializeField] private RoomItem roomItem;
+    [SerializeField] private GameObject[] rewardPrefab;
 
     private TilemapCollider2D tilemapCollider;
 
@@ -53,7 +46,7 @@ public class RoomManager : MonoBehaviour
 
     void RoomCleared(){
         isRoomActive = false;
-        Instantiate(roomItem.itemPrefab, roomCenter, Quaternion.identity).GetComponent<Items>().SetItem(roomItem.itemSelected);
+        Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
     }
 
     void OnTriggerEnter2D(Collider2D other)

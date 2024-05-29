@@ -11,15 +11,19 @@ public class PlayerManager : MonoBehaviour, Subject
 
     private Transform player;
 
-    private float moveSpeed = 1f;
-    private float maxHealth = 3f;
-    private float currentHealth = 3f;
-    private float luck = 1f;
-    private float baseAttackDamage = 3.5f;
-    private float critMultiplier = 2f;
-    private float attackSpeed = 1f;
-    private float attackRange = 1f;
-    private int critFrameWindow = 2;
+    [Header("Player Stats")]
+    [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float maxHealth = 3f;
+    [SerializeField] private float currentHealth = 3f;
+    [SerializeField] private float luck = 1f;
+    [SerializeField] private float baseAttackDamage = 3.5f;
+    [SerializeField] private float critMultiplier = 2f;
+    [SerializeField] private float attackSpeed = 1f;
+    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private int critFrameWindow = 2;
+
+    [Header("Other Stats")]
+    [SerializeField] private int gears = 0;
 
     public float MoveSpeed { get => moveSpeed; set {moveSpeed = value; Notify();} }
     public float MaxHealth { get => maxHealth; set {maxHealth = value; Notify();} }
@@ -30,6 +34,8 @@ public class PlayerManager : MonoBehaviour, Subject
     public float AttackSpeed { get => attackSpeed; set {attackSpeed = value; Notify();} }
     public float AttackRange { get => attackRange; set {attackRange = value; Notify();} }
     public int CritFrameWindow { get => critFrameWindow; set {critFrameWindow = value; Notify();} }
+
+    public int Gears { get => gears; set {gears = value; Notify();} }
 
     private void Awake()
     {
@@ -47,8 +53,8 @@ public class PlayerManager : MonoBehaviour, Subject
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
+        CurrentHealth -= damage;
+        if (CurrentHealth <= 0)
         {
             player.GetComponent<PlayerController>().StartCoroutine("Die");
         }

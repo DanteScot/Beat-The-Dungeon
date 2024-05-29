@@ -10,11 +10,10 @@ public class PulseToBeat : RythmedObject
 
     private Vector3 startSize;
 
-    private new void Start()
+    public new void Start()
     {
-        startSize = transform.localScale;
-
         base.Start();
+        startSize = transform.localScale;
     }
 
     private void Update()

@@ -5,8 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 
-public abstract class PickUp : MonoBehaviour
+public abstract class PickUp : PulseToBeat
 {
+    public new void Start()
+    {
+        base.Start();
+    }
+
     public void OnValidate()
     {
         GetComponent<BoxCollider2D>().isTrigger = true;
