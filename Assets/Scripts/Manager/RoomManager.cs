@@ -6,13 +6,14 @@ using UnityEngine.Tilemaps;
 
 public class RoomManager : MonoBehaviour
 {
+    [SerializeField] private GameObject[] rewardPrefab;
+    
     /// <summary>
     /// This variable is used to check if the room is active or not
     /// room is active when an enemy is inside the room
     /// only active rooms can drop items
     /// </summary>
-    [SerializeField] private bool isRoomActive;
-    [SerializeField] private GameObject[] rewardPrefab;
+    private bool isRoomActive;
 
     private TilemapCollider2D tilemapCollider;
 
@@ -26,6 +27,17 @@ public class RoomManager : MonoBehaviour
         roomX=tilemapCollider.bounds.size.x;
         roomY=tilemapCollider.bounds.size.y;
         roomCenter = tilemapCollider.bounds.center;
+
+        isRoomActive = false;
+
+        var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+        foreach (var item in hit)
+        {
+            if(item.CompareTag("Enemy")){
+                isRoomActive = true;
+                break;
+            }
+        }
     }
 
     void LateUpdate()

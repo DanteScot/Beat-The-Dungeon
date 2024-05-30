@@ -58,6 +58,7 @@ public class PlayerManager : MonoBehaviour, Subject
         {
             player.GetComponent<PlayerController>().StartCoroutine("Die");
         }
+        Debug.Log(CurrentHealth);
     }
 
     public void Die()
