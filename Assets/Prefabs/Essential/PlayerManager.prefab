@@ -45,10 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  health: 2
+  maxHealth: 6
+  currentHealth: 3
   luck: 1
   baseAttackDamage: 3.5
   critMultiplier: 2
   attackSpeed: 3
   attackRange: 10
   critFrameWindow: 8
+  gears: 0

@@ -36,6 +36,8 @@ public class SpiderScript : Enemy
     }
 
     void Update(){
+        if(!isActive) return;
+
         if(!isMoving){
             if(isPlayerInRange){
                 targetPosition = player.position;

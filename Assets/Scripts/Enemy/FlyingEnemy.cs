@@ -23,6 +23,8 @@ public class FlyingEnemy : Enemy
 
     void Update()
     {
+        if(!isActive) return;
+
         agent.SetDestination(player.position);
         if(player.position.x<transform.position.x)
             transform.localScale = new Vector3(-1,1,1);

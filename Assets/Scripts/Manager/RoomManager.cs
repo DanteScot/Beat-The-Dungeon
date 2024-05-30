@@ -28,7 +28,7 @@ public class RoomManager : MonoBehaviour
         roomCenter = tilemapCollider.bounds.center;
     }
 
-    void Update()
+    void LateUpdate()
     {
         //TODO: door check
 
@@ -38,8 +38,16 @@ public class RoomManager : MonoBehaviour
     }
 
     void CheckRoom(){
-        var hit = Physics2D.OverlapBox(roomCenter, new Vector2(roomX, roomY), 0, LayerMask.GetMask("Enemy"));
-        if(hit == null){
+        bool found = false;
+        var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+        foreach (var item in hit)
+        {
+            if(item.CompareTag("Enemy")){
+                found = true;
+                break;
+            }
+        }
+        if(!found){
             RoomCleared();
         }
     }
@@ -52,8 +60,30 @@ public class RoomManager : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
-            Debug.Log("Player entered room");
+            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+            foreach (var enemy in hit)
+            {
+                if(enemy.CompareTag("Enemy"))
+                {
+                    Debug.Log(enemy.name);
+                    enemy.GetComponent<Enemy>().isActive = true;
+                }
+            }
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if(other.CompareTag("Player")){
+            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+            foreach (var enemy in hit)
+            {
+                if(enemy.CompareTag("Enemy"))
+                {
+                    enemy.GetComponent<Enemy>().isActive = false;
+                }
+            }
         }
     }
 }

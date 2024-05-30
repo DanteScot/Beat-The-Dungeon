@@ -13,6 +13,8 @@ public class Enemy : RythmedObject
     protected bool canAttack = false;
     protected bool isAttacking = false;
 
+    public bool isActive=false;
+
     private int beatToWait = 0;
 
     public new void Start()

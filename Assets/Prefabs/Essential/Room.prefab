@@ -108,9 +108,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isRoomActive: 1
-  roomItem:
-    itemPrefab: {fileID: 3913462417269709929, guid: aca1412c9722aa54eb482638eab06ea3, type: 3}
-    itemSelected: 2
+  rewardPrefab:
+  - {fileID: 3913462417269709929, guid: aca1412c9722aa54eb482638eab06ea3, type: 3}
+  - {fileID: 4398481534150645789, guid: d04e9fb6d643d854c9ea3f220fae414b, type: 3}
 --- !u!1 &4750562609937561882
 GameObject:
   m_ObjectHideFlags: 0
