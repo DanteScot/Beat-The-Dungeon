@@ -21,6 +21,8 @@ public class RoomManager : MonoBehaviour
     private float roomY;
     private Vector3 roomCenter;
 
+    private DoorController[] doors;
+
     void Start()
     {
         tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
@@ -37,6 +39,14 @@ public class RoomManager : MonoBehaviour
                 isRoomActive = true;
                 break;
             }
+        }
+
+        doors = transform.parent.GetComponentsInChildren<DoorController>();
+        foreach (var door in doors)
+        {
+            Debug.Log(door.name);
+            if(isRoomActive)    door.CloseDoor();
+            else                door.OpenDoor();
         }
     }
 
@@ -67,6 +77,10 @@ public class RoomManager : MonoBehaviour
     void RoomCleared(){
         isRoomActive = false;
         Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
+        foreach (var door in doors)
+        {
+            door.OpenDoor();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
