@@ -6684,6 +6684,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6966356535768247191, guid: 82e26bd336a94914a8c831b1eff16d90, type: 3}
   m_PrefabInstance: {fileID: 732179273}
   m_PrefabAsset: {fileID: 0}
+--- !u!60 &736151390 stripped
+PolygonCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4677085554967268023, guid: e7832a33330a9a646abeefea811b54ae, type: 3}
+  m_PrefabInstance: {fileID: 1779691323}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &746863019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11627,11 +11632,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3312933543203388084, guid: 1d020811e3ef8284d8bde8a773953512, type: 3}
   m_PrefabInstance: {fileID: 1219556103}
   m_PrefabAsset: {fileID: 0}
---- !u!60 &1220116816 stripped
-PolygonCollider2D:
-  m_CorrespondingSourceObject: {fileID: 4677085554967268023, guid: e7832a33330a9a646abeefea811b54ae, type: 3}
-  m_PrefabInstance: {fileID: 1832253233}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1220382412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16106,6 +16106,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 3823759304517615338, guid: f7edc0305954e0a49b2e56a09d85e516, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6490876182643952547, guid: f7edc0305954e0a49b2e56a09d85e516, type: 3}
       propertyPath: m_Name
       value: Door
@@ -16776,10 +16780,10 @@ PrefabInstance:
     - target: {fileID: 2596750328573168802, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_BoundingShape2D
       value: 
-      objectReference: {fileID: 1220116816}
+      objectReference: {fileID: 736151390}
     - target: {fileID: 4039956137005505597, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 5100048839160326875, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_Name
@@ -16787,7 +16791,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7394153955499045395, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -30
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7590444508275622786, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_AnchorMax.y

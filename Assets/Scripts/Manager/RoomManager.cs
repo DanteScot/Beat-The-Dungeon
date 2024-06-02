@@ -44,16 +44,41 @@ public class RoomManager : MonoBehaviour
         doors = transform.parent.GetComponentsInChildren<DoorController>();
         foreach (var door in doors)
         {
-            Debug.Log(door.name);
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
         }
     }
 
+
+
+
+
+
+    //
+    // TEST CODE
+    // MUST BE REMOVED
+    //
+    void Update(){
+        if(Input.GetKeyDown(KeyCode.Space)){
+            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+            foreach (var item in hit)
+            {
+                if(item.CompareTag("Enemy")){
+                    item.GetComponent<Enemy>().TakeDamage(100);
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
     void LateUpdate()
     {
-        //TODO: door check
-
         if(isRoomActive){
             CheckRoom();
         }
