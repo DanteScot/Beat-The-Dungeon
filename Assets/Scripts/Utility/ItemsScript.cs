@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -6,8 +7,8 @@ using UnityEngine;
 
 
 public enum ItemSelected{
-    random,
-    isaac,
+    Random,
+    Isaac,
     FireFlower,
 }
 
@@ -25,32 +26,21 @@ public class Items : PickUp
     {
         base.Start();
         
-        if(itemSelected == ItemSelected.random)
+        if(itemSelected == ItemSelected.Random)
         {
-            System.Array values = System.Enum.GetValues(typeof(ItemSelected));
-            itemSelected = (ItemSelected)values.GetValue(Random.Range(1, values.Length));
+            Array values = Enum.GetValues(typeof(ItemSelected));
+            itemSelected = (ItemSelected)values.GetValue(UnityEngine.Random.Range(1, values.Length));
         }
 
-
-        switch(itemSelected)
-        {
-            case ItemSelected.isaac:
-                selected = "Isaac";
-                break;
-                
-            case ItemSelected.FireFlower:
-                selected = "FireFlower";
-                break;
-        }
-
+        selected = Enum.GetName(typeof(ItemSelected), itemSelected);
 
         SetSprite();
         SetMethod();
     }
 
-    public void SetItem(ItemSelected ItemSelected)
+    public void SetItem(ItemSelected itemSelected)
     {
-        this.itemSelected = ItemSelected;
+        this.itemSelected = itemSelected;
     }
 
     public override void PickUpItem()
