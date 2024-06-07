@@ -15,6 +15,9 @@ public class MenuController : MonoBehaviour
 
     [SerializeField] private GameObject creditTemplate;
 
+    [SerializeField] private GameObject[] dayObjects;
+    [SerializeField] private GameObject[] nightObjects;
+
 
     public AudioMixer audioMixer;
     public TMP_Dropdown resolutionDropdown;
@@ -25,6 +28,7 @@ public class MenuController : MonoBehaviour
     {
         InitializeGraphicSettings();
         InitializeCredits();
+        SetSceneTime();
     }
 
     private void InitializeGraphicSettings(){
@@ -70,6 +74,28 @@ public class MenuController : MonoBehaviour
             GameObject credit = Instantiate(creditTemplate, creditTemplate.transform.parent);
             credit.SetActive(true);
             credit.GetComponent<TextMeshProUGUI>().text = line;
+        }
+    }
+
+    private void SetSceneTime(){
+        // get actual hour from system
+        int hour = System.DateTime.Now.Hour;
+        if(hour >= 6 && hour < 18){
+            // day
+            foreach(GameObject obj in dayObjects){
+                obj.SetActive(true);
+            }
+            foreach(GameObject obj in nightObjects){
+                obj.SetActive(false);
+            }
+        } else {
+            // night
+            foreach(GameObject obj in dayObjects){
+                obj.SetActive(false);
+            }
+            foreach(GameObject obj in nightObjects){
+                obj.SetActive(true);
+            }
         }
     }
 
