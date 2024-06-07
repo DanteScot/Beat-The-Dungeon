@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
@@ -10,6 +12,8 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject creditsMenu;
+
+    [SerializeField] private GameObject creditTemplate;
 
 
     public AudioMixer audioMixer;
@@ -19,6 +23,11 @@ public class MenuController : MonoBehaviour
 
     public void Start()
     {
+        InitializeGraphicSettings();
+        InitializeCredits();
+    }
+
+    private void InitializeGraphicSettings(){
         resolutions = Screen.resolutions;
 
         // Clear the dropdown options
@@ -42,10 +51,26 @@ public class MenuController : MonoBehaviour
             }
         }
 
+        //remove duplicates
+        options = options.Distinct().ToList();
+
         // Add the options to the dropdown
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+    }
+
+    private void InitializeCredits(){
+        // leggi i crediti dal file di testo nella cartella Resources
+        TextAsset textAsset = Resources.Load<TextAsset>("Credits");
+        string[] lines = textAsset.text.Split('\n');
+
+        foreach (string line in lines)
+        {
+            GameObject credit = Instantiate(creditTemplate, creditTemplate.transform.parent);
+            credit.SetActive(true);
+            credit.GetComponent<TextMeshProUGUI>().text = line;
+        }
     }
 
     public void SetMasterVolume(float volume)
@@ -110,6 +135,6 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
-        // Load the game scene
+        SceneManager.LoadScene("Level 1");
     }
 }
