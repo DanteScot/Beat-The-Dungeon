@@ -17,11 +17,13 @@ enum AttackDirection
 public class PlayerController : RythmedObject, Observer
 {
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject meleeCheck;
     [SerializeField] private Animator animator;
 
     private int critFrameWindow;
     private float attackSpeed;
     private float baseAttackDamage;
+    private float finalDamage;
     private float attackRange;
     private float moveSpeed;
 
@@ -55,6 +57,8 @@ public class PlayerController : RythmedObject, Observer
         baseAttackDamage = PlayerManager.Instance.BaseAttackDamage;
         attackRange = PlayerManager.Instance.AttackRange;
         moveSpeed = PlayerManager.Instance.MoveSpeed;
+
+        finalDamage=(float)(3.5*Mathf.Sqrt(1+baseAttackDamage));
     }
 
     void Update()
@@ -124,21 +128,48 @@ public class PlayerController : RythmedObject, Observer
 
     void Attack(){
         // Attack
-        var dmg=(float)(3.5*Mathf.Sqrt(1+baseAttackDamage));
-
         if(attackDirection == AttackDirection.LEFT) transform.localScale = new Vector3(-1, 1, 1);
         else if(attackDirection == AttackDirection.RIGHT) transform.localScale = new Vector3(1, 1, 1);
 
+        StartCoroutine(CheckMelee());
         animator.SetTrigger("Attack");
 
         if(isCrit){
-            Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, dmg, attackRange, movement.normalized);
+            Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, finalDamage, attackRange, movement.normalized);
         }
 
         // Reset attack
         attackDirection = AttackDirection.NONE;
         isAttacking = false;
         isCrit = false;
+    }
+
+    IEnumerator CheckMelee(){
+        Vector3 pos;
+        switch(attackDirection){
+            case AttackDirection.UP:
+                pos=new Vector3(0,1,0);
+                break;
+            case AttackDirection.RIGHT:
+                pos=new Vector3(1,0,0);
+                break;
+            case AttackDirection.DOWN:
+                pos=new Vector3(0,-1,0);
+                break;
+            case AttackDirection.LEFT:
+                pos=new Vector3(-1,0,0);
+                break;
+            default:
+                pos=new Vector3(0,0,0);
+                break;
+        }
+
+        meleeCheck.GetComponent<MeleeCheck>().damage=finalDamage;
+        meleeCheck.transform.position=transform.position+pos;
+        meleeCheck.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+        meleeCheck.SetActive(false);
     }
 
     public void SetCurrentRoom(RoomManager roomManager)

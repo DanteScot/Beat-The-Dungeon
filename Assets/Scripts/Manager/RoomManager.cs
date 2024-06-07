@@ -60,10 +60,18 @@ public class RoomManager : MonoBehaviour
     void Update(){
         if(Input.GetKeyDown(KeyCode.Space)){
             var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-            foreach (var item in hit)
+            
+            foreach (var player in hit)
             {
-                if(item.CompareTag("Enemy")){
-                    item.GetComponent<Enemy>().TakeDamage(100);
+                if(player.CompareTag("Player")){
+                    foreach (var item in hit)
+                    {
+                        if(item.CompareTag("Enemy")){
+                            item.GetComponent<Enemy>().TakeDamage(100);
+                        }
+                    }
+
+                    break;
                 }
             }
         }
