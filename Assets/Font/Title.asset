@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Title
   m_EditorClassIdentifier: 
-  hashCode: 1851740247
+  hashCode: 98732960
   material: {fileID: 4106637140107103869}
-  materialHashCode: -2010089449
+  materialHashCode: -1757382272
   m_Version: 1.1.0
   m_SourceFontFileGUID: a5154a204bfef4c43be88ce4673551a3
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: a5154a204bfef4c43be88ce4673551a3, type: 3}
@@ -2696,7 +2696,7 @@ Material:
     - _FaceUVSpeedY: 0
     - _GlowInner: 0.05
     - _GlowOffset: 0
-    - _GlowOuter: 0.079
+    - _GlowOuter: 0.04
     - _GlowPower: 0.75
     - _GradientScale: 6
     - _LightAngle: 3.1416
