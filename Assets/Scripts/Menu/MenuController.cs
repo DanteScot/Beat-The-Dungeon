@@ -4,8 +4,36 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+public struct Settings{
+    public float masterVolume;
+    public float musicVolume;
+    public float sfxVolume;
+    public int resolutionIndex;
+    public int qualityIndex;
+    public bool isFullscreen;
+
+    public Settings(SettingsData data){
+        masterVolume = data.masterVolume;
+        musicVolume = data.musicVolume;
+        sfxVolume = data.sfxVolume;
+        resolutionIndex = data.resolutionIndex;
+        qualityIndex = data.qualityIndex;
+        isFullscreen = data.isFullscreen;
+    }
+
+    public Settings(float masterVolume, float musicVolume, float sfxVolume, int resolutionIndex, int qualityIndex, bool isFullscreen){
+        this.masterVolume = masterVolume;
+        this.musicVolume = musicVolume;
+        this.sfxVolume = sfxVolume;
+        this.resolutionIndex = resolutionIndex;
+        this.qualityIndex = qualityIndex;
+        this.isFullscreen = isFullscreen;
+    }
+}
 
 public class MenuController : MonoBehaviour
 {
@@ -20,16 +48,26 @@ public class MenuController : MonoBehaviour
 
 
     public AudioMixer audioMixer;
+
     public TMP_Dropdown resolutionDropdown;
+    public Toggle fullscreenToggle;
+    public TMP_Dropdown qualityDropdown;
+    public Slider masterVolumeSlider;
+    public Slider musicVolumeSlider;
+    public Slider sfxVolumeSlider;
 
     private Resolution[] resolutions;
+    private Settings settings;
 
     public void Start()
     {
         InitializeGraphicSettings();
         InitializeCredits();
         SetSceneTime();
+        LoadSettings();
     }
+
+    #region Starting Methods
 
     private void InitializeGraphicSettings(){
         resolutions = Screen.resolutions;
@@ -99,33 +137,63 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    private void LoadSettings(){
+        settings = SaveSystem.LoadSettings();
+        SetMasterVolume(settings.masterVolume);
+        SetMusicVolume(settings.musicVolume);
+        SetSFXVolume(settings.sfxVolume);
+        SetQuality(settings.qualityIndex);
+        SetFullscreen(settings.isFullscreen);
+
+        if(settings.resolutionIndex == -1)  settings.resolutionIndex = resolutions.Length - 1;
+        
+        SetResolution(settings.resolutionIndex);
+
+        masterVolumeSlider.value = settings.masterVolume;
+        musicVolumeSlider.value = settings.musicVolume;
+        sfxVolumeSlider.value = settings.sfxVolume;
+        resolutionDropdown.value = settings.resolutionIndex;
+        qualityDropdown.value = settings.qualityIndex;
+        fullscreenToggle.isOn = settings.isFullscreen;
+    }
+
+    #endregion
+
+    #region Settings and Credits
+
     public void SetMasterVolume(float volume)
     {
+        settings.masterVolume = volume;
         audioMixer.SetFloat("MasterVolume", volume);
     }
 
     public void SetMusicVolume(float volume)
     {
+        settings.musicVolume = volume;
         audioMixer.SetFloat("MusicVolume", volume);
     }
 
     public void SetSFXVolume(float volume)
     {
+        settings.sfxVolume = volume;
         audioMixer.SetFloat("SFXVolume", volume);
     }
 
     public void SetQuality(int qualityIndex)
     {
+        settings.qualityIndex = qualityIndex;
         QualitySettings.SetQualityLevel(qualityIndex);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
+        settings.isFullscreen = isFullscreen;
         Screen.fullScreen = isFullscreen;
     }
 
     public void SetResolution(int resolutionIndex)
     {
+        settings.resolutionIndex = resolutionIndex;
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
@@ -138,6 +206,7 @@ public class MenuController : MonoBehaviour
 
     public void CloseSettings()
     {
+        SaveSystem.SaveSettings(settings);
         settingsMenu.SetActive(false);
         mainMenu.SetActive(true);
     }
@@ -163,4 +232,6 @@ public class MenuController : MonoBehaviour
     {
         SceneManager.LoadScene("Level 1");
     }
+
+    #endregion
 }
