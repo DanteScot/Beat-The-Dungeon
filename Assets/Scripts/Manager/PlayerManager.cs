@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,10 +15,8 @@ public class PlayerManager : MonoBehaviour, Subject
     [SerializeField] private float currentHealth = 3f;
     [SerializeField] private float luck = 1f;
     [SerializeField] private float baseAttackDamage = 3.5f;
-    [SerializeField] private float critMultiplier = 2f;
     [SerializeField] private float attackSpeed = 1f;
     [SerializeField] private float attackRange = 1f;
-    [SerializeField] private int critFrameWindow = 2;
 
     [Header("Other Stats")]
     [SerializeField] private int gears = 0;
@@ -30,10 +26,8 @@ public class PlayerManager : MonoBehaviour, Subject
     public float CurrentHealth { get => currentHealth; set {currentHealth = value; Notify();} }
     public float Luck { get => luck; set {luck = value; Notify();} }
     public float BaseAttackDamage { get => baseAttackDamage; set {baseAttackDamage = value; Notify();} }
-    public float CritMultiplier { get => critMultiplier; set {critMultiplier = value; Notify();} }
     public float AttackSpeed { get => attackSpeed; set {attackSpeed = value; Notify();} }
     public float AttackRange { get => attackRange; set {attackRange = value; Notify();} }
-    public int CritFrameWindow { get => critFrameWindow; set {critFrameWindow = value; Notify();} }
 
     public int Gears { get => gears; set {gears = value; Notify();} }
 

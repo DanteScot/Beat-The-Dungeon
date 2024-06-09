@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 enum AttackDirection
@@ -20,14 +17,13 @@ public class PlayerController : RythmedObject, Observer
     [SerializeField] private GameObject meleeCheck;
     [SerializeField] private Animator animator;
 
-    private int critFrameWindow;
+    private float critTimeWindow;
     private float attackSpeed;
     private float baseAttackDamage;
     private float finalDamage;
     private float attackRange;
     private float moveSpeed;
 
-    private int lowerCritFrameWindow;
     private bool canAttack = false;
     private bool isCrit = false;
     private bool isAttacking = false;
@@ -47,12 +43,10 @@ public class PlayerController : RythmedObject, Observer
         Notify();
         PlayerManager.Instance.Attach(this);
         attackDirection = AttackDirection.NONE;
-        lowerCritFrameWindow = Mathf.RoundToInt(critFrameWindow/2);
     }
 
     public void Notify()
     {
-        critFrameWindow = PlayerManager.Instance.CritFrameWindow;
         attackSpeed = PlayerManager.Instance.AttackSpeed;
         baseAttackDamage = PlayerManager.Instance.BaseAttackDamage;
         attackRange = PlayerManager.Instance.AttackRange;
@@ -86,29 +80,25 @@ public class PlayerController : RythmedObject, Observer
     IEnumerator PrepareAttack()
     {
         isAttacking = true;
+        critTimeWindow = BeatManager.Instance.TimeBetweenBeats / 3;
+
+        float waitTime = critTimeWindow / 4;
+        Debug.Log(waitTime);
 
         if(canAttack){
             isCrit=true;
         }else{
             isCrit=false;
 
-            for(int i=0; i<lowerCritFrameWindow; i++)
-            {
-                yield return new WaitForEndOfFrame();
-                if(canAttack)
-                {
-                    isCrit=true;
-                    break;
-                }
-            }
+            var start=Time.time;
+            yield return new WaitUntil(() => canAttack || Time.time-start>critTimeWindow);
             
-            if(!isCrit)
-                yield return new WaitUntil(() => canAttack);
+            if(canAttack) isCrit=true;
+            else yield return new WaitUntil(() => canAttack);
         }
 
         Attack();
     }
-
 
     public override void Trigger()
     {
@@ -119,10 +109,9 @@ public class PlayerController : RythmedObject, Observer
     {
         canAttack = true;
 
-        for(int i=0; i<critFrameWindow; i++)
-        {
-            yield return new WaitForEndOfFrame();
-        }
+        Debug.Log(critTimeWindow / 2);
+        yield return new WaitForSeconds(critTimeWindow / 2);
+
         canAttack = false;
     }
 
@@ -182,7 +171,17 @@ public class PlayerController : RythmedObject, Observer
     public void TakeDamage(float damage)
     {
         animator.SetTrigger("Hurt");
+        StartCoroutine(Blink());
         PlayerManager.Instance.TakeDamage(damage);
+    }
+
+    IEnumerator Blink(){
+        for(int i=0; i<3; i++){
+            GetComponent<SpriteRenderer>().color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            GetComponent<SpriteRenderer>().color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public IEnumerator Die()

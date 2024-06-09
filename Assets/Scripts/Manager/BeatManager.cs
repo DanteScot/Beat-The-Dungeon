@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,6 +13,8 @@ public class BeatManager : MonoBehaviour
     [SerializeField] private bool debug=true;
     [SerializeField] private TextMeshProUGUI bpmText;
     int tmp;
+
+    public float TimeBetweenBeats {get {return 60/bpm;}}
     
     private Interval[] intervals;
 
@@ -74,6 +74,11 @@ public class BeatManager : MonoBehaviour
     {
         bpmText.text = ((tmp%4)+1).ToString();
         tmp++;
+    }
+
+    public void SetBPM(float bpm)
+    {
+        this.bpm = bpm;
     }
 }
 

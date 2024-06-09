@@ -1963,7 +1963,6 @@ GameObject:
   - component: {fileID: 3038730696920484828}
   - component: {fileID: 728465486084622901}
   - component: {fileID: 8539800256189860273}
-  - component: {fileID: 4050605686280991800}
   - component: {fileID: 8260247232006452723}
   m_Layer: 2
   m_Name: Tilemap_Base
@@ -3558,27 +3557,6 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!65 &4050605686280991800
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6745038523173906201}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 18, y: 8, z: 0}
-  m_Center: {x: 0, y: -1, z: 0}
 --- !u!114 &8260247232006452723
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -43,8 +42,19 @@ public class Enemy : RythmedObject
         health-=damage;
         Debug.Log(damage);
 
+        StartCoroutine(Blink());
+
         if(health<=0)
             Die();
+    }
+
+    IEnumerator Blink(){
+        for(int i=0; i<3; i++){
+            GetComponent<SpriteRenderer>().color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            GetComponent<SpriteRenderer>().color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public void Die(){

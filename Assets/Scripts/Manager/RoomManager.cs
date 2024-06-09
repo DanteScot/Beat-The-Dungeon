@@ -22,9 +22,19 @@ public class RoomManager : MonoBehaviour
 
     private DoorController[] doors;
 
+    void Awake()
+    {
+        var tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
+        foreach (var tilemap in tilemaps)
+        {
+            tilemap.CompressBounds();
+        }
+
+        tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
+    }
+
     void Start()
     {
-        tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
         roomX=tilemapCollider.bounds.size.x;
         roomY=tilemapCollider.bounds.size.y;
         roomCenter = tilemapCollider.bounds.center;
