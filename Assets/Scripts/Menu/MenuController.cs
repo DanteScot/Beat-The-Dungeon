@@ -17,6 +17,16 @@ public struct Settings{
     public bool isFullscreen;
 
     public Settings(SettingsData data){
+        if(data == null){
+            masterVolume = 0;
+            musicVolume = 0;
+            sfxVolume = 0;
+            resolutionIndex = -1;
+            qualityIndex = 2;
+            isFullscreen = true;
+            return;
+        }
+
         masterVolume = data.masterVolume;
         musicVolume = data.musicVolume;
         sfxVolume = data.sfxVolume;
@@ -230,7 +240,8 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Level 1");
+        // TODO: controllare se esiste un salvataggio e caricare il livello corretto
+        SceneManager.LoadScene("Lobby");
     }
 
     #endregion

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -21,6 +22,14 @@ public class DoorController : MonoBehaviour
 
     private bool isOpen = true;
 
+    [SerializeField] private bool isLobbyDoor = false;
+
+    void Start() {
+        if(isLobbyDoor){
+            OpenDoor();
+        }
+    }
+
     public void OpenDoor(){
         GetComponent<SpriteRenderer>().sprite = openDoor;
         isOpen = true;
@@ -39,7 +48,12 @@ public class DoorController : MonoBehaviour
     {
         if(other.CompareTag("Player") && isOpen)
         {
-            other.transform.position = linkedDoor.GetSpawnPoint();
+            if(isLobbyDoor){
+                //TODO: Load new scene
+                Debug.Log("Loading new scene");
+            } else {
+                other.transform.position = linkedDoor.GetSpawnPoint();
+            }
         }
     }
 }

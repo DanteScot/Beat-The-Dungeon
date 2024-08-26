@@ -45,6 +45,17 @@ public class PlayerManager : MonoBehaviour, Subject
         }
     }
 
+
+    // TODO: Remove this Update method
+    public void Update(){
+        if(Input.GetKeyDown(KeyCode.F1)){
+            PlayerManager.Instance.MoveSpeed=PlayerManager.Instance.MoveSpeed+1;
+        }
+        if(Input.GetKeyDown(KeyCode.F2)){
+            PlayerManager.Instance.MoveSpeed=PlayerManager.Instance.MoveSpeed-1;
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;

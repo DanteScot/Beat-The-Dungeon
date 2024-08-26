@@ -40,6 +40,7 @@ public class SpikeController : RythmedObject
         if (phase == 2) GetComponent<BoxCollider2D>().enabled = true;
         else GetComponent<BoxCollider2D>().enabled = false;
         
-        if (phase == 0) canGoNextPhase = false;
+        // if (phase == 0) canGoNextPhase = false;
+        canGoNextPhase = false;
     }
 }

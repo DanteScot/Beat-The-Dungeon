@@ -6,27 +6,41 @@ public static class SaveSystem
 {
     private static string settingsPath = Application.persistentDataPath + "/settings.kevin";
 
-    public static void SaveSettings(Settings settings)
+
+    private static void Save<T>(T data, string path)
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(settingsPath, FileMode.Create);
-        SettingsData data = new SettingsData(settings);
+        FileStream stream = new FileStream(path, FileMode.Create);
 
         formatter.Serialize(stream, data);
         stream.Close();
     }
 
-    public static Settings LoadSettings()
+    private static object Load(string path)
     {
-        if (File.Exists(settingsPath)){
+        if (File.Exists(path)){
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(settingsPath, FileMode.Open);
 
-            SettingsData data = formatter.Deserialize(stream) as SettingsData;
+            object data = formatter.Deserialize(stream);
             stream.Close();
-            return new Settings(data);
+            return data;
         } else {
-            return new Settings(0,0,0,-1,2,true);
+            return null;
         }
+    }
+
+
+    public static void SaveSettings(Settings settings)
+    {
+        Save(new SettingsData(settings), settingsPath);
+    }
+
+    public static Settings LoadSettings()
+    {
+        SettingsData data = Load(settingsPath) as SettingsData;
+
+        if (data != null) return new Settings(data);
+        else return new Settings(null);
     }
 }
