@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 public class RoomManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] rewardPrefab;
+    [SerializeField] private bool isLobbyRoom=false;
     
     /// <summary>
     /// This variable is used to check if the room is active or not
@@ -118,7 +119,7 @@ public class RoomManager : MonoBehaviour
 
     void RoomCleared(){
         isRoomActive = false;
-        Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
+        if(!isLobbyRoom) Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
         foreach (var door in doors)
         {
             door.OpenDoor();
@@ -134,7 +135,7 @@ public class RoomManager : MonoBehaviour
                 if(enemy.CompareTag("Enemy"))
                 {
                     Debug.Log(enemy.name);
-                    enemy.GetComponent<Enemy>().isActive = true;
+                    if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = true;
                 }
             }
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
@@ -149,7 +150,7 @@ public class RoomManager : MonoBehaviour
             {
                 if(enemy.CompareTag("Enemy"))
                 {
-                    enemy.GetComponent<Enemy>().isActive = false;
+                    if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = false;
                 }
             }
         }

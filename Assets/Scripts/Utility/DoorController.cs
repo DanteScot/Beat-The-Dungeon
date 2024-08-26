@@ -24,12 +24,6 @@ public class DoorController : MonoBehaviour
 
     [SerializeField] private bool isLobbyDoor = false;
 
-    void Start() {
-        if(isLobbyDoor){
-            OpenDoor();
-        }
-    }
-
     public void OpenDoor(){
         GetComponent<SpriteRenderer>().sprite = openDoor;
         isOpen = true;
