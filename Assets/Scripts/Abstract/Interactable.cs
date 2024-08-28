@@ -6,35 +6,43 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class Interactable : MonoBehaviour
 {
-    [SerializeField] private bool isInteractable = true;
+    // public bool isInteractable = true;
     [SerializeField] private string interactMessage  = "interact";
     
     private GameObject interactMessageGameobject;
     private TextMeshProUGUI interactMessageText;
 
     private bool isPlayerInRange = false;
-    // private bool isInteracting = false;
+    protected bool isInteracting = false;
 
     void Start(){
-        interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
-        interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
-        interactMessageGameobject.SetActive(false);
+        if(this.enabled){
+            interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
+            interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
+            // interactMessageGameobject.SetActive(false);
+        }
     }
 
-    void ShowInteractMessage(){
+    void OnEnable(){
+        interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
+        interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
+        // interactMessageGameobject.SetActive(false);
+    }
+
+    protected void ShowInteractMessage(){
         interactMessageText.text=interactMessage;
         isPlayerInRange = true;
         interactMessageGameobject.SetActive(true);
     }
 
-    void HideInteractMessage(){
+    protected void HideInteractMessage(){
         interactMessageGameobject.SetActive(false);
         isPlayerInRange = false;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player") && isInteractable)
+        if(other.CompareTag("Player") && enabled)
         {
             ShowInteractMessage();
         }
@@ -42,7 +50,7 @@ public class Interactable : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if(other.CompareTag("Player") && isInteractable)
+        if(other.CompareTag("Player") && enabled)
         {
             HideInteractMessage();
         }
@@ -50,7 +58,7 @@ public class Interactable : MonoBehaviour
 
     void Update()
     {
-        if(isPlayerInRange && isInteractable && Input.GetKeyDown(KeyCode.E))
+        if(isPlayerInRange && Input.GetKeyDown(KeyCode.E) && enabled)
         {
             Interact();
         }

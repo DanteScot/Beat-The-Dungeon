@@ -7,6 +7,8 @@ public class FakeEnemy : Interactable
     [SerializeField] private GameObject lightFather;
     [SerializeField] private GameObject[] lights;
     [SerializeField] private GameObject door;
+    [SerializeField] private AudioClip powerDownSound;
+    [SerializeField] private AudioClip powerUpSound;
 
     // public void  OnValidate()
     // {
@@ -22,7 +24,13 @@ public class FakeEnemy : Interactable
 
     public override void Interact()
     {
-        StartCoroutine(TurnOffLights());
+        if(!isInteracting)
+        {
+            isInteracting = true;
+            enabled = false;
+            HideInteractMessage();
+            StartCoroutine(TurnOffLights());
+        }
     }
 
     IEnumerator TurnOffLights()
@@ -36,6 +44,7 @@ public class FakeEnemy : Interactable
             if(count>0) nextWaitTime = waitTime*count*2;
 
             light.GetComponent<Light2D>().enabled = false;
+            light.GetComponent<AudioSource>().Play();
             yield return new WaitForSeconds(nextWaitTime);
 
             count--;
@@ -43,20 +52,30 @@ public class FakeEnemy : Interactable
         yield return new WaitForSeconds(.85f);
         var tmp = transform.parent.GetComponentInChildren<Light2D>();
         tmp.intensity = 0;
+
+        transform.parent.GetComponent<AudioSource>().PlayOneShot(powerDownSound);
+
         tmp.color = Color.white;
         yield return new WaitForSeconds(2f);
+
+        transform.parent.GetComponent<AudioSource>().volume = 0.5f;
+        transform.parent.GetComponent<AudioSource>().PlayOneShot(powerUpSound);
 
         // interpolating light intensity
         float t = 0;
         while (t < 1)
         {
             t += Time.deltaTime*0.25f;
-            tmp.intensity = Mathf.Lerp(0, 1, t);
-            tmp.pointLightOuterRadius = Mathf.Lerp(0, 100, t);
+            tmp.intensity = Mathf.Lerp(0, 1.1f, t);
+            tmp.pointLightOuterRadius = Mathf.Lerp(0, 100, t);  
             yield return null;
         }
 
         yield return new WaitForSeconds(2f);
         tmp.enabled = false;
+        
+        transform.parent.GetComponent<Interactable>().enabled = true;
+
+        Destroy(gameObject);
     }
 }
