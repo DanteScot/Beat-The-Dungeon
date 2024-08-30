@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class FakeEnemy : Interactable
+public class FirstTimeLobbyController : Interactable
 {
     [SerializeField] private GameObject lightFather;
     [SerializeField] private GameObject[] lights;
@@ -29,8 +29,15 @@ public class FakeEnemy : Interactable
             isInteracting = true;
             enabled = false;
             HideInteractMessage();
-            StartCoroutine(TurnOffLights());
+            StartCoroutine(InteractCoroutine());
         }
+    }
+
+    private IEnumerator InteractCoroutine()
+    {
+        yield return StartCoroutine(TurnOffLights());
+        PlayerManager.Instance.LoadPlayerStats(new GameData());
+        SaveSystem.SaveGame(new GameData());
     }
 
     IEnumerator TurnOffLights()

@@ -218,6 +218,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2660113026349198060, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
+      propertyPath: maxHealth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660113026349198060, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
+      propertyPath: moveSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660113026349198060, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
+      propertyPath: attackRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660113026349198060, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
+      propertyPath: currentHealth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660113026349198060, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
+      propertyPath: baseAttackDamage
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5806607050055809182, guid: 8453c607a6789674e8c3bbaf24e96fc3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1337,7 +1357,7 @@ GameObject:
   - component: {fileID: 1069229640}
   - component: {fileID: 1069229641}
   m_Layer: 6
-  m_Name: FakeEnemy
+  m_Name: FirstTimeLobbyController
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5632,7 +5652,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790c522c9d7f21f49b3721d914647b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isFirstTime: 0
   itemToDestroy:
   - {fileID: 1069229635}
 --- !u!1 &4750562609506237238
@@ -5646,7 +5665,7 @@ GameObject:
   - component: {fileID: 5892730119811443145}
   - component: {fileID: 2308966077830904628}
   m_Layer: 0
-  m_Name: Room
+  m_Name: Lobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

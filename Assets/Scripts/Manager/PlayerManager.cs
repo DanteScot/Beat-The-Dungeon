@@ -49,11 +49,25 @@ public class PlayerManager : MonoBehaviour, Subject
     // TODO: Remove this Update method
     public void Update(){
         if(Input.GetKeyDown(KeyCode.F1)){
-            PlayerManager.Instance.MoveSpeed=PlayerManager.Instance.MoveSpeed+1;
+            MoveSpeed=MoveSpeed+1;
         }
         if(Input.GetKeyDown(KeyCode.F2)){
-            PlayerManager.Instance.MoveSpeed=PlayerManager.Instance.MoveSpeed-1;
+            MoveSpeed=MoveSpeed-1;
         }
+        if(Input.GetKeyDown(KeyCode.F12)){
+            SaveSystem.SaveGame(new GameData(this));
+        }
+    }
+
+    public void LoadPlayerStats(GameData data)
+    {
+        MoveSpeed = data.moveSpeed;
+        MaxHealth = data.maxHealth;
+        CurrentHealth = data.currentHealth;
+        Luck = data.luck;
+        BaseAttackDamage = data.baseAttackDamage;
+        AttackSpeed = data.attackSpeed;
+        AttackRange = data.attackRange;
     }
 
     public void TakeDamage(float damage)

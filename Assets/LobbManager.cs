@@ -7,7 +7,7 @@ public class LobbManager : MonoBehaviour
 {
     public static LobbManager Instance { get; private set; }
 
-    public bool isFirstTime = true;
+    private bool isFirstTime;
 
     [SerializeField] private GameObject[] itemToDestroy;
 
@@ -26,10 +26,18 @@ public class LobbManager : MonoBehaviour
     private void Start()
     {
         // TODO: Check if this is the first time the player is playing the game
+        GameData data = SaveSystem.LoadGame();
+        if (data != null) isFirstTime = false;
+        else isFirstTime = true;
 
         if (!isFirstTime){
+            Debug.Log("Not first time");
             NotFirstTimeLobby();
+            PlayerManager.Instance.LoadPlayerStats(data);
         }
+
+        Debug.Log("First time");
+        SaveSystem.SaveGame(new GameData(PlayerManager.Instance));
     }
 
     void NotFirstTimeLobby(){
