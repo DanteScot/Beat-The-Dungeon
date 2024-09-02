@@ -42,6 +42,7 @@ public class FirstTimeLobbyController : Interactable
 
     IEnumerator TurnOffLights()
     {
+        GameEvent.canMove = false;
         int count=3;
         float waitTime = 0.15f;
         yield return new WaitForSeconds(1f);
@@ -57,12 +58,12 @@ public class FirstTimeLobbyController : Interactable
             count--;
         }
         yield return new WaitForSeconds(.85f);
-        var tmp = transform.parent.GetComponentInChildren<Light2D>();
-        tmp.intensity = 0;
+        var incubatorLight = transform.parent.GetComponentInChildren<Light2D>();
+        incubatorLight.intensity = 0;
 
         transform.parent.GetComponent<AudioSource>().PlayOneShot(powerDownSound);
 
-        tmp.color = Color.white;
+        incubatorLight.color = Color.white;
         yield return new WaitForSeconds(2f);
 
         transform.parent.GetComponent<AudioSource>().volume = 0.5f;
@@ -73,15 +74,16 @@ public class FirstTimeLobbyController : Interactable
         while (t < 1)
         {
             t += Time.deltaTime*0.25f;
-            tmp.intensity = Mathf.Lerp(0, 1.1f, t);
-            tmp.pointLightOuterRadius = Mathf.Lerp(0, 100, t);  
+            incubatorLight.intensity = Mathf.Lerp(0, 1.1f, t);
+            incubatorLight.pointLightOuterRadius = Mathf.Lerp(0, 100, t);  
             yield return null;
         }
 
         yield return new WaitForSeconds(2f);
-        tmp.enabled = false;
+        incubatorLight.enabled = false;
         
-        transform.parent.GetComponent<Interactable>().enabled = true;
+        transform.parent.GetComponent<IncubatorController>().enabled = true;
+        GameEvent.canMove = true;
 
         Destroy(gameObject);
     }

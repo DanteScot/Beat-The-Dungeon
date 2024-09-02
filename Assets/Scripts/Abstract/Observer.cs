@@ -5,4 +5,5 @@ using UnityEngine;
 public interface Observer
 {
     void Notify();
+    void OnDestroy();
 }

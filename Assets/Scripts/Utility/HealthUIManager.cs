@@ -15,7 +15,7 @@ public class HealthUIManager : MonoBehaviour, Observer
 
     public void Notify()
     {
-        maxHealth = PlayerManager.Instance.MaxHealth;
+        maxHealth = PlayerManager.Instance.MaxHealthLevelled;
         currentHealth = PlayerManager.Instance.CurrentHealth;
         UpdateGui();
     }
@@ -58,7 +58,7 @@ public class HealthUIManager : MonoBehaviour, Observer
         }
     }
 
-    public void OnDestory()
+    public void OnDestroy()
     {
         PlayerManager.Instance.Detach(this);
     }

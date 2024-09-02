@@ -13,20 +13,15 @@ public static class SaveSystem
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        Debug.Log("Saving to " + path);
-
         formatter.Serialize(stream, data);
         stream.Close();
     }
 
     private static object Load(string path)
     {
-        Debug.Log("Loading");
         if (File.Exists(path)){
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(settingsPath, FileMode.Open);
-
-            Debug.Log("Loading from " + path);
+            FileStream stream = new FileStream(path, FileMode.Open);
 
             object data = formatter.Deserialize(stream);
             stream.Close();
@@ -35,6 +30,7 @@ public static class SaveSystem
             return null;
         }
     }
+
 
     public static void SaveGame(GameData gameData)
     {

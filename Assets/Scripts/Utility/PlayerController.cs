@@ -47,16 +47,22 @@ public class PlayerController : RythmedObject, Observer
 
     public void Notify()
     {
-        attackSpeed = PlayerManager.Instance.AttackSpeed;
-        baseAttackDamage = PlayerManager.Instance.BaseAttackDamage;
-        attackRange = PlayerManager.Instance.AttackRange;
-        moveSpeed = PlayerManager.Instance.MoveSpeed;
+        attackSpeed = PlayerManager.Instance.AttackSpeedLevelled;
+        baseAttackDamage = PlayerManager.Instance.BaseAttackDamageLevelled;
+        attackRange = PlayerManager.Instance.AttackRangeLevelled;
+        moveSpeed = PlayerManager.Instance.MoveSpeedLevelled;
 
-        finalDamage=(float)(3.5*Mathf.Sqrt(1+baseAttackDamage));
+        finalDamage = (float)System.Math.Round(Mathf.Sqrt(1 + baseAttackDamage), 2);
     }
 
     void Update()
     {
+        if(!GameEvent.canMove){
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            animator.SetFloat("Speed", 0);
+            return;
+        }
+
         movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
         GetComponent<Rigidbody2D>().velocity = Vector2.ClampMagnitude(movement, moveSpeed);
         animator.SetFloat("Speed", movement.magnitude);
@@ -83,7 +89,7 @@ public class PlayerController : RythmedObject, Observer
         critTimeWindow = BeatManager.Instance.TimeBetweenBeats / 3;
 
         float waitTime = critTimeWindow / 4;
-        Debug.Log(waitTime);
+        // Debug.Log(waitTime);
 
         if(canAttack){
             isCrit=true;
@@ -109,7 +115,7 @@ public class PlayerController : RythmedObject, Observer
     {
         canAttack = true;
 
-        Debug.Log(critTimeWindow / 2);
+        // Debug.Log(critTimeWindow / 2);
         yield return new WaitForSeconds(critTimeWindow / 2);
 
         canAttack = false;
@@ -186,9 +192,15 @@ public class PlayerController : RythmedObject, Observer
 
     public IEnumerator Die()
     {
+        GameEvent.canMove = false;
         animator.SetTrigger("Die");
         yield return new WaitForSeconds(1);
         PlayerManager.Instance.Detach(this);
         Time.timeScale = 0;
+    }
+
+    public void OnDestory()
+    {
+        PlayerManager.Instance.Detach(this);
     }
 }

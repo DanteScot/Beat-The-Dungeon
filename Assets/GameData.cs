@@ -5,33 +5,33 @@ using UnityEngine;
 [System.Serializable]
 public class GameData
 {
-    public float moveSpeed;
-    public float maxHealth;
-    public float currentHealth;
-    public float luck;
-    public float baseAttackDamage;
-    public float attackSpeed;
-    public float attackRange;
+    public int moveSpeed;
+    public int maxHealth;
+    public int luck;
+    public int baseAttackDamage;
+    public int attackSpeed;
+    public int attackRange;
+    public int gears;
 
     public GameData()
     {
-        moveSpeed = 4f;
-        maxHealth = 4f;
-        currentHealth = 4f;
-        luck = 1f;
-        baseAttackDamage = 2.5f;
-        attackSpeed = 3f;
-        attackRange = 2f;
+        moveSpeed = 0;
+        maxHealth = 0;
+        luck = 0;
+        baseAttackDamage = 0;
+        attackSpeed = 0;
+        attackRange = 0;
+        gears = 0;
     }
 
     public GameData(PlayerManager playerManager)
     {
-        moveSpeed = playerManager.MoveSpeed;
-        maxHealth = playerManager.MaxHealth;
-        currentHealth = playerManager.CurrentHealth;
-        luck = playerManager.Luck;
-        baseAttackDamage = playerManager.BaseAttackDamage;
-        attackSpeed = playerManager.AttackSpeed;
-        attackRange = playerManager.AttackRange;
+        moveSpeed = playerManager.MoveSpeedLevel;
+        maxHealth = playerManager.HealthLevel;
+        luck = playerManager.LuckLevel;
+        baseAttackDamage = playerManager.DamageLevel;
+        attackSpeed = playerManager.AttackSpeedLevel;
+        attackRange = playerManager.AttackRangeLevel;
+        gears = playerManager.Gears;
     }
 }

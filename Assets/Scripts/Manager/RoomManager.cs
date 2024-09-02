@@ -134,7 +134,7 @@ public class RoomManager : MonoBehaviour
             {
                 if(enemy.CompareTag("Enemy"))
                 {
-                    Debug.Log(enemy.name);
+                    // Debug.Log(enemy.name);
                     if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = true;
                 }
             }

@@ -44,11 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05384f7fe7de9ab478fc3ec6b12a9c13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  maxHealth: 6
-  currentHealth: 6
+  moveSpeed: 4
+  maxHealth: 4
+  currentHealth: 4
   luck: 1
-  baseAttackDamage: 3.5
+  baseAttackDamage: 2.5
   attackSpeed: 3
-  attackRange: 10
+  attackRange: 2
+  moveSpeedLevel: 0
+  healthLevel: 0
+  luckLevel: 0
+  damageLevel: 0
+  attackSpeedLevel: 0
+  attackRangeLevel: 0
   gears: 0

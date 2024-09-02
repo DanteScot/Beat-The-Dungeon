@@ -16,7 +16,7 @@ public class Interactable : MonoBehaviour
     protected bool isInteracting = false;
 
     void Start(){
-        if(this.enabled){
+        if(enabled){
             interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
             interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
             // interactMessageGameobject.SetActive(false);
@@ -58,7 +58,7 @@ public class Interactable : MonoBehaviour
 
     void Update()
     {
-        if(isPlayerInRange && Input.GetKeyDown(KeyCode.E) && enabled)
+        if(isPlayerInRange && Input.GetKeyDown(KeyCode.E) && enabled  && !isInteracting)
         {
             Interact();
         }
