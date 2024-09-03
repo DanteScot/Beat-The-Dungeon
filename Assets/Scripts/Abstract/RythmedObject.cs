@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum intervalIndex{
+    EveryQuarterBeat,
+    EveryHalfBeat,
+    EveryBeat
+}
 public abstract class RythmedObject : MonoBehaviour
 {
-    protected enum intervalIndex{
-        EveryQuarterBeat,
-        EveryHalfBeat,
-        EveryBeat
-    }
     [SerializeField] protected intervalIndex index;
 
     public void Start()

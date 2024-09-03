@@ -75,6 +75,7 @@ public class IncubatorController : Interactable
             "Analysis complete."
         };
 
+        yield return new WaitForSeconds(0.5f);
         foreach (string s in analysis)
         {
             incubatorText.text = s;
