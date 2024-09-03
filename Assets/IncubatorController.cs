@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class IncubatorController : Interactable
 {
     [SerializeField] private GameObject incubatorUI;
     [SerializeField] private TextMeshProUGUI incubatorText;
+    [SerializeField] protected intervalIndex index;
 
     private string playerName;
+
 
     public override void Interact()
     {
@@ -24,6 +27,15 @@ public class IncubatorController : Interactable
         string[] pathParts = path.Split('/');
         playerName = pathParts[2];
     }
+
+    // public void OnEnable()
+    // {
+    //     incubatorLight.intensity = 0;
+    //     incubatorLight.pointLightOuterRadius = 2;
+    //     incubatorLight.color = Color.blue;
+    //     incubatorLight.enabled = true;
+    //     transform.Find("Global").GetComponent<Light2D>().enabled = true;
+    // }
 
     IEnumerator InteractCoroutine()
     {

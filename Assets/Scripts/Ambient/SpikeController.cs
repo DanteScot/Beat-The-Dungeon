@@ -10,9 +10,8 @@ public class SpikeController : RythmedObject
     private bool canGoNextPhase;
     private int phase;
 
-    public new void Start()
+    public void Start()
     {
-        base.Start();
         GetComponent<SpriteRenderer>().sprite = sprites[0];
         phase = 0;
         canGoNextPhase = false;

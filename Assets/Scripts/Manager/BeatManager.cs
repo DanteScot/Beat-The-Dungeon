@@ -16,7 +16,8 @@ public class BeatManager : MonoBehaviour
 
     public float TimeBetweenBeats {get {return 60/bpm;}}
     
-    private Interval[] intervals;
+    // private Interval[] intervals;
+    private Interval interval;
 
     private void Awake()
     {
@@ -25,14 +26,16 @@ public class BeatManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            intervals = new Interval[3];
-            intervals[0] = new Interval(1);
-            intervals[1] = new Interval(0.5f);
-            intervals[2] = new Interval(0.25f);
+            // intervals = new Interval[3];
+            // intervals[0] = new Interval(1);
+            // intervals[1] = new Interval(0.5f);
+            // intervals[2] = new Interval(0.25f);
+            interval = new Interval(1);
 
             if(debug){
                 bpmText.gameObject.SetActive(true);
-                intervals[0].AddListener(UpdateBPMText);
+                // intervals[0].AddListener(UpdateBPMText);
+                interval.AddListener(UpdateBPMText);
                 tmp = 0;
             }
             else
@@ -53,11 +56,13 @@ public class BeatManager : MonoBehaviour
 
     private void Update()
     {
-        foreach(Interval interval in intervals)
-        {
-            float sampledTime = audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm));
-            interval.CheckForNewInterval(sampledTime);
-        }
+        float sampledTime = audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm));
+        interval.CheckForNewInterval((int)sampledTime);
+        // foreach(Interval interval in intervals)
+        // {
+        //     float sampledTime = audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm));
+        //     interval.CheckForNewInterval(sampledTime);
+        // }
     }
 
     /// <summary>
@@ -65,10 +70,14 @@ public class BeatManager : MonoBehaviour
     /// 1 = 2/4 (2 calls per beat),
     /// 2 = 4/4 (1 call per beat)
     /// </summary>
-    public Interval GetInterval(int index)
+    public Interval GetInterval()
     {
-        return intervals[index];
+        return interval;
     }
+    // public Interval GetInterval(int index)
+    // {
+    //     return intervals[index];
+    // }
 
     public void UpdateBPMText()
     {
@@ -100,11 +109,12 @@ public class Interval
         return 60 / (bpm * steps);
     }
 
-    public void CheckForNewInterval(float interval)
+    public void CheckForNewInterval(int interval)
     {
-        if(Mathf.FloorToInt(interval) != LastInterval)
+        if(interval != LastInterval)
         {
-            LastInterval = Mathf.FloorToInt(interval);
+            LastInterval = interval;
+            // Debug.Log("New Interval: " + interval + "; LastInterval: " + LastInterval);
             beatEvent.Invoke();
         }
     }

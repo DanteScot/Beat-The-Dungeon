@@ -32,14 +32,14 @@ public class PlayerController : RythmedObject, Observer
     private Vector2 movement;
 
 
-    public void Awake()
+    public new void Awake()
     {
+        base.Awake();
         PlayerManager.Instance.SetPlayer(transform);
     }
 
-    new void Start()
+    void Start()
     {
-        base.Start();
         Notify();
         PlayerManager.Instance.Attach(this);
         attackDirection = AttackDirection.NONE;

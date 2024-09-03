@@ -34,7 +34,7 @@ public class LobbManager : MonoBehaviour
             PlayerManager.Instance.LoadPlayerStats(data);
         }
 
-        SaveSystem.SaveGame(new GameData(PlayerManager.Instance));
+        // SaveSystem.SaveGame(new GameData(PlayerManager.Instance));
     }
 
     void NotFirstTimeLobby(){

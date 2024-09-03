@@ -14,13 +14,6 @@ public class Enemy : RythmedObject
 
     public bool isActive=false;
 
-    private int beatToWait = 0;
-
-    public new void Start()
-    {
-        base.Start();
-    }
-
     public override void Trigger()
     {
         if(beatToWait>0){

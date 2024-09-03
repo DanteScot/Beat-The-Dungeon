@@ -10,9 +10,8 @@ public class FlyingEnemy : Enemy
 
     [SerializeField] private float speed;
 
-    new void Start()
+    void Start()
     {
-        base.Start();
         player = PlayerManager.Instance.GetPlayer();
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;

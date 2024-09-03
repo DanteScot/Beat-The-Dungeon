@@ -16261,9 +16261,17 @@ PrefabInstance:
       propertyPath: m_BoundingShape2D
       value: 
       objectReference: {fileID: 208511782}
+    - target: {fileID: 4039956137005505597, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5100048839160326875, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7394153955499045395, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7590444508275622786, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
       propertyPath: m_AnchorMax.y

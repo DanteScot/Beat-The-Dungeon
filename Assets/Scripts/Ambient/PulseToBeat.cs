@@ -10,9 +10,8 @@ public class PulseToBeat : RythmedObject
 
     private Vector3 startSize;
 
-    public new void Start()
+    public void Start()
     {
-        base.Start();
         startSize = transform.localScale;
     }
 
@@ -21,13 +20,8 @@ public class PulseToBeat : RythmedObject
         transform.localScale = Vector3.Lerp(transform.localScale, startSize, Time.deltaTime * returnSpeed);
     }
 
-    public void Pulse()
-    {
-        transform.localScale = startSize * pulseSize;
-    }
-
     public override void Trigger()
     {
-        Pulse();
+        transform.localScale = startSize * pulseSize;
     }
 }

@@ -20,9 +20,7 @@ public class SpiderScript : Enemy
         }
     }
 
-    new void Start(){
-        base.Start();
-
+    void Start(){
         player = PlayerManager.Instance.GetPlayer();
         isMoving = false;
 
