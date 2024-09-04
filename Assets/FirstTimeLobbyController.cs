@@ -76,6 +76,8 @@ public class FirstTimeLobbyController : Interactable
             t += Time.deltaTime*0.25f;
             incubatorLight.intensity = Mathf.Lerp(0, 1.1f, t);
             incubatorLight.pointLightOuterRadius = Mathf.Lerp(0, 100, t);  
+            incubatorLight.shadowIntensity = Mathf.Lerp(0.75f, 0, t);
+            LobbyManager.Instance.ui.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(-1, 1, t);
             yield return null;
         }
 
@@ -84,6 +86,8 @@ public class FirstTimeLobbyController : Interactable
         
         transform.parent.GetComponent<IncubatorController>().enabled = true;
         GameEvent.canMove = true;
+        BeatManager.Instance.gameObject.SetActive(true);
+        BeatManager.Instance.gameObject.GetComponent<AudioSource>().Play();
 
         Destroy(gameObject);
     }

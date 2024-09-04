@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class LobbManager : MonoBehaviour
+public class LobbyManager : MonoBehaviour
 {
-    public static LobbManager Instance { get; private set; }
+    public static LobbyManager Instance { get; private set; }
+
+    public CanvasGroup ui;
 
     private bool isFirstTime;
 
@@ -16,6 +18,8 @@ public class LobbManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            ui = GameObject.Find("Canvas").GetComponent<CanvasGroup>();
+            ui.alpha = 0;
         }
         else
         {
@@ -33,8 +37,9 @@ public class LobbManager : MonoBehaviour
             NotFirstTimeLobby();
             PlayerManager.Instance.LoadPlayerStats(data);
         }
-
-        // SaveSystem.SaveGame(new GameData(PlayerManager.Instance));
+        else{
+            BeatManager.Instance.gameObject.SetActive(false);
+        }
     }
 
     void NotFirstTimeLobby(){
@@ -52,5 +57,7 @@ public class LobbManager : MonoBehaviour
         {
             item.enabled = true;
         }
+
+        ui.alpha=1;
     }
 }

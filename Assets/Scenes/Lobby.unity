@@ -1066,7 +1066,7 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 6781420393138095139, guid: bd85e1b144ae7694aa2630171ed8bdbe, type: 3}
   m_PrefabInstance: {fileID: 1881855383}
   m_PrefabAsset: {fileID: 0}
---- !u!43 &516766619
+--- !u!43 &498107158
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2499,7 +2499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4350665973569185352, guid: fd0ca537708456145af61d942e2d71f9, type: 3}
       propertyPath: m_Name
-      value: BeatController
+      value: BeatManager
       objectReference: {fileID: 0}
     - target: {fileID: 6455223323410397411, guid: fd0ca537708456145af61d942e2d71f9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3795,6 +3795,7 @@ GameObject:
   - component: {fileID: 1856612331}
   - component: {fileID: 1856612330}
   - component: {fileID: 1856612329}
+  - component: {fileID: 1856612332}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -3886,6 +3887,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &1856612332
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856612327}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1881855383
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7463,6 +7476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790c522c9d7f21f49b3721d914647b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ui: {fileID: 0}
   itemToDestroy:
   - {fileID: 1069229635}
 --- !u!1 &4750562609506237238
