@@ -45,7 +45,7 @@ namespace HeneGames.DialogueSystem
         [SerializeField] private GameObject interactionUI;
         [SerializeField] private AudioMixerGroup audioMixerGroup;
 
-        public AudioMixerGroup AudioMixerGroup { get { return audioMixerGroup; } }
+        public AudioMixerGroup AudioMixerGroup { get => audioMixerGroup; }
 
         [Header("Settings")]
         [SerializeField] private bool animateText = true;

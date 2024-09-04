@@ -34,15 +34,13 @@ namespace HeneGames.DialogueSystem
 
         void OnValidate()
         {
-            if (audioSource == null)
-            {
-                audioSource = GetComponent<AudioSource>();
-                audioSource.outputAudioMixerGroup = DialogueUI.instance.AudioMixerGroup;
-            }
-
-
+            audioSource = GetComponent<AudioSource>();
             GetComponent<CircleCollider2D>().isTrigger = true;
-            GetComponent<CircleCollider2D>().radius = 2f;
+        }
+
+        private void Start()
+        {
+            audioSource.outputAudioMixerGroup = DialogueUI.instance.AudioMixerGroup;
         }
 
         private void Update()
