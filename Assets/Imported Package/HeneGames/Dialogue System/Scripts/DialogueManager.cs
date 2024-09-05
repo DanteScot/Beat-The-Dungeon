@@ -14,6 +14,8 @@ namespace HeneGames.DialogueSystem
         private bool dialogueIsOn;
         private DialogueTrigger dialogueTrigger;
 
+        private string lastCharacter;
+
         public enum TriggerState
         {
             Collision,
@@ -246,6 +248,8 @@ namespace HeneGames.DialogueSystem
 
         public void StopDialogue()
         {
+            TalkingCharacter("");
+
             //Stop dialogue event
             if (dialogueTrigger != null)
             {
@@ -285,6 +289,8 @@ namespace HeneGames.DialogueSystem
         {
             if (sentences[currentSentence].dialogueCharacter != null)
             {
+                TalkingCharacter(sentences[currentSentence].dialogueCharacter.name);
+
                 //Show sentence on the screen
                 DialogueUI.instance.ShowSentence(sentences[currentSentence].dialogueCharacter, sentences[currentSentence].sentence);
 
@@ -293,6 +299,8 @@ namespace HeneGames.DialogueSystem
             }
             else
             {
+                TalkingCharacter("");
+
                 DialogueCharacter _dialogueCharacter = new DialogueCharacter();
                 _dialogueCharacter.characterName = "";
                 _dialogueCharacter.characterPhoto = null;
@@ -310,6 +318,32 @@ namespace HeneGames.DialogueSystem
                 return 0;
 
             return sentences[currentSentence].sentence.Length;
+        }
+
+
+
+
+
+        //--------------------------------------------------------------------------------
+        // Questa parte è stata aggiunta da me per comodità
+
+        private void TalkingCharacter(string character){
+            MakeTalk(lastCharacter, false);
+
+            lastCharacter = character;
+
+            MakeTalk(character, true);
+        }
+
+        private void MakeTalk(string character, bool talk){
+            switch(character){
+                case "808": 
+                    Controller808.Instance.IsTalking = talk;
+                    break;
+                
+                default:
+                    break;
+            }
         }
     }
 

@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 struct startingStats
@@ -113,6 +115,11 @@ public class PlayerManager : MonoBehaviour, Subject
 
     // TODO: Remove this Update method
     public void Update(){
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            GameEvent.IsPaused = !GameEvent.IsPaused;
+        }
+
+
         if(Input.GetKeyDown(KeyCode.F1)){
             MoveSpeed+=1;
         }
@@ -125,6 +132,15 @@ public class PlayerManager : MonoBehaviour, Subject
         if(Input.GetKeyDown(KeyCode.F12)){
             SaveSystem.SaveGame(new GameData(this));
         }
+        if(Input.GetKeyDown(KeyCode.F5)){
+            StartCoroutine(Tmp());
+        }
+    }
+
+    IEnumerator Tmp(){
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(5);
+        Time.timeScale = 1;
     }
 
     public void LoadPlayerStats(GameData data)
