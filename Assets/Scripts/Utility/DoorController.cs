@@ -12,6 +12,12 @@ public enum DoorPosition
     RIGHT
 }
 
+enum LobbyDoor{
+    NOT_LOBBY,
+    START_GAME,
+    TUTORIAL
+}
+
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class DoorController : MonoBehaviour
@@ -22,7 +28,7 @@ public class DoorController : MonoBehaviour
 
     private bool isOpen = true;
 
-    [SerializeField] private bool isLobbyDoor = false;
+    [SerializeField] private LobbyDoor lobbyDoor;
 
     public void OpenDoor(){
         GetComponent<SpriteRenderer>().sprite = openDoor;
@@ -42,12 +48,26 @@ public class DoorController : MonoBehaviour
     {
         if(other.CompareTag("Player") && isOpen)
         {
-            if(isLobbyDoor){
+            if(!lobbyDoor.Equals(LobbyDoor.NOT_LOBBY)){
                 //TODO: Load new scene
-                Debug.Log("Loading new scene");
+                ManageLobbyDoor();
             } else {
                 other.transform.position = linkedDoor.GetSpawnPoint();
             }
+        }
+    }
+
+    void ManageLobbyDoor(){
+        switch(lobbyDoor){
+            case LobbyDoor.START_GAME:
+                Debug.Log("Start Game");
+                GameEvent.isInLobby = false;
+                break;
+            case LobbyDoor.TUTORIAL:
+                Debug.Log("Tutorial");
+                break;
+            default:
+                break;
         }
     }
 }

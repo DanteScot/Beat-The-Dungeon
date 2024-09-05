@@ -11,6 +11,8 @@ public class Controller808 : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
 
+    private SpriteRenderer spriteRenderer;
+
     private bool isTalking = false;
     public bool IsTalking
     {
@@ -29,6 +31,8 @@ public class Controller808 : MonoBehaviour
         else Destroy(gameObject);
 
         animator = GetComponent<Animator>();
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Start()
@@ -39,9 +43,17 @@ public class Controller808 : MonoBehaviour
         agent.updateUpAxis = false;
 
         agent.speed = speed;
+
+        StartCoroutine(Wait());
     }
 
-    void FixedUpdate()
+    IEnumerator Wait(){
+        spriteRenderer.color = new Color(255,255,255,0);
+        yield return new WaitUntil(()=>!GameEvent.isInLobby);
+        spriteRenderer.color = new Color(255,255,255,1);
+    }
+
+    void Update()
     {
         agent.SetDestination(player.position);
         if(player.position.x<transform.position.x)

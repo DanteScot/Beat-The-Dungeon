@@ -29,6 +29,7 @@ public class LobbyManager : MonoBehaviour
 
     private void Start()
     {
+        GameEvent.isInLobby = true;
         GameData data = SaveSystem.LoadGame();
         if (data != null) isFirstTime = false;
         else isFirstTime = true;
@@ -57,6 +58,10 @@ public class LobbyManager : MonoBehaviour
         {
             item.enabled = true;
         }
+
+        Lobby808Controller.Instance.NoAnimation();
+
+        GameEvent.canMove = true;
 
         ui.alpha=1;
     }

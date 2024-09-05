@@ -82,12 +82,13 @@ public class FirstTimeLobbyController : Interactable
         }
 
         yield return new WaitForSeconds(2f);
+        Lobby808Controller.Instance.StartAnimation();
+
         incubatorLight.enabled = false;
-        
         transform.parent.GetComponent<IncubatorController>().enabled = true;
-        GameEvent.canMove = true;
         BeatManager.Instance.gameObject.SetActive(true);
         BeatManager.Instance.gameObject.GetComponent<AudioSource>().Play();
+
 
         Destroy(gameObject);
     }
