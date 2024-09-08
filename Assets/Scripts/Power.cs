@@ -6,32 +6,32 @@ using UnityEngine;
 
 public static class Power
 {
-    public static BulletScript Init(string power, BulletScript bullet) {
+    public static void Init(string power, BulletScript bullet) {
         if (bullet == null) {
             Debug.LogError("Bullet object is null.");
-            return null;
+            return;
         }
 
         MethodInfo method = typeof(Power).GetMethod(power + "_Init", BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null) {
             Debug.Log($"Method {power}_Init not found.");
-            return bullet;
+            return;
         }
-        return (BulletScript)method.Invoke(null, new object[] { bullet });
+        method.Invoke(null, new object[] { bullet });
     }
 
-    public static BulletScript OnHit(string power, BulletScript bullet, Enemy enemy) {
+    public static void OnHit(string power, BulletScript bullet, Enemy enemy) {
         if (bullet == null) {
             Debug.LogError("Bullet object is null.");
-            return null;
+            return;
         }
 
         MethodInfo method = typeof(Power).GetMethod(power + "_OnHit", BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null) {
             Debug.Log($"Method {power}_OnHit not found.");
-            return bullet;
+            return;
         }
-        return (BulletScript)method.Invoke(null, new object[] { bullet, enemy });
+        method.Invoke(null, new object[] { bullet, enemy });
     }
 
     public static bool CanDestroy(string power, BulletScript bullet) {
@@ -48,22 +48,21 @@ public static class Power
         return (bool)method.Invoke(null, new object[] { bullet });
     }
 
-    private static BulletScript Isaac_Init(BulletScript bullet) {
+    private static void Isaac_Init(BulletScript bullet) {
         bullet.remainingBounces = 100;
-        return bullet;
+        return;
     }
 
-    private static BulletScript Isaac_OnHit(BulletScript bullet, Enemy enemy) {
+    private static void Isaac_OnHit(BulletScript bullet, Enemy enemy) {
         bullet.remainingBounces = 200;
-        return bullet;
+        return;
     }
 
 
-    private static BulletScript Jack_Init(BulletScript bullet){
+    private static void Jack_Init(BulletScript bullet){
         bullet.remainingBounces = 2;
-        return bullet;
     }
-    private static BulletScript Jack_OnHit(BulletScript bullet, Enemy enemy) {
+    private static void Jack_OnHit(BulletScript bullet, Enemy enemy) {
         var enemies = Physics2D.OverlapCircleAll(bullet.transform.position, bullet.range, LayerMask.GetMask("Enemy"));
 
         Enemy closestEnemy = null;
@@ -89,8 +88,6 @@ public static class Power
 
         bullet.remainingBounces--;
         bullet.closestEnemy = closestEnemy;
-
-        return bullet;
     }
     private static bool Jack_CanDestroy(BulletScript bullet) {
         if (bullet.remainingBounces > 0) return false;
