@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 7509142050261837184}
   - component: {fileID: 3230513699395011598}
   m_Layer: 0
-  m_Name: BeatController
+  m_Name: BeatManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
