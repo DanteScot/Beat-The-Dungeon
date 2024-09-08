@@ -47,7 +47,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcd5e436d19676947bc69d8a4016db93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayerShooting: 0
+  speed: 0
+  damage: 0
+  range: 0
+  remainingBounces: 0
+  closestEnemy: {fileID: 0}
 --- !u!212 &816016588955603401
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -159,6 +163,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.05, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.35

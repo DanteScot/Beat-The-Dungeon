@@ -5,26 +5,54 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    public bool isPlayerShooting;
+    private List<string> powers;
+    // public bool isPlayerShooting;
     
-    private float speed;
-    private float damage;
-    private float range;
+
+    public float speed;
+    public float damage;
+    public float range;
 
 
-    public void SetBullet(float speed, float damage, float range, Vector2 velocity)
+    #region PowerUps Variables
+
+    public int remainingBounces = 1;
+    public Enemy closestEnemy = null;
+    public Enemy lastEnemy = null;
+
+
+    #endregion
+
+
+    public void SetBullet(float speed, float damage, float range, Vector2 velocity, List<string> powers)
     {
         this.speed = speed;
         this.damage = damage;
         this.range = range;
         GetComponent<Rigidbody2D>().velocity = velocity;
+        this.powers = powers;
+
+        InitList();
     }
 
     void FixedUpdate()
     {
-        transform.Translate(Vector2.up * speed * Time.deltaTime);
+        if (closestEnemy != null)
+        {
+            Vector2 direction = (closestEnemy.transform.position - transform.position).normalized;
+            transform.Translate(direction * speed * Time.deltaTime, Space.World);
+
+            // Rotate the bullet to face the closest enemy
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+        }
+        else
+        {
+            transform.Translate(Vector2.up * speed * Time.deltaTime);
+        }
+
         range -= speed * Time.deltaTime;
-        if(range <= 0)
+        if (range <= 0)
         {
             Destroy(gameObject);
         }
@@ -34,8 +62,34 @@ public class BulletScript : MonoBehaviour
     {
         var enemy=other.GetComponent<Enemy>();
         if(enemy!=null){
-            enemy.TakeDamage(damage);
-            Destroy(gameObject);
+            if(lastEnemy!=null && lastEnemy.transform==enemy.transform) return;
+
+            lastEnemy=enemy;
+
+            foreach (string power in powers)
+            {
+                Power.OnHit(power, this, enemy);
+            }
+
+            bool destroy = true;
+            foreach (string power in powers)
+            {
+                if (!Power.CanDestroy(power, this))
+                {
+                    destroy = false;
+                    break;
+                }
+            }
+
+            if (destroy) Destroy(gameObject);
+        }
+    }
+
+    void InitList()
+    {
+        foreach (string power in powers)
+        {
+            Power.Init(power, this);
         }
     }
 }

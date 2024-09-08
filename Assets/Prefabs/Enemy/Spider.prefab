@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2690632530821765107}
   - component: {fileID: 5842183482513088336}
   - component: {fileID: 1077149866001601146}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spider
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  waitBeat: 0
   health: 10
   damage: 1
   isActive: 0

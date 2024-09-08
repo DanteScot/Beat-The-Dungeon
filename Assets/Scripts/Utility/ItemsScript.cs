@@ -9,6 +9,7 @@ using UnityEngine;
 public enum ItemSelected{
     Random,
     Isaac,
+    Jack,
     FireFlower,
 }
 
@@ -19,7 +20,7 @@ public class Items : PickUp
 
     private string basePath = "";
     private string selected;
-    private MethodInfo method;
+    // private MethodInfo method;
 
 
     public new void Start()
@@ -35,7 +36,7 @@ public class Items : PickUp
         selected = Enum.GetName(typeof(ItemSelected), itemSelected);
 
         SetSprite();
-        SetMethod();
+        // SetMethod();
     }
 
     public void SetItem(ItemSelected itemSelected)
@@ -45,7 +46,8 @@ public class Items : PickUp
 
     public override void PickUpItem()
     {
-        method.Invoke(this, null);
+        // method.Invoke(this, null);
+        PlayerManager.Instance.GetPlayer().GetComponent<PlayerController>().powers.Add(selected);
     }
 
     private void SetSprite()
@@ -53,20 +55,20 @@ public class Items : PickUp
         GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(basePath + selected);
     }
 
-    private void SetMethod()
-    {
-        method = GetType().GetMethod(selected, BindingFlags.NonPublic | BindingFlags.Instance);
-    }
+    // private void SetMethod()
+    // {
+    //     method = GetType().GetMethod(selected, BindingFlags.NonPublic | BindingFlags.Instance);
+    // }
 
 
     // I SEGUENTI METODI VERRANNO CHIAMATI SOLO TRAMITE REFLECTION
-    private void Isaac()
-    {
-        Debug.Log("Isaac");
-    }
+    // private void Isaac()
+    // {
+    //     Debug.Log("Isaac");
+    // }
 
-    private void FireFlower()
-    {
-        Debug.Log("FireFlower");
-    }
+    // private void FireFlower()
+    // {
+    //     Debug.Log("FireFlower");
+    // }
 }

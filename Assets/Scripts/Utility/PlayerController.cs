@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ public class PlayerController : RythmedObject, Observer
     private bool isAttacking = false;
     private AttackDirection attackDirection;
 
+    public List<string> powers = new List<string>();
     private Vector2 movement;
 
 
@@ -130,7 +132,7 @@ public class PlayerController : RythmedObject, Observer
         animator.SetTrigger("Attack");
 
         if(isCrit){
-            Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, finalDamage, attackRange, movement.normalized);
+            Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0,0,(int)attackDirection)).GetComponent<BulletScript>().SetBullet(attackSpeed, finalDamage, attackRange, movement.normalized, powers);
         }
 
         // Reset attack
