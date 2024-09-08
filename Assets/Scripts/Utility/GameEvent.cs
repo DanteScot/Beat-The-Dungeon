@@ -5,6 +5,7 @@ using System.Linq;
 public static class GameEvent{
     public static bool canMove = true;
     public static bool isInLobby = true;
+    public static bool ifFirstTime = true;
 
     private static bool isPaused = false;
     public static bool IsPaused

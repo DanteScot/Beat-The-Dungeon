@@ -62,6 +62,7 @@ public class LobbyManager : MonoBehaviour
         Lobby808Controller.Instance.NoAnimation();
 
         GameEvent.canMove = true;
+        GameEvent.ifFirstTime = false;
 
         ui.alpha=1;
     }

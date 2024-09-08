@@ -32,7 +32,7 @@ namespace HeneGames.DialogueSystem
 
         [Header("Dialogue")]
         [SerializeField] private TriggerState triggerState;
-        [SerializeField] private List<NPC_Centence> sentences = new List<NPC_Centence>();
+        public List<NPC_Centence> sentences = new List<NPC_Centence>();
 
         void OnValidate()
         {
@@ -248,8 +248,6 @@ namespace HeneGames.DialogueSystem
 
         public void StopDialogue()
         {
-            TalkingCharacter("");
-
             //Stop dialogue event
             if (dialogueTrigger != null)
             {
@@ -270,6 +268,8 @@ namespace HeneGames.DialogueSystem
             //Remove trigger refence
             dialogueIsOn = false;
             dialogueTrigger = null;
+
+            TalkingCharacter("");
         }
 
         private void PlaySound(AudioClip _audioClip)
@@ -338,7 +338,8 @@ namespace HeneGames.DialogueSystem
         private void MakeTalk(string character, bool talk){
             switch(character){
                 case "808": 
-                    Controller808.Instance.IsTalking = talk;
+                    if(GameEvent.isInLobby) Lobby808Controller.Instance.IsTalking = talk;
+                    else Controller808.Instance.IsTalking = talk;
                     break;
                 
                 default:

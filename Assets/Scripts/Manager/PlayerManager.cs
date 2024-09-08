@@ -92,6 +92,9 @@ public class PlayerManager : MonoBehaviour, Subject
             Instance = this;
             DontDestroyOnLoad(gameObject);
             startingStats = new startingStats(moveSpeed, maxHealth, luck, baseAttackDamage, attackSpeed, attackRange);
+            // HO DOVUTO INIZIALIZZARE IL SEED PERCHE' NON FUNZIONAVA RANDOM
+            // QUANTOMENO NON NELLO START DI Lobby808Controller, DAVA SEMPRE LO STESSO NUMERO
+            Random.InitState(System.DateTime.Now.Millisecond);
         }
         else
         {
@@ -132,15 +135,6 @@ public class PlayerManager : MonoBehaviour, Subject
         if(Input.GetKeyDown(KeyCode.F12)){
             SaveSystem.SaveGame(new GameData(this));
         }
-        if(Input.GetKeyDown(KeyCode.F5)){
-            StartCoroutine(Tmp());
-        }
-    }
-
-    IEnumerator Tmp(){
-        Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(5);
-        Time.timeScale = 1;
     }
 
     public void LoadPlayerStats(GameData data)

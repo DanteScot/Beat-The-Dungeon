@@ -6,7 +6,7 @@ public class FirstTimeLobbyController : Interactable
 {
     [SerializeField] private GameObject lightFather;
     [SerializeField] private GameObject[] lights;
-    [SerializeField] private GameObject door;
+    // [SerializeField] private GameObject door;
     [SerializeField] private AudioClip powerDownSound;
     [SerializeField] private AudioClip powerUpSound;
 

@@ -1,20 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using HeneGames.DialogueSystem;
 using UnityEngine;
 using UnityEngine.AI;
+
+[System.Serializable]
+public class NPC_CentenceList
+{
+    public List<NPC_Centence> sentences = new List<NPC_Centence>();
+}
 
 public class Lobby808Controller : MonoBehaviour
 {
     public static Lobby808Controller Instance { get; private set; }
 
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private float speed = 2;
+
+
+    [Header("First Time Sentences")]
+    [SerializeField] private NPC_CentenceList firstTimeSentences = new NPC_CentenceList();
+    [Header("Random Sentences")]
+    [SerializeField] private List<NPC_CentenceList> randomSentences = new List<NPC_CentenceList>();
+    [Header("Can't Repeat Sentences")]
+    [SerializeField] private List<NPC_CentenceList> doNotRepeatSentences = new List<NPC_CentenceList>();
+
 
     private Vector3 targetPosition;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
     private bool canMove = false;
+    private int hasTalked;
 
     private bool isTalking = false;
     public bool IsTalking
@@ -26,7 +44,6 @@ public class Lobby808Controller : MonoBehaviour
         }
     }
 
-    [SerializeField] private float speed = 2;
 
     void Awake()
     {
@@ -54,6 +71,17 @@ public class Lobby808Controller : MonoBehaviour
         spriteRenderer.color = new Color(255,255,255,1);
     }
 
+    void Start()
+    {
+        hasTalked = 0;
+
+        if(GameEvent.ifFirstTime) SetSentences(firstTimeSentences);
+        else {
+            SetSentences(randomSentences[Random.Range(0, randomSentences.Count)]);
+            StartCoroutine(Paganini());
+        }
+    }
+
     void Update()
     {
         if(!canMove) return;
@@ -78,5 +106,28 @@ public class Lobby808Controller : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         canMove = true;
+    }
+
+    // Non ripete :)
+    IEnumerator Paganini()
+    {
+        yield return new WaitUntil(() => hasTalked == 1 && !isTalking);
+        for(int i=0; i<doNotRepeatSentences.Count; i++)
+        {
+            yield return new WaitUntil(() => hasTalked == i+1);
+            SetSentences(doNotRepeatSentences[Random.Range(0, doNotRepeatSentences.Count)]);
+        }
+    }
+
+    public void UpdateHasTalked()
+    {
+        hasTalked++;
+    }
+
+    void SetSentences(NPC_CentenceList list)
+    {
+        list.sentences[list.sentences.Count-1].sentenceEvent.AddListener(() => UpdateHasTalked());
+
+        GetComponent<DialogueManager>().sentences = list.sentences;
     }
 }
