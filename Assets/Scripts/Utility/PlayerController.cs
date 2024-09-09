@@ -17,6 +17,7 @@ public class PlayerController : RythmedObject, Observer
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private GameObject meleeCheck;
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject minions;
 
     private float critTimeWindow;
     private float attackSpeed;
@@ -30,7 +31,8 @@ public class PlayerController : RythmedObject, Observer
     private bool isAttacking = false;
     private AttackDirection attackDirection;
 
-    public List<string> powers = new List<string>();
+    private List<string> powers = new List<string>();
+
     private Vector2 movement;
 
 
@@ -83,6 +85,12 @@ public class PlayerController : RythmedObject, Observer
         {
             StartCoroutine(PrepareAttack());
         }
+    }
+
+    public void AddPower(string power)
+    {
+        powers.Add(power);
+        Power.OneTimeInit(power);
     }
 
     IEnumerator PrepareAttack()
@@ -185,9 +193,9 @@ public class PlayerController : RythmedObject, Observer
 
     IEnumerator Blink(){
         for(int i=0; i<3; i++){
-            GetComponent<SpriteRenderer>().color = Color.red;
+            GetComponentInChildren<SpriteRenderer>().color = Color.red;
             yield return new WaitForSeconds(0.1f);
-            GetComponent<SpriteRenderer>().color = Color.white;
+            GetComponentInChildren<SpriteRenderer>().color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
     }

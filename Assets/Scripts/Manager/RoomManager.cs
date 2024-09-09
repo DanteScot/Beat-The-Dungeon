@@ -7,6 +7,7 @@ public class RoomManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] rewardPrefab;
     [SerializeField] private bool isLobbyRoom=false;
+    public Collider2D[] enemies { get; private set; }
     
     /// <summary>
     /// This variable is used to check if the room is active or not
@@ -42,14 +43,8 @@ public class RoomManager : MonoBehaviour
 
         isRoomActive = false;
 
-        var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-        foreach (var item in hit)
-        {
-            if(item.CompareTag("Enemy")){
-                isRoomActive = true;
-                break;
-            }
-        }
+        FindEnemies();
+        if(enemies.Length>0) isRoomActive = true;
 
         doors = transform.parent.GetComponentsInChildren<DoorController>();
         foreach (var door in doors)
@@ -64,7 +59,7 @@ public class RoomManager : MonoBehaviour
 
 
 
-    //
+    // TODO
     // TEST CODE
     // MUST BE REMOVED
     //
@@ -102,19 +97,31 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    // void CheckRoom(){
+    //     bool found = false;
+    //     var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+    //     foreach (var item in hit)
+    //     {
+    //         if(item.CompareTag("Enemy")){
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+    //     if(!found){
+    //         RoomCleared();
+    //     }
+    // }
+    void FindEnemies(){
+        enemies = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0, LayerMask.GetMask("Enemy"));
+    }
+
     void CheckRoom(){
         bool found = false;
-        var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-        foreach (var item in hit)
-        {
-            if(item.CompareTag("Enemy")){
-                found = true;
-                break;
-            }
-        }
-        if(!found){
-            RoomCleared();
-        }
+
+        FindEnemies();
+        if(enemies.Length>0) found = true;
+
+        if(!found) RoomCleared();
     }
 
     void RoomCleared(){
@@ -129,29 +136,24 @@ public class RoomManager : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
-            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-            foreach (var enemy in hit)
+            FindEnemies();
+            foreach (var enemy in enemies)
             {
-                if(enemy.CompareTag("Enemy"))
-                {
-                    // Debug.Log(enemy.name);
-                    if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = true;
-                }
+                // Debug.Log(enemy.name);
+                if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = true;
             }
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
+            PlayerManager.Instance.currentRoom = this;
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
-            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-            foreach (var enemy in hit)
+            FindEnemies();
+            foreach (var enemy in enemies)
             {
-                if(enemy.CompareTag("Enemy"))
-                {
-                    if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = false;
-                }
+                if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = false;
             }
         }
     }

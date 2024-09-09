@@ -1,66 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public static class Power
 {
-    public static void Init(string power, BulletScript bullet) {
-        if (bullet == null) {
-            Debug.LogError("Bullet object is null.");
-            return;
-        }
+    private static string basePath = "Prefabs/";
+    private static int luck;
+    private static Color bulletColor = Color.white;
 
+    private static Dictionary<string, string> powerDescriptions = new Dictionary<string, string>
+    {
+        { "Isaac", "Bullets bounce off walls." },
+        { "Jack", "Bullets bounce off enemies." }
+    };
+
+
+
+    public static void OneTimeInit(string power) {
+        MethodInfo method = typeof(Power).GetMethod(power + "_OneTimeInit", BindingFlags.NonPublic | BindingFlags.Static);
+
+        if (method == null) return;
+
+        method.Invoke(null, null);
+    }
+
+    public static void Init(string power, BulletScript bullet) {
         MethodInfo method = typeof(Power).GetMethod(power + "_Init", BindingFlags.NonPublic | BindingFlags.Static);
-        if (method == null) {
-            Debug.Log($"Method {power}_Init not found.");
-            return;
-        }
+
+        if (method == null) return;
+
+        luck = (int)PlayerManager.Instance.LuckLevelled;
+
         method.Invoke(null, new object[] { bullet });
     }
 
     public static void OnHit(string power, BulletScript bullet, Enemy enemy) {
-        if (bullet == null) {
-            Debug.LogError("Bullet object is null.");
-            return;
-        }
-
         MethodInfo method = typeof(Power).GetMethod(power + "_OnHit", BindingFlags.NonPublic | BindingFlags.Static);
-        if (method == null) {
-            Debug.Log($"Method {power}_OnHit not found.");
-            return;
-        }
+        
+        if (method == null) return;
+
         method.Invoke(null, new object[] { bullet, enemy });
     }
 
     public static bool CanDestroy(string power, BulletScript bullet) {
-        if (bullet == null) {
-            Debug.Log("Bullet object is null.");
-            return true;
-        }
-
         MethodInfo method = typeof(Power).GetMethod(power + "_CanDestroy", BindingFlags.NonPublic | BindingFlags.Static);
-        if (method == null) {
-            Debug.Log($"Method {power}_CanDestroy not found.");
-            return true;
-        }
+
+        if (method == null) return true;
+        
         return (bool)method.Invoke(null, new object[] { bullet });
     }
 
-    private static void Isaac_Init(BulletScript bullet) {
-        bullet.remainingBounces = 100;
-        return;
+    public static string GetDescription(string power) {
+        if (powerDescriptions.ContainsKey(power)) {
+            return powerDescriptions[power];
+        }
+        return "No description available.";
     }
 
-    private static void Isaac_OnHit(BulletScript bullet, Enemy enemy) {
-        bullet.remainingBounces = 200;
-        return;
+
+
+
+    private static void Isaac_OneTimeInit() {
+        PlayerManager.Instance.InstantiatePrefab(basePath + "Isaac");
     }
 
 
     private static void Jack_Init(BulletScript bullet){
-        bullet.remainingBounces = 2;
+        bullet.remainingBounces = 2 + luck;
     }
     private static void Jack_OnHit(BulletScript bullet, Enemy enemy) {
         var enemies = Physics2D.OverlapCircleAll(bullet.transform.position, bullet.range, LayerMask.GetMask("Enemy"));
@@ -69,11 +77,9 @@ public static class Power
         float closestDistance = float.MaxValue;
 
         foreach (var foe in enemies) {
-            if(foe.transform == enemy.transform) continue;
-
             var tmp = foe.GetComponent<Enemy>();
 
-            if (tmp == null) continue;
+            if(tmp.Id == enemy.Id) continue;
 
             if (closestEnemy == null) {
                 closestEnemy = tmp;
@@ -92,5 +98,25 @@ public static class Power
     private static bool Jack_CanDestroy(BulletScript bullet) {
         if (bullet.remainingBounces > 0) return false;
         else return true;
+    }
+
+
+    private static void FireFlower_Init(BulletScript bullet) {
+        if (bullet.Equals(Color.white)) bulletColor = new Color(1,0,0);
+        else bulletColor = (bulletColor + new Color(1,0,0))/2;
+
+        bullet.gameObject.GetComponent<SpriteRenderer>().color = bulletColor;
+    }
+    private static async void FireFlower_OnHit(BulletScript bullet, Enemy enemy) {
+        await FireFlower_FireOnHit(bullet.damage, enemy);
+    }
+    static async Task<bool> FireFlower_FireOnHit(float damage, Enemy enemy) {
+        enemy.IsOnFire = true;
+        for (int i = 0; i < 1 + PlayerManager.Instance.LuckLevel; i++){
+            await Task.Delay(1000);
+            enemy.TakeDamage(damage);
+        }
+        enemy.IsOnFire = false;
+        return true;
     }
 }

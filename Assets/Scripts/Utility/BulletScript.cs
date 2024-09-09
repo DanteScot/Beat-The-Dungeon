@@ -62,9 +62,11 @@ public class BulletScript : MonoBehaviour
     {
         var enemy=other.GetComponent<Enemy>();
         if(enemy!=null){
-            if(lastEnemy!=null && lastEnemy.transform==enemy.transform) return;
+            if(lastEnemy!=null && lastEnemy.Id==enemy.Id) return;
 
             lastEnemy=enemy;
+
+            enemy.TakeDamage(damage);
 
             foreach (string power in powers)
             {

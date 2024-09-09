@@ -30,6 +30,8 @@ public class PlayerManager : MonoBehaviour, Subject
     private startingStats startingStats;
     private List<Observer> observers = new List<Observer>();
     private Transform player;
+    public RoomManager currentRoom;
+    private Transform minions;
 
     #region Stats
 
@@ -75,7 +77,7 @@ public class PlayerManager : MonoBehaviour, Subject
 
     public float MoveSpeedLevelled { get => moveSpeed + moveSpeedLevel; }
     public float MaxHealthLevelled { get => maxHealth + (healthLevel*2); }
-    public float LuckLevelled { get => luck + (luckLevel*2); }
+    public float LuckLevelled { get => luck + luckLevel; }
     public float BaseAttackDamageLevelled { get => baseAttackDamage + (damageLevel*0.5f); }
     public float AttackSpeedLevelled { get => attackSpeed + (attackRangeLevel*1.5f); }
     public float AttackRangeLevelled { get => attackRange + (attackRangeLevel*2); }
@@ -95,6 +97,8 @@ public class PlayerManager : MonoBehaviour, Subject
             // HO DOVUTO INIZIALIZZARE IL SEED PERCHE' NON FUNZIONAVA RANDOM
             // QUANTOMENO NON NELLO START DI Lobby808Controller, DAVA SEMPRE LO STESSO NUMERO
             Random.InitState(System.DateTime.Now.Millisecond);
+
+            minions = transform.Find("Minions");
         }
         else
         {
@@ -115,6 +119,15 @@ public class PlayerManager : MonoBehaviour, Subject
         Notify();
     }
 
+    public void InstantiatePrefab(string prefabPath)
+    {
+        Instantiate(Resources.Load<GameObject>(prefabPath), player.position, Quaternion.identity, minions);
+    }
+
+    public Transform GetMinions()
+    {
+        return minions;
+    }
 
     // TODO: Remove this Update method
     public void Update(){

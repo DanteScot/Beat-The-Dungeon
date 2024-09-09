@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,8 +10,24 @@ public class Enemy : RythmedObject
     [SerializeField] protected float health;
     [SerializeField] protected float damage;
 
+    protected Guid id = Guid.NewGuid();
+    public Guid Id { get => id; }
+
     protected bool canAttack = false;
     protected bool isAttacking = false;
+
+    private Color currentColor;
+    private bool isOnFire = false;
+    public bool IsOnFire {
+        get => isOnFire;
+        set {
+            isOnFire = value;
+            if (isOnFire) currentColor = new Color(1,.7f,.7f);
+            else currentColor = Color.white;
+
+            GetComponent<SpriteRenderer>().color = currentColor;
+        }
+    }
 
     public bool isActive=false;
 
@@ -35,17 +52,16 @@ public class Enemy : RythmedObject
         health-=damage;
         Debug.Log(damage);
 
-        StartCoroutine(Blink());
+        if(health<=0) Die();
 
-        if(health<=0)
-            Die();
+        StartCoroutine(Blink());
     }
 
     IEnumerator Blink(){
         for(int i=0; i<3; i++){
             GetComponent<SpriteRenderer>().color = Color.red;
             yield return new WaitForSeconds(0.1f);
-            GetComponent<SpriteRenderer>().color = Color.white;
+            GetComponent<SpriteRenderer>().color = currentColor;
             yield return new WaitForSeconds(0.1f);
         }
     }

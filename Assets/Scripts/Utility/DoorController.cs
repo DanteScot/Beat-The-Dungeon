@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public enum DoorPosition
@@ -52,7 +53,20 @@ public class DoorController : MonoBehaviour
                 //TODO: Load new scene
                 ManageLobbyDoor();
             } else {
-                other.transform.position = linkedDoor.GetSpawnPoint();
+                Vector3 spawnPoint = linkedDoor.GetSpawnPoint();
+
+                other.transform.position = spawnPoint;
+
+                PlayerManager.Instance.GetMinions().position = spawnPoint;
+                foreach(Transform minion in PlayerManager.Instance.GetMinions()){
+                    try{
+                        minion.GetComponent<NavMeshAgent>().enabled = false;
+                        minion.localPosition = Vector3.zero;
+                        minion.GetComponent<NavMeshAgent>().enabled = true;
+                    } catch {
+                        minion.localPosition = Vector3.zero;
+                    }
+                }
             }
         }
     }

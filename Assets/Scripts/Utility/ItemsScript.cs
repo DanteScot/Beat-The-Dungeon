@@ -18,7 +18,7 @@ public class Items : PickUp
     public ItemSelected itemSelected;
 
 
-    private string basePath = "";
+    private string basePath = "Sprites/";
     private string selected;
     // private MethodInfo method;
 
@@ -47,7 +47,7 @@ public class Items : PickUp
     public override void PickUpItem()
     {
         // method.Invoke(this, null);
-        PlayerManager.Instance.GetPlayer().GetComponent<PlayerController>().powers.Add(selected);
+        PlayerManager.Instance.GetPlayer().GetComponent<PlayerController>().AddPower(selected);
     }
 
     private void SetSprite()
