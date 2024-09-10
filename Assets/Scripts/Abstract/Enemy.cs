@@ -16,7 +16,7 @@ public class Enemy : RythmedObject
     protected bool canAttack = false;
     protected bool isAttacking = false;
 
-    private Color currentColor;
+    private Color currentColor = Color.white;
     private bool isOnFire = false;
     public bool IsOnFire {
         get => isOnFire;

@@ -28,4 +28,6 @@ public static class GameEvent{
 
     public const string GAME_PAUSED = "GAME_PAUSED";
     public const string GAME_RESUMED = "GAME_RESUMED";
+
+    public const string ITEM_PICKED = "ITEM_PICKED";
 }

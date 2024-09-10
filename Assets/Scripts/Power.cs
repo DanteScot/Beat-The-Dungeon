@@ -8,12 +8,13 @@ public static class Power
 {
     private static string basePath = "Prefabs/";
     private static int luck;
-    private static Color bulletColor = Color.white;
+    private static Color bulletColor = new Color(0,0,0);
 
     private static Dictionary<string, string> powerDescriptions = new Dictionary<string, string>
     {
-        { "Isaac", "Bullets bounce off walls." },
-        { "Jack", "Bullets bounce off enemies." }
+        { "Isaac", "Justice for Meat Boy" },
+        { "Jack", "Share the sound with your friend!" },
+        { "FireFlower", "make it bun dem!" }
     };
 
 
@@ -68,23 +69,18 @@ public static class Power
 
 
     private static void Jack_Init(BulletScript bullet){
-        bullet.remainingBounces = 2 + luck;
+        bullet.remainingBounces = 1 + luck;
     }
     private static void Jack_OnHit(BulletScript bullet, Enemy enemy) {
-        var enemies = Physics2D.OverlapCircleAll(bullet.transform.position, bullet.range, LayerMask.GetMask("Enemy"));
+        var enemies = PlayerManager.Instance.currentRoom.enemies;
 
-        Enemy closestEnemy = null;
+        Enemy closestEnemy = enemy;
         float closestDistance = float.MaxValue;
 
-        foreach (var foe in enemies) {
-            var tmp = foe.GetComponent<Enemy>();
+        foreach (Collider2D foe in enemies) {
+            Enemy tmp = foe.GetComponent<Enemy>();
 
-            if(tmp.Id == enemy.Id) continue;
-
-            if (closestEnemy == null) {
-                closestEnemy = tmp;
-                continue;
-            }
+            if(tmp.Id == closestEnemy.Id || tmp.Id == enemy.Id) continue;
 
             if (Vector2.Distance(bullet.transform.position, tmp.transform.position) < closestDistance) {
                 closestEnemy = tmp;
@@ -93,7 +89,9 @@ public static class Power
         }
 
         bullet.remainingBounces--;
-        bullet.closestEnemy = closestEnemy;
+
+        if (closestEnemy == enemy) bullet.closestEnemy = null;
+        else bullet.closestEnemy = closestEnemy;
     }
     private static bool Jack_CanDestroy(BulletScript bullet) {
         if (bullet.remainingBounces > 0) return false;
@@ -102,8 +100,8 @@ public static class Power
 
 
     private static void FireFlower_Init(BulletScript bullet) {
-        if (bullet.Equals(Color.white)) bulletColor = new Color(1,0,0);
-        else bulletColor = (bulletColor + new Color(1,0,0))/2;
+        if (bulletColor.Equals(new Color(0,0,0))) bulletColor = new Color(255,0,0);
+        else bulletColor = (bulletColor + new Color(255,0,0))/2;
 
         bullet.gameObject.GetComponent<SpriteRenderer>().color = bulletColor;
     }

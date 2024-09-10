@@ -48,6 +48,7 @@ public class Items : PickUp
     {
         // method.Invoke(this, null);
         PlayerManager.Instance.GetPlayer().GetComponent<PlayerController>().AddPower(selected);
+        Messenger<string>.Broadcast(GameEvent.ITEM_PICKED, selected);
     }
 
     private void SetSprite()
