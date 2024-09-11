@@ -11,6 +11,8 @@ public enum ItemSelected{
     Isaac,
     Jack,
     FireFlower,
+    // TODO: implements
+    Amplifier
 }
 
 public class Items : PickUp

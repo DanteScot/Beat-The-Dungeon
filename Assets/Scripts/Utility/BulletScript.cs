@@ -60,6 +60,8 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Wall")) Destroy(gameObject);     
+
         var enemy=other.GetComponent<Enemy>();
         if(enemy!=null){
             if(lastEnemy!=null && lastEnemy.Id==enemy.Id) return;

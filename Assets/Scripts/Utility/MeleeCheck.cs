@@ -9,7 +9,7 @@ public class MeleeCheck : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other){
         if(other.CompareTag("Enemy")){
             other.GetComponent<Enemy>().TakeDamage(damage);
-            Debug.Log("melee");
+            // Debug.Log("melee");
         }
     }
 }

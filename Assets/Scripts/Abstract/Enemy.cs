@@ -50,7 +50,7 @@ public class Enemy : RythmedObject
     
     public void TakeDamage(float damage){
         health-=damage;
-        Debug.Log(damage);
+        // Debug.Log(damage);
 
         if(health<=0) Die();
 
@@ -67,6 +67,7 @@ public class Enemy : RythmedObject
     }
 
     public void Die(){
+        StopAllCoroutines();
         Destroy(gameObject);
     }
 
