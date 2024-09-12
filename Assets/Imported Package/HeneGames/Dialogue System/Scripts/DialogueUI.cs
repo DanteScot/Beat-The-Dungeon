@@ -150,12 +150,12 @@ namespace HeneGames.DialogueSystem
 
         public void ClearText()
         {
-            dialogueWindow.SetActive(false);
+            if (dialogueWindow != null) dialogueWindow.SetActive(false);
         }
 
         public void ShowInteractionUI(bool _value)
         {
-            interactionUI.SetActive(_value);
+            if (interactionUI != null) interactionUI.SetActive(_value);
         }
 
         public bool IsProcessingDialogue()

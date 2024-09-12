@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// NON UTILIZZATO, LO TENGO PER RICORDARMI DELLA POSSIBILITA' DI UTILIZZARE IL GRID IN MODO DINAMICO
 public class TestScript : MonoBehaviour
 {
     Grid grid;

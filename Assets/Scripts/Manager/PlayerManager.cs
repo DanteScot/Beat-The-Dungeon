@@ -107,7 +107,7 @@ public class PlayerManager : MonoBehaviour, Subject
         }
     }
 
-    public void EndGame()
+    public void EndGame(int gainedGears)
     {
         moveSpeed = startingStats.moveSpeed;
         maxHealth = startingStats.maxHealth;
@@ -115,8 +115,13 @@ public class PlayerManager : MonoBehaviour, Subject
         baseAttackDamage = startingStats.baseAttackDamage;
         attackSpeed = startingStats.attackSpeed;
         attackRange = startingStats.attackRange;
+        currentHealth = MaxHealthLevelled;
+
+        gears += gainedGears;
 
         Notify();
+
+        SaveSystem.SaveGame(new GameData(this));
     }
 
     public void InstantiatePrefab(string prefabPath)
@@ -158,24 +163,11 @@ public class PlayerManager : MonoBehaviour, Subject
         damageLevel = data.baseAttackDamage;
         attackSpeedLevel = data.attackSpeed;
         attackRangeLevel = data.attackRange;
+        currentHealth = MaxHealthLevelled;
+
         gears = data.gears;
 
         Notify();
-    }
-
-    public void TakeDamage(float damage)
-    {
-        CurrentHealth -= damage;
-        if (CurrentHealth <= 0)
-        {
-            player.GetComponent<PlayerController>().StartCoroutine("Die");
-        }
-        Debug.Log(CurrentHealth);
-    }
-
-    public void Die()
-    {
-        Destroy(gameObject);
     }
 
     public void SetPlayer(Transform player)

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Classe astratta per gli oggetti che possono essere raccolti dal giocatore
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-
 public abstract class PickUp : PulseToBeat
 {
     public new void Start()
@@ -18,6 +18,7 @@ public abstract class PickUp : PulseToBeat
         GetComponent<BoxCollider2D>().size = new Vector2(0.5f, 0.5f);
     }
 
+    // Se il giocatore entra in collisione con l'oggetto, lo raccoglie
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -28,5 +29,6 @@ public abstract class PickUp : PulseToBeat
         }
     }
 
+    // Metodo che verrà chiamato quando il giocatore raccoglie l'oggetto
     public abstract void PickUpItem();
 }

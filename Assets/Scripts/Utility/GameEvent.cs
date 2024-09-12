@@ -23,11 +23,13 @@ public static class GameEvent{
         }
     }
 
-    public const string PLAYER_MAXHEALTH = "PLAYER_MAXHEALTH";
-    public const string PLAYER_CURRENTHEALTH = "PLAYER_CURRENTHEALTH";
+    public const string PLAYER_HIT = "PLAYER_HIT";
+    public const string ENEMY_HIT = "ENEMY_HIT";
+    public const string ITEM_PICKED = "ITEM_PICKED";
+    public const string GEAR_PICKED = "GEAR_PICKED";
+    public const string BULLET_SHOOT = "BULLET_SHOOT";
 
     public const string GAME_PAUSED = "GAME_PAUSED";
     public const string GAME_RESUMED = "GAME_RESUMED";
 
-    public const string ITEM_PICKED = "ITEM_PICKED";
 }

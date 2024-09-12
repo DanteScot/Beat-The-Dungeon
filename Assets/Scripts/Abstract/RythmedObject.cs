@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Classe astratta per gli oggetti che si attivano a ritmo di musica
 
+// Enum per settare l'intervallo di tempo tra un beat e l'altro
+// Usato per far si che l'oggetto si attivi ogni 1/4, 1/2 o 1 beat
 public enum intervalIndex{
     EveryQuarterBeat,
     EveryHalfBeat,
     EveryBeat
 }
+
+// Enum per settare su quale beat l'oggetto deve attivarsi
+// Usato per far si che oggetti con lo stesso intervallo si attivino su beat diversi
 public enum beatIndex{
     FirstBeat,
     SecondBeat,
@@ -20,6 +26,7 @@ public abstract class RythmedObject : MonoBehaviour
     [SerializeField] protected beatIndex waitBeat;
     protected int beatToWait;
 
+    // Aumenta eventualmente il tempo di attesa all'inizio
     public void Awake()
     {
         ResetCounter();
@@ -40,10 +47,13 @@ public abstract class RythmedObject : MonoBehaviour
                 break;
         }
 
+        // Aggiunge il metodo OnBeat alla lista di metodi da chiamare ad ogni beat
         BeatManager.Instance.GetInterval().AddListener(OnBeat);
-        // BeatManager.Instance.GetInterval(0).AddListener(OnBeat);
+
+        // BeatManager.Instance.GetInterval(0).AddListener(OnBeat); // versione originale che però lasvciava meno libertà di utilizzo
     }
 
+    // Setta il tempo di attesa tra un beat e l'altro
     public void ResetCounter()
     {
         switch(index){
@@ -59,6 +69,8 @@ public abstract class RythmedObject : MonoBehaviour
         }
     }
 
+    // Metodo che verrà chiamato ad ogni beat
+    // Si assicura che il metodo Trigger venga chiamato solo quando il tempo di attesa è terminato
     protected void OnBeat()
     {
         if(beatToWait>0)
@@ -72,6 +84,7 @@ public abstract class RythmedObject : MonoBehaviour
         ResetCounter();
     }
 
+    // Metodo che verrà chiamato quando l'oggetto deve attivarsi
     public abstract void Trigger();
 
     public void OnDestroy()

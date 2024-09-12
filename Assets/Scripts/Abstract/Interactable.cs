@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+// Classe astratta per gli oggetti interagibili (con interagibile si intende un oggetto con cui il giocatore può interagire premendo E)
 [RequireComponent(typeof(CircleCollider2D))]
 public class Interactable : MonoBehaviour
 {
-    // public bool isInteractable = true;
+    // Messaggio che verrà mostrato al giocatore quando è vicino all'oggetto
     [SerializeField] private string interactMessage  = "interact";
     
     private GameObject interactMessageGameobject;
@@ -19,22 +20,24 @@ public class Interactable : MonoBehaviour
         if(enabled){
             interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
             interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
-            // interactMessageGameobject.SetActive(false);
         }
     }
-
+    // Start e OnEnable fanno la stessa cosa, per essere sicuri che venga chiamato in tutti i casi possibili
     void OnEnable(){
-        interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
-        interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
-        // interactMessageGameobject.SetActive(false);
+        try{
+            interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
+            interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
+        } catch (System.Exception){}
     }
 
+    // Mostra il messaggio di interazione
     protected void ShowInteractMessage(){
         interactMessageText.text=interactMessage;
         isPlayerInRange = true;
         interactMessageGameobject.SetActive(true);
     }
 
+    // Nasconde il messaggio di interazione
     protected void HideInteractMessage(){
         interactMessageGameobject.SetActive(false);
         isPlayerInRange = false;
@@ -56,6 +59,8 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    // Si assicura che l'interazione avvenga solo se il giocatore è vicino all'oggetto e preme E
+    // Per evitare che l'interazione venga chiamata più volte viene usata la variabile isInteracting
     void Update()
     {
         if(isPlayerInRange && Input.GetKeyDown(KeyCode.E) && enabled  && !isInteracting)
@@ -64,6 +69,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    // Metodo che verrà implementato nelle classi figlie per definire il comportamento dell'oggetto interagibile
     public virtual void Interact(){
         Debug.Log("Interacting with "+gameObject.name);
     }

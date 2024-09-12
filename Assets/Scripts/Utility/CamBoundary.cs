@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// Questo script serve per adattare il collider del boundary della camera al collider del tilemap
+// In questo modo la camera non si sposterà mai fuori dalla mappa
 public class CamBoundary : MonoBehaviour
 {
     private TilemapCollider2D tilemapCollider;
@@ -13,6 +15,7 @@ public class CamBoundary : MonoBehaviour
         adapt_collider();
     }
 
+    // Prende la dimensione del collider del tilemap e setta i punti del collider
     void adapt_collider(){
         var x = tilemapCollider.bounds.size.x / 2;
         var y = tilemapCollider.bounds.size.y / 2;

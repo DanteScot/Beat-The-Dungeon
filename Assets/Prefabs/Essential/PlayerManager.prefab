@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05384f7fe7de9ab478fc3ec6b12a9c13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRoom: {fileID: 0}
   moveSpeed: 4
   maxHealth: 4
   currentHealth: 4
