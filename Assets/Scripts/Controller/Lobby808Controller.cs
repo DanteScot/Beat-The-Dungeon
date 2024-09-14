@@ -37,6 +37,7 @@ public class Lobby808Controller : MonoBehaviour
     private Vector3 targetPosition;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private CircleCollider2D circleCollider;
 
     private bool canMove = false;
     private int hasTalked;
@@ -57,6 +58,9 @@ public class Lobby808Controller : MonoBehaviour
     {
         if(Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        circleCollider = GetComponent<CircleCollider2D>();
+        circleCollider.enabled = false;
 
         animator = GetComponent<Animator>();
         
@@ -79,6 +83,7 @@ public class Lobby808Controller : MonoBehaviour
         transform.localScale = new Vector3(-transform.localScale.x,transform.localScale.y,1);
         transform.position = targetPosition;
         spriteRenderer.color = new Color(255,255,255,1);
+        circleCollider.enabled = true;
     }
 
     // Se è la prima volta setta le frasi di default, altrimenti setta frasi randomiche
@@ -106,6 +111,7 @@ public class Lobby808Controller : MonoBehaviour
             virtualCamera.Follow = PlayerManager.Instance.GetPlayer();
             canMove = false;
             GameEvent.canMove = true;
+            circleCollider.enabled = true;
         }
     }
 

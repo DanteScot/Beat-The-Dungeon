@@ -70,6 +70,7 @@ public class MenuController : MonoBehaviour
 
     public void Start()
     {
+        BeatManager.Instance.audioSource.Stop();
         InitializeGraphicSettings();
         InitializeCredits();
         SetSceneTime();

@@ -69,7 +69,6 @@ public class JerryController : Enemy
         healthBar.gameObject.SetActive(false);
         StartCoroutine(JerrysLogic());
         StartCoroutine(ScondPhase());
-        StartCoroutine(PlayerDies());
     }
 
     // Aspetta che la vita di Jerry sia minore della metà per passare alla seconda fase
@@ -285,15 +284,6 @@ public class JerryController : Enemy
         impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Rumble;
         GameEvent.canMove = true;
         base.Die();
-    }
-
-    // Coroutine che gestisce la morte del player, si assicura che la canzone torni quella originale
-    IEnumerator PlayerDies(){
-        yield return new WaitUntil(() => PlayerManager.Instance.CurrentHealth <= 0);
-        BeatManager.Instance.audioSource.Stop();
-        BeatManager.Instance.audioSource.clip = oldSong;
-        BeatManager.Instance.SetBPM(oldBPM);
-        BeatManager.Instance.audioSource.Play();
     }
 
     // Override della funzione TakeDamage per aggiornare la barra della vita

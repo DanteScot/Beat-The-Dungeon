@@ -8,6 +8,9 @@ public class LobbyManager : MonoBehaviour
 
     public CanvasGroup ui;
 
+    [SerializeField] private AudioClip lobbyMusic;
+    [SerializeField] private int bpm; 
+
     private bool isFirstTime;
 
     // Elementi da distruggere se non è la prima volta che si gioca
@@ -46,6 +49,11 @@ public class LobbyManager : MonoBehaviour
 
     // Imposta la lobby per evitare tutte le cose che avverrebbero al primo avvio del gioco
     void NotFirstTimeLobby(){
+        BeatManager.Instance.audioSource.Stop();
+        BeatManager.Instance.SetBPM(bpm);
+        BeatManager.Instance.audioSource.clip = lobbyMusic;
+        BeatManager.Instance.audioSource.Play();
+
         foreach (var item in itemToDestroy)
         {
             Destroy(item);
