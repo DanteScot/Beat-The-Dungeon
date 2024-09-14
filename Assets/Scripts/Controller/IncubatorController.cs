@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class IncubatorController : Interactable
 {
@@ -20,30 +17,22 @@ public class IncubatorController : Interactable
         StartCoroutine(InteractCoroutine());
     }
 
+    // Prende il nome dell'utente che sta giocando
     void Awake()
     {
-        // exract real playerName of the user
         string path = Application.persistentDataPath;
         string[] pathParts = path.Split('/');
         playerName = pathParts[2];
     }
-
-    // public void OnEnable()
-    // {
-    //     incubatorLight.intensity = 0;
-    //     incubatorLight.pointLightOuterRadius = 2;
-    //     incubatorLight.color = Color.blue;
-    //     incubatorLight.enabled = true;
-    //     transform.Find("Global").GetComponent<Light2D>().enabled = true;
-    // }
 
     IEnumerator InteractCoroutine()
     {
         GameEvent.canMove = false;
         incubatorUI.SetActive(true);
 
-        StartCoroutine(AnalysisText());
+        Coroutine tmp = StartCoroutine(AnalysisText());
 
+        // Semplice transizione
         float t = 0;
         while (t < 1)
         {
@@ -53,9 +42,10 @@ public class IncubatorController : Interactable
         }
 
         yield return new WaitUntil(()=>Input.GetKeyDown(KeyCode.Escape));
+        // Nell'eventualità che stia ancora analizzando
+        StopCoroutine(tmp);
 
-        StopCoroutine(AnalysisText());
-
+        // Semplice transizione
         t = 0;
         while (t < 1)
         {
@@ -69,6 +59,7 @@ public class IncubatorController : Interactable
         yield return null;
     }
 
+    // Gestisce il testo in basso quando apri l'incubatrice
     IEnumerator AnalysisText()
     {
         string[] analysis = new string[]

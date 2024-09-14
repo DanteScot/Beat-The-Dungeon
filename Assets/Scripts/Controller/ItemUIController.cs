@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+// Classe che gestisce la UI degli oggetti raccolti
 public class ItemUIController : MonoBehaviour
 {
     private CanvasGroup canvasGroup;
@@ -12,6 +12,7 @@ public class ItemUIController : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
+    // Quando un oggetto viene raccolto, mostra la UI dell'oggetto
     private void OnItemPicked(string name)
     {
         StopCoroutine(ShowItemUI());
@@ -27,6 +28,7 @@ public class ItemUIController : MonoBehaviour
         canvasGroup.alpha = 1;
         yield return new WaitForSeconds(2);
         
+        // Fade out
         while(canvasGroup.alpha > 0)
         {
             canvasGroup.alpha -= Time.deltaTime;

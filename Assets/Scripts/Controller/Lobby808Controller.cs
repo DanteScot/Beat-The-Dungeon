@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using Cinemachine;
 using HeneGames.DialogueSystem;
 using UnityEngine;
-using UnityEngine.AI;
 
+// TODO: RIMUOVERE FRASI INADATTE
+
+// Lista di discorsi
 [System.Serializable]
 public class NPC_CentenceList
 {
     public List<NPC_Centence> sentences = new List<NPC_Centence>();
 }
 
+// Classe che gestisce il comportamento di 808 nella lobby
 public class Lobby808Controller : MonoBehaviour
 {
     public static Lobby808Controller Instance { get; private set; }
@@ -18,11 +21,15 @@ public class Lobby808Controller : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private float speed = 2;
 
-
+    // Primo avvio del gioco
     [Header("First Time Sentences")]
     [SerializeField] private NPC_CentenceList firstTimeSentences = new NPC_CentenceList();
+
+    // Frasi casuali mostrate a partire dal secondo avvio del gioco / dopo aver fatto almeno una partita
     [Header("Random Sentences")]
     [SerializeField] private List<NPC_CentenceList> randomSentences = new List<NPC_CentenceList>();
+
+    // Giusto per ridere, non ripete le frasi le frasi randomiche
     [Header("Can't Repeat Sentences")]
     [SerializeField] private List<NPC_CentenceList> doNotRepeatSentences = new List<NPC_CentenceList>();
 
@@ -34,6 +41,7 @@ public class Lobby808Controller : MonoBehaviour
     private bool canMove = false;
     private int hasTalked;
 
+    // Atuomaticamente settato quando si parla con 808
     private bool isTalking = false;
     public bool IsTalking
     {
@@ -44,7 +52,7 @@ public class Lobby808Controller : MonoBehaviour
         }
     }
 
-
+    // All'inizio è invisibile
     void Awake()
     {
         if(Instance == null) Instance = this;
@@ -59,11 +67,13 @@ public class Lobby808Controller : MonoBehaviour
 
     }
     
+    // Animazione per la prima volta
     public void StartAnimation()
     {
         StartCoroutine(FadeIn());
     }
 
+    // In caso non si voglia l'animazione (dopo il primo avvio)
     public void NoAnimation()
     {
         transform.localScale = new Vector3(-transform.localScale.x,transform.localScale.y,1);
@@ -71,17 +81,19 @@ public class Lobby808Controller : MonoBehaviour
         spriteRenderer.color = new Color(255,255,255,1);
     }
 
+    // Se è la prima volta setta le frasi di default, altrimenti setta frasi randomiche
     void Start()
     {
         hasTalked = 0;
 
-        if(GameEvent.ifFirstTime) SetSentences(firstTimeSentences);
+        if(GameEvent.ifFirstTime) GetComponent<DialogueManager>().sentences = firstTimeSentences.sentences;
         else {
-            SetSentences(randomSentences[Random.Range(0, randomSentences.Count)]);
+            GetComponent<DialogueManager>().sentences = randomSentences[Random.Range(0, randomSentences.Count)].sentences;
             StartCoroutine(Paganini());
         }
     }
 
+    // Si dirige verso la posizione target
     void Update()
     {
         if(!canMove) return;
@@ -97,6 +109,7 @@ public class Lobby808Controller : MonoBehaviour
         }
     }
 
+    // Animazione di fade in
     IEnumerator FadeIn()
     {
         virtualCamera.Follow = transform;
@@ -111,23 +124,29 @@ public class Lobby808Controller : MonoBehaviour
     // Non ripete :)
     IEnumerator Paganini()
     {
+        // Aspetta che abbia finito di parlare la prima volta
         yield return new WaitUntil(() => hasTalked == 1 && !isTalking);
         for(int i=0; i<doNotRepeatSentences.Count; i++)
         {
+            // Dice una frase randomica le volte dopo
             yield return new WaitUntil(() => hasTalked == i+1);
-            SetSentences(doNotRepeatSentences[Random.Range(0, doNotRepeatSentences.Count)]);
+            GetComponent<DialogueManager>().sentences = doNotRepeatSentences[Random.Range(0, doNotRepeatSentences.Count)].sentences;
+            // SetSentences(doNotRepeatSentences[Random.Range(0, doNotRepeatSentences.Count)]);
         }
     }
 
+    // Chiamato dall'evento di fine dialogo
     public void UpdateHasTalked()
     {
         hasTalked++;
     }
 
-    void SetSentences(NPC_CentenceList list)
-    {
-        list.sentences[list.sentences.Count-1].sentenceEvent.AddListener(() => UpdateHasTalked());
+    // TODO: RIMUOVERE
+    // Setta le frasi da dire automatizzando l'evento di fine dialogo
+    // void SetSentences(NPC_CentenceList list)
+    // {
+    //     list.sentences[list.sentences.Count-1].sentenceEvent.AddListener(() => UpdateHasTalked());
 
-        GetComponent<DialogueManager>().sentences = list.sentences;
-    }
+    //     GetComponent<DialogueManager>().sentences = list.sentences;
+    // }
 }

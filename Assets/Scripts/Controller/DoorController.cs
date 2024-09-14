@@ -1,25 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 
-public enum DoorPosition
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-}
-
-enum LobbyDoor{
+enum DoorType{
     NORMAL,
     NEXT_LEVEL,
     TUTORIAL,
 }
 
-
+// Classe che gestisce il comportamento delle porte
 [RequireComponent(typeof(BoxCollider2D))]
 public class DoorController : MonoBehaviour
 {
@@ -29,7 +18,8 @@ public class DoorController : MonoBehaviour
 
     private bool isOpen = true;
 
-    [SerializeField] private LobbyDoor lobbyDoor;
+    // Gestisce diversamente il comportamento della porta se si trova in lobby
+    [SerializeField] private DoorType doorType;
 
     public void OpenDoor(){
         GetComponent<SpriteRenderer>().sprite = openDoor;
@@ -41,6 +31,7 @@ public class DoorController : MonoBehaviour
         isOpen = false;
     }
 
+    // Ritorna il punto in cui il player deve spawnare quando entra in una porta
     public Vector3 GetSpawnPoint(){
         return transform.position+(transform.up*-2);
     }
@@ -49,12 +40,14 @@ public class DoorController : MonoBehaviour
     {
         if(other.CompareTag("Player") && isOpen)
         {
-            switch (lobbyDoor){
-                case LobbyDoor.NORMAL:
+            switch (doorType){
+                case DoorType.NORMAL:
                     Vector3 spawnPoint = linkedDoor.GetSpawnPoint();
 
                     other.transform.position = spawnPoint;
 
+                    // Se il player ha dei minion, li fa spawnare al suo fianco
+                    // Alcuni minion potrebbero non avere il NavMeshAgent, quindi li sposta manualmente
                     PlayerManager.Instance.GetMinions().position = spawnPoint;
                     foreach(Transform minion in PlayerManager.Instance.GetMinions()){
                         try{
@@ -66,10 +59,10 @@ public class DoorController : MonoBehaviour
                         }
                     }
                     break;
-                case LobbyDoor.NEXT_LEVEL:
+                case DoorType.NEXT_LEVEL:
                     GameManager.Instance.LoadNextLevel();
                     break;
-                case LobbyDoor.TUTORIAL:
+                case DoorType.TUTORIAL:
                     GameManager.Instance.LoadTutorial();
                     break;
                 default:

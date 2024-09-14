@@ -1,28 +1,26 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// Classe che gestisce il comportamento del range attack del player
 public class BulletController : MonoBehaviour
 {
+    // lista di poteri che il proiettile possiede
     private List<string> powers;
-    // public bool isPlayerShooting;
-    
 
     public float speed;
     public float damage;
     public float range;
 
-
+    // variabili utilizzate da eventuali powerups
     #region PowerUps Variables
 
     public int remainingBounces = 1;
     public Enemy closestEnemy = null;
     public Enemy lastEnemy = null;
 
-
     #endregion
 
+    // Imposta i parametri del proiettile ed emette l'evento di sparo
     public void SetBullet(float speed, float damage, float range, Vector2 velocity, List<string> powers)
     {
         this.speed = speed;
@@ -36,6 +34,7 @@ public class BulletController : MonoBehaviour
         Messenger.Broadcast(GameEvent.BULLET_SHOOT);
     }
 
+    // Se closestenemy è null proseguo dritto, altrimenti mi muovo verso closestenemy (ruotando il proiettile)
     void FixedUpdate()
     {
         if (closestEnemy != null)
@@ -52,6 +51,7 @@ public class BulletController : MonoBehaviour
             transform.Translate(Vector2.up * speed * Time.deltaTime);
         }
 
+        // Se il proiettile ha raggiunto la sua distanza massima, lo distruggo
         range -= speed * Time.deltaTime;
         if (range <= 0)
         {
@@ -59,23 +59,30 @@ public class BulletController : MonoBehaviour
         }
     }
 
+    // Logica di collisione del proiettile
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Wall")) Destroy(gameObject);     
 
         var enemy=other.GetComponent<Enemy>();
         if(enemy!=null){
+            // Se l'enemy è lo stesso dell'ultima collisione, non lo colpisco
             if(lastEnemy!=null && lastEnemy.Id==enemy.Id) return;
 
             lastEnemy=enemy;
 
             enemy.TakeDamage(damage);
 
+            // Applico gli effetti dei poteri
             foreach (string power in powers)
             {
                 Power.OnHit(power, this, enemy);
             }
 
+            // Si assicura che tutte le condizioni dei poteri siano soddisfatte
+            // Il proiettile viene distrutto solo se tutti i poteri hanno soddisfatto le condizioni
+            // Se anche solo uno non le soddisfa, il proiettile continua a vivere
+            // L'unica eccezione è quando il proiettile eccede il range massimo
             bool destroy = true;
             foreach (string power in powers)
             {
@@ -90,6 +97,7 @@ public class BulletController : MonoBehaviour
         }
     }
 
+    // Inizializza ogni potere presente nella lista
     void InitList()
     {
         foreach (string power in powers)

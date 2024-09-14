@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Classe responsabile della gestione della pausa del gioco
 public class PauseController : MonoBehaviour
 {
     private CanvasGroup canvasGroup;
@@ -18,7 +17,7 @@ public class PauseController : MonoBehaviour
         Messenger.RemoveListener(GameEvent.GAME_RESUMED, Resume);
     }
 
-    
+    // Attiva il menu di pausa
     void Pause(){
         Time.timeScale = 0;
 
@@ -27,6 +26,7 @@ public class PauseController : MonoBehaviour
         canvasGroup.interactable = true;
     }
 
+    // Disattiva il menu di pausa
     void Resume(){
         Time.timeScale = 1;
 
@@ -35,16 +35,19 @@ public class PauseController : MonoBehaviour
         canvasGroup.interactable = false;
     }
 
+    // Riprende il gioco
     public void OnResumeButton(){
         GameEvent.IsPaused = false;
     }
 
+    // Torna alla lobby
     public void OnLobbyButton(){
         PlayerManager.Instance.EndGame();
         GameEvent.IsPaused = false;
         GameManager.Instance.LoadLobby();
     }
 
+    // Chiude il gioco
     public void OnQuitButton(){
         Application.Quit();
     }

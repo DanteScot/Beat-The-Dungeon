@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Classe che si occupa della visualizzazione del numero di ingranaggi raccolti
 public class GearCountController : MonoBehaviour, Observer
 {
     private int gearCount;

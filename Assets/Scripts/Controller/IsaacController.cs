@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+// Classe che gestisce il movimento e l'attacco di Isaac (Minion)
 public class IsaacController : MonoBehaviour, Observer
 {
     private NavMeshAgent agent;
@@ -28,6 +28,8 @@ public class IsaacController : MonoBehaviour, Observer
         StartCoroutine(FakeUpdate());
     }
 
+    // Ogni 0.5 secondi si muove verso il nemico più vicino
+    // Se non ci sono nemici si ferma
     IEnumerator FakeUpdate()
     {
         while (true)

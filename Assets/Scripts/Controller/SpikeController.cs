@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Classe per il controllo delle trappole spinose
@@ -34,10 +32,10 @@ public class SpikeController : RythmedObject
     // La trappola passa da una fase all'altra ogni due beat
     public override void Trigger()
     {
-        if (!canGoNextPhase){
-            canGoNextPhase = true;
-            return;
-        }
+        // if (!canGoNextPhase){
+        //     canGoNextPhase = true;
+        //     return;
+        // }
 
         phase = (phase + 1) % 3;
 

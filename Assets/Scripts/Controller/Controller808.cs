@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+// Classe che gestisce il comportamento di 808 al difuori della lobby
 public class Controller808 : MonoBehaviour
 {
     public static Controller808 Instance { get; private set; }
@@ -11,8 +10,7 @@ public class Controller808 : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
 
-    private SpriteRenderer spriteRenderer;
-
+    // Autmoaticamente setta l'animazione di 808 in base a se sta parlando o meno
     private bool isTalking = false;
     public bool IsTalking
     {
@@ -25,6 +23,7 @@ public class Controller808 : MonoBehaviour
 
     [SerializeField] private float speed;
 
+    // Imposta l'istanza di 808 attaccanfola al BeatManager
     void Awake()
     {
         if(Instance == null) Instance = this;
@@ -33,10 +32,9 @@ public class Controller808 : MonoBehaviour
         BeatManager.Instance.GetInterval().AddListener(OnBeat);
 
         animator = GetComponent<Animator>();
-
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    // Permette ad 808 di "brillare" al ritmo della musica
     void OnBeat()
     {
         try{
@@ -53,16 +51,9 @@ public class Controller808 : MonoBehaviour
         agent.updateUpAxis = false;
 
         agent.speed = speed;
-
-        // StartCoroutine(Wait());
     }
 
-    IEnumerator Wait(){
-        spriteRenderer.color = new Color(255,255,255,0);
-        yield return new WaitUntil(()=>!GameEvent.isInLobby);
-        spriteRenderer.color = new Color(255,255,255,1);
-    }
-
+    // Segue il player e si gira verso di lui
     void Update()
     {
         agent.SetDestination(player.position);

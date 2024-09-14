@@ -144,6 +144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  waitBeat: 0
   pulseSize: 1.15
   returnSpeed: 5
   itemSelected: 0
+  gear: {fileID: 4398481534150645789, guid: d04e9fb6d643d854c9ea3f220fae414b, type: 3}

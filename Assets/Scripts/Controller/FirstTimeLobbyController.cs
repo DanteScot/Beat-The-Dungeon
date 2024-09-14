@@ -2,25 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+// Classe che gestisce il comportamento della lobby la prima volta che il player ci entra
 public class FirstTimeLobbyController : Interactable
 {
     [SerializeField] private GameObject lightFather;
     [SerializeField] private GameObject[] lights;
-    // [SerializeField] private GameObject door;
     [SerializeField] private AudioClip powerDownSound;
     [SerializeField] private AudioClip powerUpSound;
-
-    // public void  OnValidate()
-    // {
-    //     if(lightFather!=null)
-    //     {
-    //         lights = new GameObject[lightFather.transform.childCount];
-    //         for (int i = 0; i < lightFather.transform.childCount; i++)
-    //         {
-    //             lights[i] = lightFather.transform.GetChild(i).gameObject;
-    //         }
-    //     }
-    // }
 
     public override void Interact()
     {
@@ -40,36 +28,42 @@ public class FirstTimeLobbyController : Interactable
         SaveSystem.SaveGame(new GameData());
     }
 
+    // Spegne le luci "di emergenza" della lobby e riaccende le luci normali
     IEnumerator TurnOffLights()
     {
         GameEvent.canMove = false;
         int count=3;
         float waitTime = 0.15f;
         yield return new WaitForSeconds(1f);
+
         foreach (var light in lights)
         {
+            // Le prime count luci si spengono più lentamente
             var nextWaitTime = waitTime;
             if(count>0) nextWaitTime = waitTime*count*2;
 
+            // Spegne la luce e fa partire il suono, dopodiché aspetta nextWaitTime secondi
             light.GetComponent<Light2D>().enabled = false;
             light.GetComponent<AudioSource>().Play();
             yield return new WaitForSeconds(nextWaitTime);
 
             count--;
         }
+
+        // Fa la stessa cosa per la luce principale
         yield return new WaitForSeconds(.85f);
         var incubatorLight = transform.parent.GetComponentInChildren<Light2D>();
         incubatorLight.intensity = 0;
-
         transform.parent.GetComponent<AudioSource>().PlayOneShot(powerDownSound);
 
+        // Aspetta 2 secondi e poi riaccende la luce con il nuovo colore ed emette un suono
         incubatorLight.color = Color.white;
         yield return new WaitForSeconds(2f);
 
         transform.parent.GetComponent<AudioSource>().volume = 0.5f;
         transform.parent.GetComponent<AudioSource>().PlayOneShot(powerUpSound);
 
-        // interpolating light intensity
+        // La luce si riaccende gradualmente
         float t = 0;
         while (t < 1)
         {
@@ -81,9 +75,13 @@ public class FirstTimeLobbyController : Interactable
             yield return null;
         }
 
+        // Aspetta 2 secondi e poi fa partire l'animazione di 808 nella lobby
+        // Sarà lui a gestire il resto
         yield return new WaitForSeconds(2f);
         Lobby808Controller.Instance.StartAnimation();
 
+        // Disattiva la luce dell'incubatrice e attiva il controller dell'incubatrice
+        // (Spegnere tutte le luci fa ritornare l'illuminazione al 2D base, ci servono più le luci dinamiche)
         incubatorLight.enabled = false;
         transform.parent.GetComponent<IncubatorController>().enabled = true;
         BeatManager.Instance.gameObject.SetActive(true);
