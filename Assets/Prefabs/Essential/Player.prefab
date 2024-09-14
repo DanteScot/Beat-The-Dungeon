@@ -6887,7 +6887,7 @@ Transform:
   m_GameObject: {fileID: 6446747840804589476}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8531,7 +8531,7 @@ MonoBehaviour:
   - {x: 0.12984335, y: -0.39439964, z: 0}
   m_ShapePathHash: -1854716063
   m_Mesh: {fileID: 0}
-  m_InstanceId: -30038
+  m_InstanceId: -7746
   m_LocalBounds:
     m_Center: {x: 0.011054307, y: -0.20634472, z: 0}
     m_Extent: {x: 0.1261585, y: 0.18805492, z: 0}
@@ -9611,6 +9611,8 @@ GameObject:
   - component: {fileID: 4039956137005505597}
   - component: {fileID: 1571419585768497685}
   - component: {fileID: 2596750328573168802}
+  - component: {fileID: 5820856199272435022}
+  - component: {fileID: 7943219246833296696}
   m_Layer: 0
   m_Name: Cinemachine
   m_TagString: Untagged
@@ -9627,7 +9629,7 @@ Transform:
   m_GameObject: {fileID: 8113908772665243147}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00000029802322, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9688,6 +9690,41 @@ MonoBehaviour:
   m_BoundingShape2D: {fileID: 0}
   m_Damping: 1
   m_MaxWindowSize: -1
+--- !u!114 &5820856199272435022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8113908772665243147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a05de0ac134f4f9d01bef6b9da077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7943219246833296696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8113908772665243147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 1
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &8155591728708174357
 GameObject:
   m_ObjectHideFlags: 0

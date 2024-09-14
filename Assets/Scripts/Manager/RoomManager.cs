@@ -73,6 +73,7 @@ public class RoomManager : MonoBehaviour
                     foreach (var item in hit)
                     {
                         if(item.CompareTag("Enemy")){
+                            if(item.name.Contains("Jerry"))  return;
                             item.GetComponent<Enemy>().TakeDamage(100);
                         }
                     }
@@ -97,31 +98,13 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    // void CheckRoom(){
-    //     bool found = false;
-    //     var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
-    //     foreach (var item in hit)
-    //     {
-    //         if(item.CompareTag("Enemy")){
-    //             found = true;
-    //             break;
-    //         }
-    //     }
-    //     if(!found){
-    //         RoomCleared();
-    //     }
-    // }
     void FindEnemies(){
         enemies = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0, LayerMask.GetMask("Enemy"));
     }
 
     void CheckRoom(){
-        bool found = false;
-
         FindEnemies();
-        if(enemies.Length>0) found = true;
-
-        if(!found) RoomCleared();
+        if(enemies.Length==0) RoomCleared();
     }
 
     void RoomCleared(){
@@ -137,23 +120,26 @@ public class RoomManager : MonoBehaviour
     {
         if(other.CompareTag("Player")){
             FindEnemies();
-            foreach (var enemy in enemies)
-            {
-                // Debug.Log(enemy.name);
-                if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = true;
-            }
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
             PlayerManager.Instance.currentRoom = this;
+
+            if(isLobbyRoom) return;
+
+            foreach (var enemy in enemies)
+            {
+                enemy.GetComponent<Enemy>().isActive = true;
+            }
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
+        if(isLobbyRoom) return;
+        
         if(other.CompareTag("Player")){
-            FindEnemies();
             foreach (var enemy in enemies)
             {
-                if(!isLobbyRoom) enemy.GetComponent<Enemy>().isActive = false;
+                enemy.GetComponent<Enemy>().isActive = false;
             }
         }
     }

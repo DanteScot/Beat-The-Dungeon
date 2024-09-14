@@ -214,6 +214,7 @@ public class PlayerController : RythmedObject, Observer
         PlayerManager.Instance.Detach(this);
         Time.timeScale = 0;
         GameEvent.canMove = true;
+        PlayerManager.Instance.EndGame();
         GameManager.Instance.LoadLobby();
     }
 

@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     private int level = 0; // -1 tutorial, 0 lobby, n level n
 
+    bool playerHit = false, enemyHit = false, itemPicked = false, gearPicked = false, bulletShoot = false;
+
     private void Awake() {
         if(Instance == null){
             Instance = this;
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
 
         if(!(scene.Equals("MainMenu") || scene.Equals("Lobby"))){
-            Instantiate(Resources.Load("Prefabs/808"));
+            Instantiate(Resources.Load("Prefabs/808"), Vector3.zero, Quaternion.identity, PlayerManager.Instance.GetMinions());
         }
 
         while(canvasGroup.alpha > 0){
@@ -102,28 +104,45 @@ public class GameManager : MonoBehaviour
         LoadScene("MainMenu");
     }
 
+    private void FixedUpdate() {
+        playerHit = false;
+        enemyHit = false;
+        itemPicked = false;
+        gearPicked = false;
+        bulletShoot = false;
+    }
 
     void OnPlayerHit(){
+        if(playerHit) return;
+        playerHit = true;
         audioSource.pitch = Random.Range(0.9f, 1.1f);
         audioSource.PlayOneShot(Resources.Load(basePath+"Player Hit") as AudioClip);
     }
 
     void OnEnemyHit(){
+        if(enemyHit) return;
+        enemyHit = true;
         audioSource.pitch = Random.Range(0.9f, 1.1f);
         audioSource.PlayOneShot(Resources.Load(basePath+"Enemy Hit") as AudioClip);
     }
 
     void OnItemPicked(string tmp){
+        if(itemPicked) return;
+        itemPicked = true;
         audioSource.pitch = 1;
         audioSource.PlayOneShot(Resources.Load(basePath+"Powerup Sound") as AudioClip);
     }
 
     void OnGearPicked(){
+        if(gearPicked) return;
+        gearPicked = true;
         audioSource.pitch = 1;
         audioSource.PlayOneShot(Resources.Load(basePath+"Gear Picked") as AudioClip);
     }
 
     void OnBulletShoot(){
+        if(bulletShoot) return;
+        bulletShoot = true;
         audioSource.pitch = Random.Range(0.9f, 1.1f);
         audioSource.PlayOneShot(Resources.Load(basePath+"Bullet "+Random.Range(1, 4)) as AudioClip);
     }

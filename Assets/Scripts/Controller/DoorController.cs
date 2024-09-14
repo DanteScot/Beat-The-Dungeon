@@ -75,29 +75,6 @@ public class DoorController : MonoBehaviour
                 default:
                     break;
             }
-
-
-
-
-            // if(lobbyDoor.Equals(LobbyDoor.NORMAL)){
-            // } else {
-            //     //TODO: Load new scene
-            //     ManageLobbyDoor();
-            // }
         }
     }
-
-    // void ManageLobbyDoor(){
-    //     switch(lobbyDoor){
-    //         case LobbyDoor.NEXT_LEVEL:
-    //             Debug.Log("Start Game");
-    //             GameEvent.isInLobby = false;
-    //             break;
-    //         case LobbyDoor.TUTORIAL:
-    //             Debug.Log("Tutorial");
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
 }

@@ -240,8 +240,7 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
-        // TODO: controllare se esiste un salvataggio e caricare il livello corretto
-        SceneManager.LoadScene("Lobby");
+        GameManager.Instance.LoadLobby();
     }
 
     #endregion

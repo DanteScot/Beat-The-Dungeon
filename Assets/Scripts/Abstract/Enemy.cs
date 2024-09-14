@@ -16,6 +16,7 @@ public class Enemy : RythmedObject
 
     protected bool canAttack = false;
     protected bool isAttacking = false;
+    protected bool isDying = false;
 
     // Semplice sistema per far si che il nemico sia leggermente rosso quando è in stato di "fuoco"
     private Color currentColor = Color.white;
@@ -47,6 +48,7 @@ public class Enemy : RythmedObject
     // Verrà usato dai singoli nemici per settare il tempo di attesa tra un attacco e l'altro
     // Utile per gestire nemici più forti che attaccano meno frequentemente
     protected void SetBeatToWait(int beat){
+        canAttack = false;
         beatToWait = beat;
     }
 
@@ -58,7 +60,9 @@ public class Enemy : RythmedObject
         canAttack = false;
     }
     
-    public void TakeDamage(float damage){
+    public virtual void TakeDamage(float damage){
+        if(isDying) return;
+
         health-=damage;
 
         Messenger.Broadcast(GameEvent.ENEMY_HIT);
@@ -78,7 +82,7 @@ public class Enemy : RythmedObject
         }
     }
 
-    public void Die(){
+    public virtual void Die(){
         StopAllCoroutines();
         Destroy(gameObject);
     }

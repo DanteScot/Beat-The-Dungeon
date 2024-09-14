@@ -40,9 +40,7 @@ public class PauseController : MonoBehaviour
     }
 
     public void OnLobbyButton(){
-        // TODO: remove following line
-        PlayerManager.Instance.EndGame(10);
-
+        PlayerManager.Instance.EndGame();
         GameEvent.IsPaused = false;
         GameManager.Instance.LoadLobby();
     }

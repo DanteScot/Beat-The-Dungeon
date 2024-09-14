@@ -102,13 +102,17 @@ public class PlayerManager : MonoBehaviour, Subject
         }
         else
         {
-            Debug.LogWarning("PlayerManager already exists, destroying new one");
             Destroy(gameObject);
         }
     }
 
-    public void EndGame(int gainedGears)
+    public void EndGame()
     {
+        foreach (Transform minion in minions)
+        {
+            Destroy(minion.gameObject);
+        }
+        
         moveSpeed = startingStats.moveSpeed;
         maxHealth = startingStats.maxHealth;
         luck = startingStats.luck;
@@ -116,8 +120,6 @@ public class PlayerManager : MonoBehaviour, Subject
         attackSpeed = startingStats.attackSpeed;
         attackRange = startingStats.attackRange;
         currentHealth = MaxHealthLevelled;
-
-        gears += gainedGears;
 
         Notify();
 

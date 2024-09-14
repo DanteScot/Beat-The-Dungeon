@@ -7,7 +7,7 @@ public class BeatManager : MonoBehaviour
     public static BeatManager Instance { get; private set; }
 
     [SerializeField] private float bpm;
-    [SerializeField] private AudioSource audioSource;
+    public AudioSource audioSource { get; private set; }
 
     [Header("Debug")]
     [SerializeField] private bool debug=true;
@@ -26,6 +26,8 @@ public class BeatManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+            audioSource = GetComponent<AudioSource>();
+
             // intervals = new Interval[3];
             // intervals[0] = new Interval(1);
             // intervals[1] = new Interval(0.5f);
@@ -43,7 +45,6 @@ public class BeatManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("BeatManager already exists, destroying new one");
             Destroy(gameObject);
         }
     }
@@ -88,6 +89,10 @@ public class BeatManager : MonoBehaviour
     public void SetBPM(float bpm)
     {
         this.bpm = bpm;
+    }
+    public float GetBPM()
+    {
+        return bpm;
     }
 }
 
