@@ -6,6 +6,7 @@ enum DoorType{
     NORMAL,
     NEXT_LEVEL,
     TUTORIAL,
+    LOBBY
 }
 
 // Classe che gestisce il comportamento delle porte
@@ -16,7 +17,7 @@ public class DoorController : MonoBehaviour
     [SerializeField] private Sprite openDoor;
     [SerializeField] private DoorController linkedDoor;
 
-    private bool isOpen = true;
+    [SerializeField] private bool isOpen = true;
 
     // Gestisce diversamente il comportamento della porta se si trova in lobby
     [SerializeField] private DoorType doorType;
@@ -64,6 +65,9 @@ public class DoorController : MonoBehaviour
                     break;
                 case DoorType.TUTORIAL:
                     GameManager.Instance.LoadTutorial();
+                    break;
+                case DoorType.LOBBY:
+                    GameManager.Instance.LoadLobby();
                     break;
                 default:
                     break;

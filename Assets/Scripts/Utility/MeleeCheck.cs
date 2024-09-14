@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Semplice classe che controlla se hai colpito un nemico con un'arma da mischia
 public class MeleeCheck : MonoBehaviour
 {
     public float damage;
@@ -9,7 +8,6 @@ public class MeleeCheck : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other){
         if(other.CompareTag("Enemy")){
             other.GetComponent<Enemy>().TakeDamage(damage);
-            // Debug.Log("melee");
         }
     }
 }

@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Il GameManager è il manager che si occupa di gestire il gioco in generale, come il cambio di scena, la gestione degli eventi e la gestione degli audio monouso
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -13,8 +12,9 @@ public class GameManager : MonoBehaviour
 
     private string basePath = "Sounds/";
 
-    private int level = 0; // -1 tutorial, 0 lobby, n level n
+    private int level = 0; // -2 menu, -1 tutorial, 0 lobby, n level n
 
+    // Variabili per evitare che un suono venga riprodotto più volte nello stesso frame
     bool playerHit = false, enemyHit = false, itemPicked = false, gearPicked = false, bulletShoot = false;
 
     private void Awake() {
@@ -46,11 +46,19 @@ public class GameManager : MonoBehaviour
     private void Start() {
         canvasGroup.alpha = 0;
         canvasGroup.gameObject.SetActive(false);
+        if(!(SceneManager.GetActiveScene().name.Equals("MainMenu") || SceneManager.GetActiveScene().name.Equals("Lobby"))){
+            Instantiate(Resources.Load("Prefabs/808"), Vector3.zero, Quaternion.identity, PlayerManager.Instance.GetMinions());
+        }
     }
 
+    // Funzione generica per caricare una scena, con un effetto di fade in e fade out
     public async void LoadScene(string scene){
         GameEvent.canMove = false;
         Time.timeScale = 0;
+
+        try{
+            Destroy(Controller808.Instance.gameObject);
+        } catch (System.Exception){}
 
         canvasGroup.gameObject.SetActive(true);
         
@@ -61,10 +69,12 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene(scene);
 
+        // Aspetta che la scena sia stata caricata
         while(!SceneManager.GetActiveScene().name.Equals(scene)){
             await Task.Delay(100);
         }
 
+        // Se la scena non è il menu principale o la lobby, crea un 808
         if(!(scene.Equals("MainMenu") || scene.Equals("Lobby"))){
             Instantiate(Resources.Load("Prefabs/808"), Vector3.zero, Quaternion.identity, PlayerManager.Instance.GetMinions());
         }
@@ -104,6 +114,7 @@ public class GameManager : MonoBehaviour
         LoadScene("MainMenu");
     }
 
+    // Resetta le variabili per evitare che un suono venga riprodotto più volte nello stesso frame
     private void FixedUpdate() {
         playerHit = false;
         enemyHit = false;
@@ -111,6 +122,11 @@ public class GameManager : MonoBehaviour
         gearPicked = false;
         bulletShoot = false;
     }
+
+
+    // Funzioni per gestire gli eventi e riprodurre i suoni corrispondenti
+    // Alcuni suoni hanno un pitch leggermente diverso per evitare che suonino troppo ripetitivi
+    // Il bullet oltre al pitch ha anche 4 suoni diversi per evitare che suoni troppo ripetitivo
 
     void OnPlayerHit(){
         if(playerHit) return;

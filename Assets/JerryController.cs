@@ -1,11 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-
+// Classe che si occupa di gestire il boss Jerry e che mi ha divertito davvero tanto scriverla come vedrete dai commenti
+// Questo boss ha TUTTE le animazioni/azioni sincronizzate con la musica
+// Infatti non possiede un animator, ma si basa sulle coroutine e sulle immagini per fare tutto
 public class JerryController : Enemy
 {
     [Header("Jerry Sprites")]
@@ -24,6 +25,7 @@ public class JerryController : Enemy
     [SerializeField] private AudioClip deathSound;
 
     [Header("Other Things")]
+    // Posizioni in cui Jerry può muoversi, rende il tutto più pulito
     [SerializeField] private Transform[] possiblePositions;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Slider healthBar;
@@ -67,15 +69,19 @@ public class JerryController : Enemy
         healthBar.gameObject.SetActive(false);
         StartCoroutine(JerrysLogic());
         StartCoroutine(ScondPhase());
+        StartCoroutine(PlayerDies());
     }
 
+    // Aspetta che la vita di Jerry sia minore della metà per passare alla seconda fase
     private IEnumerator ScondPhase() {
         yield return new WaitUntil(() => health <= halfLife);
         isMoving = true;
         PrepareSecondPhase();
     }
 
+    // Ferma tutto e fa partire il dialogo
     private void PrepareSecondPhase() {
+        GameEvent.canMove = false;
         StopAllCoroutines();
         
         spriteRenderer.sprite = idleSprites[0];
@@ -83,11 +89,13 @@ public class JerryController : Enemy
         circleCollider.enabled = true;
     }
 
+    // Quando il dialogo finisce, fa partire la seconda fase
     public void OnDialogueEnd() {
         circleCollider.enabled = false;
         StartCoroutine(StartSecondPhase());
     }
 
+    // Fa partire la seconda fase, raddoppiando il danno, aumentando le dimensioni di jerry e cambiando la canzone
     private IEnumerator StartSecondPhase() {
         StartCoroutine(ChangeSong(secondPhaseSong));
         float time = 0;
@@ -106,15 +114,18 @@ public class JerryController : Enemy
         StartCoroutine(JerrysLogic());
     }
 
+    // Per evitare bug o sfruttare momenti di transizione, quando cambio canzone disattivo il movimento a tutti
     private IEnumerator ChangeSong(AudioClip clip) {
         isMoving = true;
         GameEvent.canMove = false;
+        // Fade out
         while (BeatManager.Instance.audioSource.volume > 0) {
             BeatManager.Instance.audioSource.volume -= .01f;
             yield return new WaitForSeconds(.025f);
         }
         BeatManager.Instance.audioSource.volume = 0;
 
+        // Cambio canzone e relativo BPM
         BeatManager.Instance.audioSource.Stop();
         BeatManager.Instance.audioSource.clip = clip;
 
@@ -127,6 +138,7 @@ public class JerryController : Enemy
         isMoving = false;
         GameEvent.canMove = true;
 
+        // Fade in
         while (BeatManager.Instance.audioSource.volume < .5f) {
             BeatManager.Instance.audioSource.volume += .01f;
             yield return new WaitForSeconds(.025f);
@@ -134,10 +146,12 @@ public class JerryController : Enemy
         BeatManager.Instance.audioSource.volume = .5f;
     }
 
+    // Logica di Jerry, si muove, attacca e ricarica
     private IEnumerator JerrysLogic() {
         yield return new WaitUntil(() => isActive);
         healthBar.gameObject.SetActive(true);
 
+        // La prima volta mette la prima canzone, la seconda non fa nulla
         if(BeatManager.Instance.audioSource.clip != secondPhaseSong) {
             oldSong = BeatManager.Instance.audioSource.clip;
             oldBPM = BeatManager.Instance.GetBPM();
@@ -153,6 +167,7 @@ public class JerryController : Enemy
         }
     }
 
+    // Sceglie una posizione random e ci si muove, guardando verso quella posizione
     private IEnumerator Move() {
         isMoving = true;
         Vector3 targetPosition = possiblePositions[Random.Range(0, possiblePositions.Length)].position;
@@ -161,11 +176,13 @@ public class JerryController : Enemy
         if(targetPosition.x < transform.position.x) transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); 
 
+        // Ha un massimo di 5 iterazioni per raggiungere la posizione, se non ci riesce si ferma (per evitare bug)
         int maxIterations = 5;
         while(Vector2.Distance(transform.position, targetPosition) > 1 && maxIterations > 0){
             for (int i = 0; i < movingSprites.Length; i++) {
                 spriteRenderer.sprite = movingSprites[i];
                 if(i%2!=0){
+                    // Ogni volta che poggia il piede a terra, genera un'impulso attivando il camera shake per dare l'effetto di pesantezza
                     impulseSource.m_DefaultVelocity = new Vector3(Random.Range(-.05f,.05f)*damage, Random.Range(-.05f,.05f)*damage, 0);
                     impulseSource.GenerateImpulse();
                 }
@@ -181,6 +198,7 @@ public class JerryController : Enemy
         isMoving = false;
     }
 
+    // Guarda il player e spara
     private IEnumerator Attack() {
         isAttacking = true;
         if(player.position.x < transform.position.x)    transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -189,6 +207,7 @@ public class JerryController : Enemy
         yield return new WaitUntil(() => canAttack);
         canAttack = false;
 
+        // Se non è la prima fase spara 2 colpi extra (3 proiettili in totale) in rapida successione
         if(!isFirstPhase){
             for(int i=0;i<4;i++){
                 spriteRenderer.sprite = attackSprites[i%2];
@@ -203,6 +222,7 @@ public class JerryController : Enemy
             }
         }
 
+        // Sparo standard con conclusione animazione
         for(int i=0; i<attackSprites.Length; i++){
             spriteRenderer.sprite = attackSprites[i];
 
@@ -227,6 +247,7 @@ public class JerryController : Enemy
         isAttacking = false;
     }
 
+    // Ricarica l'arma
     private IEnumerator Reload() {
         isReloading = true;
         yield return new WaitUntil(() => canAttack);
@@ -243,22 +264,39 @@ public class JerryController : Enemy
         isReloading = false;
     }
 
+    // Coroutine che gestisce la morte di Jerry
     private IEnumerator Death() {
         isDying = true;
+        impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
 
+        // Fade in del volume per la morte riproducendo il suono più volte con anche il camera shake
         for(int i=0; i<deathSprites.Length; i++){
             spriteRenderer.sprite = deathSprites[i];
-            audioSource.volume = 1 - (i / deathSprites.Length);
+            audioSource.volume = i / deathSprites.Length;
             audioSource.PlayOneShot(deathSound);
+            impulseSource.m_DefaultVelocity = new Vector3(Random.Range(-.05f,.05f)*damage, Random.Range(-.05f,.05f)*damage, 0);
+            impulseSource.GenerateImpulse();
             yield return new WaitForSeconds(.25f);
         }
 
         spriteRenderer.sprite = null;
         yield return StartCoroutine(ChangeSong(oldSong));
         BeatManager.Instance.SetBPM(oldBPM);
+        impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Rumble;
+        GameEvent.canMove = true;
         base.Die();
     }
 
+    // Coroutine che gestisce la morte del player, si assicura che la canzone torni quella originale
+    IEnumerator PlayerDies(){
+        yield return new WaitUntil(() => PlayerManager.Instance.CurrentHealth <= 0);
+        BeatManager.Instance.audioSource.Stop();
+        BeatManager.Instance.audioSource.clip = oldSong;
+        BeatManager.Instance.SetBPM(oldBPM);
+        BeatManager.Instance.audioSource.Play();
+    }
+
+    // Override della funzione TakeDamage per aggiornare la barra della vita
     public override void TakeDamage(float damage){
         health-=damage;
         if(health<=0) health = 0;
@@ -266,6 +304,7 @@ public class JerryController : Enemy
         base.TakeDamage(0);
     }
 
+    // Override della funzione Die per far partire la coroutine della morte
     public override void Die(){
         StopAllCoroutines();
         StartCoroutine(Death());

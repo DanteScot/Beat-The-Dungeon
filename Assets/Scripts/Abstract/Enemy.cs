@@ -8,6 +8,8 @@ public class Enemy : RythmedObject
     [Header("Common Stats")]
     [SerializeField] protected float health;
     [SerializeField] protected float damage;
+
+    // Usato per evitare che il nemico si muova mentre il player è in un'altra stanza
     public bool isActive=false;
 
     // Id usato per identificare il nemico, utile per il sistema di rimbalzo dei proiettili

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+// Gestisce i 3 pllini verdi nel tutorial
 public class TutorialMovementController : MonoBehaviour
 {
     private Vector3[] positions = new Vector3[3];
@@ -20,6 +21,7 @@ public class TutorialMovementController : MonoBehaviour
         transform.position = positions[currentPos];
     }
 
+    // Una volta raggiunte tutte le posizioni, il tutorial è completato
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))

@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
+// Classe responsabile della gestione dell'UI della vita del giocatore
 public class HealthUIManager : MonoBehaviour, Observer
 {
     private float maxHealth;
@@ -29,11 +29,13 @@ public class HealthUIManager : MonoBehaviour, Observer
 
     void UpdateGui()
     {
+        // Cancella tutti i cuori
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
         }
 
+        // Conta i cuori da mostrare e controllo se c'è un mezzo cuore
         bool halfHeartFlag = false;
         int heartCount;
         if (currentHealth % 2 == 0)
@@ -46,14 +48,18 @@ public class HealthUIManager : MonoBehaviour, Observer
             halfHeartFlag = true;
         }
 
+        // Mostra i cuori
+        // Se i < heartCount, allora il cuore è pieno
+        // Se i == heartCount, controllo se c'è un mezzo cuore e in caso lo mostro
+        // Se i > heartCount, allora il cuore è vuoto
         for (int i=0; i<maxHealth/2;i++){
             if(i<heartCount){
-                Instantiate(heartPrefab, transform).GetComponent<UnityEngine.UI.Image>().sprite = fullHeart;
+                Instantiate(heartPrefab, transform).GetComponent<Image>().sprite = fullHeart;
             }else if(halfHeartFlag){
-                Instantiate(heartPrefab, transform).GetComponent<UnityEngine.UI.Image>().sprite = halfHeart;
+                Instantiate(heartPrefab, transform).GetComponent<Image>().sprite = halfHeart;
                 halfHeartFlag = false;
             }else{
-                Instantiate(heartPrefab, transform).GetComponent<UnityEngine.UI.Image>().sprite = emptyHeart;
+                Instantiate(heartPrefab, transform).GetComponent<Image>().sprite = emptyHeart;
             }
         }
     }

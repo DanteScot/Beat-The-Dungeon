@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+// Classe importata per attaccare un GameObject ad ogni particella di un ParticleSystem
+// È stata importata per creare le lucciole
 [RequireComponent(typeof(ParticleSystem))]
 public class AttachGameObjectsToParticles : MonoBehaviour
 {
@@ -10,14 +12,12 @@ public class AttachGameObjectsToParticles : MonoBehaviour
     private List<GameObject> m_Instances = new List<GameObject>();
     private ParticleSystem.Particle[] m_Particles;
 
-    // Start is called before the first frame update
     void Start()
     {
         m_ParticleSystem = GetComponent<ParticleSystem>();
         m_Particles = new ParticleSystem.Particle[m_ParticleSystem.main.maxParticles];
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
         int count = m_ParticleSystem.GetParticles(m_Particles);
@@ -25,7 +25,7 @@ public class AttachGameObjectsToParticles : MonoBehaviour
         while (m_Instances.Count < count)
             m_Instances.Add(Instantiate(m_Prefab, m_ParticleSystem.transform));
 
-        bool worldSpace = (m_ParticleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World);
+        bool worldSpace = m_ParticleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World;
         for (int i = 0; i < m_Instances.Count; i++)
         {
             if (i < count)

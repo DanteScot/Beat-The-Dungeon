@@ -1,5 +1,4 @@
-using UnityEngine;
-
+// Classe di supporto per salvare i dati delle impostazioni
 [System.Serializable]
 public class SettingsData
 {

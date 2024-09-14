@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-// Gestisce il comportamento del nemico ragno
+// Gestisce il comportamento del ragno ragno
 public class SpiderController : Enemy
 {
     private Transform player;
@@ -15,7 +15,7 @@ public class SpiderController : Enemy
     private Animator animator;
     private bool isMoving;
 
-    // Controllo se il giocatore è nel raggio di movimento del nemico
+    // Controllo se il giocatore è nel raggio di movimento del ragno
     private bool isPlayerInRange{
         get{
             return Vector2.Distance(player.position, transform.position) < walkRadius;
@@ -35,7 +35,7 @@ public class SpiderController : Enemy
         agent.speed = speed;
     }
 
-    // Se il giocaotre è nel raggio di movimento del nemico, il nemico si muove verso il giocatore
+    // Se il giocaotre è nel raggio di movimento del ragno, il ragno si muove verso il giocatore
     // Altrimenti si muove in una direzione casuale
     void Update(){
         if(!isActive) return;
@@ -58,7 +58,7 @@ public class SpiderController : Enemy
         }
     }
 
-    // Aspetta 2 secondi prima di poter muovere nuovamente il nemico
+    // Aspetta 2 secondi prima di poter muovere nuovamente il ragno
     private IEnumerator Wait()
     {
         isMoving = true;
@@ -66,9 +66,9 @@ public class SpiderController : Enemy
         isMoving = false;
     }
 
-    // Controlla se il nemico si sta muovendo
+    // Controlla se il ragno si sta muovendo
     // Se si muove, imposta l'animazione di movimento
-    // Se la posizione del nemico non cambia, il nemico viene considerato fermo
+    // Se la posizione del ragno non cambia, il ragno viene considerato fermo
     private IEnumerator Move()
     {
         animator.SetBool("isMoving", true);
@@ -85,8 +85,8 @@ public class SpiderController : Enemy
         animator.SetBool("isMoving", false);
     }
 
-    // Veniva usato per far attaccare appena il nemico toccava il giocatore
-    // Ho preferito mantenere il fatto che il nemico attacchi solo quando parte il beat
+    // Veniva usato per far attaccare appena il ragno toccava il giocatore
+    // Ho preferito mantenere il fatto che il ragno attacchi solo quando parte il beat
     //
     // void OnCollisionEnter2D(Collision2D other)
     // {
@@ -96,7 +96,7 @@ public class SpiderController : Enemy
     //     }
     // }
 
-    // Se il nemico è in contatto con il giocatore e può attaccare, infligge danno al giocatore
+    // Se il ragno è in contatto con il giocatore e può attaccare, infligge danno al giocatore
     void OnCollisionStay2D(Collision2D other)
     {
         if(other.gameObject.CompareTag("Player") && canAttack){

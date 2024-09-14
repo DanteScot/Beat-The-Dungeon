@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+// Classe responsabile della gestione della lobby
 public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance { get; private set; }
@@ -11,6 +10,7 @@ public class LobbyManager : MonoBehaviour
 
     private bool isFirstTime;
 
+    // Elementi da distruggere se non è la prima volta che si gioca
     [SerializeField] private GameObject[] itemToDestroy;
 
     private void Awake()
@@ -29,6 +29,7 @@ public class LobbyManager : MonoBehaviour
 
     private void Start()
     {
+        // Se non sono presenti dati salvati, allora è la prima volta che si gioca
         GameEvent.isInLobby = true;
         GameData data = SaveSystem.LoadGame();
         if (data != null) isFirstTime = false;
@@ -43,6 +44,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    // Imposta la lobby per evitare tutte le cose che avverrebbero al primo avvio del gioco
     void NotFirstTimeLobby(){
         foreach (var item in itemToDestroy)
         {

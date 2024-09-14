@@ -764,7 +764,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ImpulseDefinition:
     m_ImpulseChannel: 1
-    m_ImpulseShape: 4
+    m_ImpulseShape: 3
     m_CustomImpulseShape:
       serializedVersion: 2
       m_Curve:
@@ -811,7 +811,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: -0.02080457, y: -0.1300606, z: 0}
+  m_DefaultVelocity: {x: -0.01012443, y: -0.01298724, z: 0}
 --- !u!1 &8217399604693258136
 GameObject:
   m_ObjectHideFlags: 0

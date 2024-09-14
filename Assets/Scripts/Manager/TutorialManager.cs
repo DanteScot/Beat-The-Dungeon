@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using HeneGames.DialogueSystem;
 using UnityEngine;
 
+// Manager che si occupa di gestire il tutorial
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance { get; private set; }
 
+    // Lista di frasi che il tutorial deve dire
     [SerializeField] private List<NPC_CentenceList> tutorialSentences = new List<NPC_CentenceList>();
 
     private DialogueManager dialogueManager;
@@ -26,6 +28,7 @@ public class TutorialManager : MonoBehaviour
         GameEvent.isInLobby = false;
     }
 
+    // Viene chiamato alla fine del dialogo introduttivo
     public void Init(){
         if(!gameObject.activeSelf) return;
 
@@ -37,6 +40,7 @@ public class TutorialManager : MonoBehaviour
         stepCompleted = true;
     }
     
+    // Passa alla frase successiva, disabilita e riabilita il collider per attivare l'onTriggerEnter2D
     public void NextSentence(){
         currentSentenceIndex++;
         if(currentSentenceIndex < tutorialSentences.Count){
@@ -44,6 +48,11 @@ public class TutorialManager : MonoBehaviour
             
             circleCollider.enabled = false;
             circleCollider.enabled = true;
+
+            // Se è l'ultima frase aggiunge un listener per chiamare EndTutorial
+            if(currentSentenceIndex == tutorialSentences.Count-1){
+                dialogueManager.endDialogueEvent.AddListener(EndTutorial);
+            }
         }
     }
 
@@ -59,6 +68,7 @@ public class TutorialManager : MonoBehaviour
             case 1:
                 // ATTACK TUTORIAL
                 if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)){
+                    // Se c'è un proiettile presente lo distrugge
                     if(FindObjectOfType<BulletController>() != null) Destroy(FindObjectOfType<BulletController>().gameObject);
 
                     stepCompleted = true;
@@ -67,6 +77,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 2:
                 // RANGE ATTACK TUTORIAL
+                // Controlla che sia stato sparato un proiettile
                 if(FindObjectOfType<BulletController>() != null){
                     stepCompleted = true;
                     started = false;
@@ -78,27 +89,25 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    // Viene Chiamato alla fine dei dialoghi per riprendere il tutorial
     public void StartCheck(){
         started = true;
     }
 
+    // Coroutine che gestisce le fasi del tutorial
     private IEnumerator StartTutorial(){
         while(currentSentenceIndex < tutorialSentences.Count){
             yield return new WaitUntil(()=>stepCompleted);
             stepCompleted = false;
             NextSentence();
         }
-
-        Debug.Log("Tutorial completato");
-
     }
 
+    // Chiude il tutorial e carica la lobby
     public void EndTutorial(){
-        StartCoroutine(Wait());
-    }
+        if(!gameObject.activeSelf) return;
 
-    IEnumerator Wait(){
-        yield return new WaitForSeconds(1);
+        Destroy(Controller808.Instance.gameObject);
         GameManager.Instance.LoadLobby();
     }
 }

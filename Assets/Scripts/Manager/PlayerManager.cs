@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// Struttura per conservare i dati del giocatore tra una partita e l'altra
+// È creata pensando alla possibilità di aggiungere nuovi personaggi in futuro e soprattutto
+// per semplificare i potenziamenti del giocatore
+// (non implementati al momento ma in questo modo permetti di modificare i dati del giocatore senza creare altre cose temporane in giro)
+// ES. Potenziamento range: range *= 2, il range sarà sempre il range base moltiplicato per il livello del potenziamento che verrà poi ripristinato a fine partita
+// Per evitare problemi nei vari Awake questa classe è stat impostata nei settaggi di unity come la seconda ad essere eseguita, subito dopo il BeatManager
 struct startingStats
 {
     public float moveSpeed;
@@ -23,6 +29,7 @@ struct startingStats
     }
 }
 
+// Classe responsabile della gestione del giocatore
 public class PlayerManager : MonoBehaviour, Subject
 {
     public static PlayerManager Instance { get; private set; }
@@ -78,7 +85,7 @@ public class PlayerManager : MonoBehaviour, Subject
     public float MoveSpeedLevelled { get => moveSpeed + moveSpeedLevel; }
     public float MaxHealthLevelled { get => maxHealth + (healthLevel*2); }
     public float LuckLevelled { get => luck + luckLevel; }
-    public float BaseAttackDamageLevelled { get => baseAttackDamage + (damageLevel*0.5f); }
+    public float BaseAttackDamageLevelled { get => baseAttackDamage + damageLevel; }
     public float AttackSpeedLevelled { get => attackSpeed + (attackRangeLevel*1.5f); }
     public float AttackRangeLevelled { get => attackRange + (attackRangeLevel*2); }
 
@@ -106,6 +113,7 @@ public class PlayerManager : MonoBehaviour, Subject
         }
     }
 
+    // Distrugge tutti i minion e resetta i potenziamenti, salvando poi i dati
     public void EndGame()
     {
         foreach (Transform minion in minions)
@@ -126,6 +134,7 @@ public class PlayerManager : MonoBehaviour, Subject
         SaveSystem.SaveGame(new GameData(this));
     }
 
+    // Usata in Power.cs per creare i minion, essendo power.cs una classe statica si appoggia a questa funzione per creare i minion
     public void InstantiatePrefab(string prefabPath)
     {
         Instantiate(Resources.Load<GameObject>(prefabPath), player.position, Quaternion.identity, minions);
@@ -136,7 +145,7 @@ public class PlayerManager : MonoBehaviour, Subject
         return minions;
     }
 
-    // TODO: Remove this Update method
+    // TODO: Rimuovere le cose di debug (F1, F2..)
     public void Update(){
         if(Input.GetKeyDown(KeyCode.Escape)){
             GameEvent.IsPaused = !GameEvent.IsPaused;
@@ -159,12 +168,12 @@ public class PlayerManager : MonoBehaviour, Subject
 
     public void LoadPlayerStats(GameData data)
     {
-        moveSpeedLevel = data.moveSpeed;
-        healthLevel = data.maxHealth;
-        luckLevel = data.luck;
-        damageLevel = data.baseAttackDamage;
-        attackSpeedLevel = data.attackSpeed;
-        attackRangeLevel = data.attackRange;
+        moveSpeedLevel = data.moveSpeedLevel;
+        healthLevel = data.maxHealthLevel;
+        luckLevel = data.luckLevel;
+        damageLevel = data.AttackDamageLevel;
+        attackSpeedLevel = data.attackSpeedLevel;
+        attackRangeLevel = data.attackRangeLevel;
         currentHealth = MaxHealthLevelled;
 
         gears = data.gears;

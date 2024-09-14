@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// Effetto parallasse per lo sfondo
 public class ParallaxEffect : MonoBehaviour
 {
     private float length, startPos;
@@ -14,6 +13,7 @@ public class ParallaxEffect : MonoBehaviour
         length = GetComponent<SpriteRenderer>().bounds.size.x;
     }
 
+    // In base alla posizione della camera, muove lo sfondo e dopo un certo punto lo riporta avanti
     void Update()
     {
         float distance = cam.transform.position.x * parallaxEffect;

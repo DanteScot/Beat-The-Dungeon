@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+// Classe usata per memorizzare alcuni eventi comuni e le costanti per il Messenger
 public static class GameEvent{
     public static bool canMove = true;
     public static bool isInLobby = true;
     public static bool ifFirstTime = true;
 
+    // Automatizza la gestione della pausa in base al valore di isPaused
     private static bool isPaused = false;
     public static bool IsPaused
     { 

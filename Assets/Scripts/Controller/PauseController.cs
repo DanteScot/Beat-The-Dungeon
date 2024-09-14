@@ -47,8 +47,10 @@ public class PauseController : MonoBehaviour
         GameManager.Instance.LoadLobby();
     }
 
-    // Chiude il gioco
+    // Ritora al menu principale
     public void OnQuitButton(){
-        Application.Quit();
+        PlayerManager.Instance.EndGame();
+        GameEvent.IsPaused = false;
+        GameManager.Instance.LoadMainMenu();
     }
 }

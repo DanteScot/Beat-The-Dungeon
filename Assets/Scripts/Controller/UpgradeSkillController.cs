@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Tipi di abilità che possono essere potenziate
 [System.Serializable]
 public enum SkillType
 {
@@ -15,6 +14,7 @@ public enum SkillType
     Luck
 }
 
+// Gestisce l'upgrade delle abilità del giocatore
 public class UpgradeSkillController : MonoBehaviour, Observer
 {
     [Header("Controller Settings")]
@@ -54,15 +54,19 @@ public class UpgradeSkillController : MonoBehaviour, Observer
         if(skillCost > PlayerManager.Instance.Gears) skillCostText.color = Color.red;
         else skillCostText.color = Color.green;
 
+        // Riempie il numero di sprite corrispondente al livello dell'abilità
         for(int i = 0; i < skillLevel; i++)
         {
             slider.transform.GetChild(i).GetComponent<Image>().sprite = fullSprite;
         }
     }
 
+    // Aggiorna il livello dell'abilità e i relativi costi e salva il gioco
     public void UpgradeSkill()
     {
         if(skillCost > PlayerManager.Instance.Gears || skillLevel == 4) return;
+
+        Messenger.Broadcast(GameEvent.GEAR_PICKED);
 
         PlayerManager.Instance.Gears -= skillCost;
         skillLevel++;

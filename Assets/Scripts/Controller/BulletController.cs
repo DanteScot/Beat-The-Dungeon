@@ -17,6 +17,7 @@ public class BulletController : MonoBehaviour
     public int remainingBounces = 1;
     public Enemy closestEnemy = null;
     public Enemy lastEnemy = null;
+    public Color bulletColor = new Color(0, 0, 0);
 
     #endregion
 

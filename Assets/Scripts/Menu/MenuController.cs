@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.PlayerLoop;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+// Struttura usata per passare i dati delle impostazioni tra le varie classi
 public struct Settings{
     public float masterVolume;
     public float musicVolume;
@@ -45,6 +43,7 @@ public struct Settings{
     }
 }
 
+// Classe che gestisce il menu principale del gioco
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenu;
@@ -79,23 +78,23 @@ public class MenuController : MonoBehaviour
 
     #region Starting Methods
 
+    // Inizializza le risoluzioni disponibili e le aggiunge al dropdown
     private void InitializeGraphicSettings(){
         resolutions = Screen.resolutions;
 
-        // Clear the dropdown options
         resolutionDropdown.ClearOptions();
 
         List<string> options = new List<string>();
 
         int currentResolutionIndex = 0;
 
-        // Add each resolution to the dropdown
+        // Aggiunge le risoluzioni disponibili alla lista
         for (int i = 0; i < resolutions.Length; i++)
         {
             string option = resolutions[i].width + " x " + resolutions[i].height;
             options.Add(option);
 
-            // Check if the resolution is the current resolution
+            // Controllo se la risoluzione è quella attuale
             if (resolutions[i].width == Screen.currentResolution.width &&
                 resolutions[i].height == Screen.currentResolution.height)
             {
@@ -103,17 +102,17 @@ public class MenuController : MonoBehaviour
             }
         }
 
-        //remove duplicates
+        // Rimuove le risoluzioni duplicate
         options = options.Distinct().ToList();
 
-        // Add the options to the dropdown
+        // Aggiunge le risoluzioni al dropdown
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
     }
 
+    // Leggi i crediti dal file di testo nella cartella Resources
     private void InitializeCredits(){
-        // leggi i crediti dal file di testo nella cartella Resources
         TextAsset textAsset = Resources.Load<TextAsset>("Credits");
         string[] lines = textAsset.text.Split('\n');
 
@@ -125,11 +124,12 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    // Imposta la scena in base all'ora attuale
     private void SetSceneTime(){
-        // get actual hour from system
+        // Prende l'ora attuale
         int hour = System.DateTime.Now.Hour;
         if(hour >= 6 && hour < 18){
-            // day
+            // Giorno
             foreach(GameObject obj in dayObjects){
                 obj.SetActive(true);
             }
@@ -137,7 +137,7 @@ public class MenuController : MonoBehaviour
                 obj.SetActive(false);
             }
         } else {
-            // night
+            // Notte
             foreach(GameObject obj in dayObjects){
                 obj.SetActive(false);
             }
@@ -147,6 +147,7 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    // Carica le impostazioni salvate
     private void LoadSettings(){
         settings = SaveSystem.LoadSettings();
         SetMasterVolume(settings.masterVolume);
@@ -169,6 +170,9 @@ public class MenuController : MonoBehaviour
 
     #endregion
 
+
+
+    // Settaggi delle impostazioni
     #region Settings and Credits
 
     public void SetMasterVolume(float volume)

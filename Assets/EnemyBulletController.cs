@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+// """SEMPLICE""" classe che si occupa di gestire i proiettili sparati dai nemici
+// Per i dettagli sulla sua semplicità, vedere il commento in JerryController.cs
 public class EnemyBulletController : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float damage;
 
+    // Imposta la velocità, il danno e la grandezza del proiettile in base ai parametri passati e lo fa puntare verso il giocatore
     public void SetBullet(float speed, float damage, float sizeMultiplier, Vector3 player)
     {
         this.speed = speed;

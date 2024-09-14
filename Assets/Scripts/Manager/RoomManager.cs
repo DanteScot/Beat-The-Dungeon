@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// Classe che si occupa di gestire le stanze del gioco
 public class RoomManager : MonoBehaviour
 {
+    // Array contenente i possibili premi che possono essere droppati
     [SerializeField] private GameObject[] rewardPrefab;
     [SerializeField] private bool isLobbyRoom=false;
     public Collider2D[] enemies { get; private set; }
@@ -26,6 +26,7 @@ public class RoomManager : MonoBehaviour
 
     void Awake()
     {
+        // Comprime i bordi dei tilemap per evitare che risultino più grandi di quanto siano realmente
         var tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
         foreach (var tilemap in tilemaps)
         {
@@ -37,15 +38,18 @@ public class RoomManager : MonoBehaviour
 
     void Start()
     {
+        // Calcola le dimensioni della stanza ed il suo centro
         roomX=tilemapCollider.bounds.size.x;
         roomY=tilemapCollider.bounds.size.y;
         roomCenter = tilemapCollider.bounds.center;
 
         isRoomActive = false;
 
+        // Trova tutti i nemici presenti nella stanza, se ce ne sono la stanza è attiva
         FindEnemies();
         if(enemies.Length>0) isRoomActive = true;
 
+        // Trova tutte le porte presenti nella stanza e le apre o chiude in base alla stanza
         doors = transform.parent.GetComponentsInChildren<DoorController>();
         foreach (var door in doors)
         {
@@ -59,10 +63,9 @@ public class RoomManager : MonoBehaviour
 
 
 
-    // TODO
-    // TEST CODE
-    // MUST BE REMOVED
-    //
+    
+    // TODO: Da rimuovere in produzione
+    // permette di eliminare tutti i nemici nella stanza con la barra spaziatrice, utile per testare cose
     void Update(){
         if(Input.GetKeyDown(KeyCode.Space)){
             var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
@@ -74,7 +77,7 @@ public class RoomManager : MonoBehaviour
                     {
                         if(item.CompareTag("Enemy")){
                             if(item.name.Contains("Jerry"))  return;
-                            item.GetComponent<Enemy>().TakeDamage(100);
+                            else item.GetComponent<Enemy>().TakeDamage(100);
                         }
                     }
 
@@ -89,7 +92,7 @@ public class RoomManager : MonoBehaviour
 
 
 
-
+    // Finchè la stanza è attiva controlla se ci sono nemici al suo interno, se non ce ne sono più la stanza è stata completata
 
     void LateUpdate()
     {
@@ -107,6 +110,7 @@ public class RoomManager : MonoBehaviour
         if(enemies.Length==0) RoomCleared();
     }
 
+    // Istanzia il premio e apre le porte della stanza
     void RoomCleared(){
         isRoomActive = false;
         if(!isLobbyRoom) Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
@@ -116,6 +120,7 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    // Quando il giocatore entra nella stanza, si imposta come stanza corrente e si attivano i nemici
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
@@ -132,6 +137,7 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    // Quando il giocatore esce dalla stanza, si disattivano i nemici
     void OnTriggerExit2D(Collider2D other)
     {
         if(isLobbyRoom) return;

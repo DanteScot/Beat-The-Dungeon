@@ -1,14 +1,13 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 
+// Classe che si occupa di mostrare un tooltip con la descrizione di un potenziamento all'incubatrice
 public class Tooltip : MonoBehaviour
 {
     private static Tooltip instance;
 
     private TextMeshProUGUI text;
     private RectTransform rectTransform;
-    private  SkillType skillType;
 
     private void Awake()
     {
@@ -18,13 +17,16 @@ public class Tooltip : MonoBehaviour
         HideTooltip();
     }
 
+    // Aggiorna la posizione del tooltip in base alla posizione del mouse
     void Update()
     {
-        Vector2 localPoint;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponent<RectTransform>(), Input.mousePosition, null, out localPoint);
+        if(!gameObject.activeSelf) return;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localPoint);
         transform.localPosition = localPoint;
     }
 
+    // Restituisce il testo del tooltip in base al tipo di abilità
     private string GetTooltipText(SkillType skillType)
     {
         switch (skillType)
@@ -40,12 +42,13 @@ public class Tooltip : MonoBehaviour
             case SkillType.AttackSpeed:
                 return "Attack Speed: Increases the attack speed of the ranged attack.";
             case SkillType.Luck:
-                return "Luck: Increases the chance of better drops.";
+                return "Luck: Increases the chance of better drops,\nit also make some abilty's effects stronger.";
             default:
                 return "";
         }
     }
 
+    // Mostra il tooltip con la descrizione dell'abilità, setta la grandezza del background in base alla lunghezza del testo
     private void ShowTooltip(SkillType skillType)
     {
         gameObject.SetActive(true);
@@ -62,12 +65,12 @@ public class Tooltip : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public static void ShowTooltip_Static(string skillType)
+    // Metodi statici per mostrare e nascondere il tooltip
+    public static void ShowTooltip_Static(string skillTypeString)
     {
-        SkillType skillTypeString;
-        if (System.Enum.TryParse(skillType, true, out skillTypeString))
+        if (System.Enum.TryParse(skillTypeString, true, out SkillType skillType))
         {
-            instance.ShowTooltip(skillTypeString);
+            instance.ShowTooltip(skillType);
         }
     }
 
