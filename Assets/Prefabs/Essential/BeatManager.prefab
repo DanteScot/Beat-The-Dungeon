@@ -283,8 +283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bpm: 140
-  audioSource: {fileID: 3230513699395011598}
-  debug: 1
+  debug: 0
   bpmText: {fileID: 9034675019960278389}
 --- !u!82 &3230513699395011598
 AudioSource:

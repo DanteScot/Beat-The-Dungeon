@@ -160,8 +160,6 @@ public class GameManager : MonoBehaviour
         if(bulletShoot) return;
         bulletShoot = true;
         audioSource.pitch = Random.Range(0.9f, 1.1f);
-        audioSource.volume = 0.5f;
         audioSource.PlayOneShot(Resources.Load(basePath+"Bullet "+Random.Range(1, 4)) as AudioClip);
-        audioSource.volume = 1;
     }
 }

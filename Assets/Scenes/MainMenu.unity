@@ -131,9 +131,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 21317274}
+  - component: {fileID: 21317271}
   - component: {fileID: 21317273}
   - component: {fileID: 21317272}
-  - component: {fileID: 21317271}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
