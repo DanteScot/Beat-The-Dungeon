@@ -47,7 +47,9 @@ public class GameManager : MonoBehaviour
         canvasGroup.alpha = 0;
         canvasGroup.gameObject.SetActive(false);
         if(!(SceneManager.GetActiveScene().name.Equals("MainMenu") || SceneManager.GetActiveScene().name.Equals("Lobby"))){
-            Instantiate(Resources.Load("Prefabs/808"), Vector3.zero, Quaternion.identity, PlayerManager.Instance.GetMinions());
+
+            // TODO: decommentare
+            // Instantiate(Resources.Load("Prefabs/808"), Vector3.zero, Quaternion.identity, PlayerManager.Instance.GetMinions());
         }
     }
 
