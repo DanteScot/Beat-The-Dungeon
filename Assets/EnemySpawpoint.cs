@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GenerationCategory
+/// <summary>
+/// Enumeratore che definisce il gruppo per la generazione dei nemici in modo casuale
+/// </summary>
+public enum GenerationGroup
 {
     first,
     second,
@@ -11,14 +14,14 @@ public enum GenerationCategory
 
 public class EnemySpawpoint : MonoBehaviour
 {
-    public GenerationCategory generationCategory;
+    public GenerationGroup generationGroup;
 
     private void OnValidate() {
-        if (generationCategory == GenerationCategory.first) {
+        if (generationGroup == GenerationGroup.first) {
             gameObject.GetComponent<SpriteRenderer>().color = Color.green;
-        } else if (generationCategory == GenerationCategory.second) {
+        } else if (generationGroup == GenerationGroup.second) {
             gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
-        } else if (generationCategory == GenerationCategory.third) {
+        } else if (generationGroup == GenerationGroup.third) {
             gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
     }

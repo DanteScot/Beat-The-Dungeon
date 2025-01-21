@@ -44,8 +44,10 @@ public class GameManager : MonoBehaviour
     }
 
     private void Start() {
-        canvasGroup.alpha = 0;
-        canvasGroup.gameObject.SetActive(false);
+        if(canvasGroup != null){
+            canvasGroup.alpha = 0;
+            canvasGroup.gameObject.SetActive(false);
+        }
         if(!(SceneManager.GetActiveScene().name.Equals("MainMenu") || SceneManager.GetActiveScene().name.Equals("Lobby"))){
 
             // TODO: decommentare

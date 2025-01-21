@@ -60,44 +60,28 @@ public class RoomManager : MonoBehaviour
 
             if(!transform.parent.name.Equals("Room-1"))
             {
-                Debug.Log("prima");
                 GameObject[] contents = Resources.LoadAll<GameObject>($"Prefabs/RoomContents/{transform.parent.name.Split(' ')[0]}");
-                Debug.Log("durante");
-                // GameObject[] contents = Resources.LoadAll<GameObject>($"Prefabs/RoomContents/{transform.parent.name.Split(' ')[0]}");
-                if(contents.Length>0)
-                    Instantiate(contents[Random.Range(0, contents.Length)], content);
-                Debug.Log("dopo");
+
+                if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
 
                 GameObject[] enemies = Resources.LoadAll<GameObject>("Prefabs/Enemy/Common");
 
-                int totalCategory = System.Enum.GetValues(typeof(GenerationCategory)).Length;
-                GameObject[] enemiesForCategory = new GameObject[totalCategory];
+                int totalGroups = System.Enum.GetValues(typeof(GenerationGroup)).Length;
+                GameObject[] enemiesForGroup = new GameObject[totalGroups];
                 
-                for (int i = 0; i < totalCategory; i++)
+                for (int i = 0; i < totalGroups; i++)
                 {
-                    enemiesForCategory[i] = enemies[Random.Range(0, enemies.Length)];
+                    enemiesForGroup[i] = enemies[Random.Range(0, enemies.Length)];
                 }
 
                 foreach (var spawner in content.GetComponentsInChildren<EnemySpawpoint>())
                 {
-                    Instantiate(enemiesForCategory[(int)spawner.generationCategory], spawner.transform.position, Quaternion.identity, content);
+                    Instantiate(enemiesForGroup[(int)spawner.generationGroup], spawner.transform.position, Quaternion.identity, content);
                 }
-
-
-                // Trova tutti i nemici presenti nella stanza, se ce ne sono la stanza è attiva
-                // FindEnemies();
-                // if(enemies.Length>0) isRoomActive = true;
             }
 
             StartCoroutine(WaitBeforeCheck());
-
-            // Trova tutte le porte presenti nella stanza e le apre o chiude in base alla stanza
-            // doors = transform.parent.GetComponentsInChildren<DoorController>();
-            // foreach (var door in doors)
-            // {
-            //     if(isRoomActive)    door.CloseDoor();
-            //     else                door.OpenDoor();
-            // }
+            
         } catch {
             Debug.Log("Error in RoomManager");
         }
