@@ -21,6 +21,8 @@ public static class GameEvent{
         }
     }
 
+    public const string LEVEL_GENERATED = "LEVEL_GENERATED";
+
     public const string PLAYER_HIT = "PLAYER_HIT";
     public const string ENEMY_HIT = "ENEMY_HIT";
     public const string ITEM_PICKED = "ITEM_PICKED";

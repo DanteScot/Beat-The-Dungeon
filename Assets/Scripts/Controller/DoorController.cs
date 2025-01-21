@@ -15,7 +15,7 @@ public class DoorController : MonoBehaviour
 {
     [SerializeField] private Sprite closedDoor;
     [SerializeField] private Sprite openDoor;
-    [SerializeField] private DoorController linkedDoor;
+    [SerializeField] public DoorController linkedDoor;
 
     [SerializeField] private bool isOpen = true;
 

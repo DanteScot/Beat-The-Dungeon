@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,7 +16,7 @@ public class RoomManager : MonoBehaviour
     /// room is active when an enemy is inside the room
     /// only active rooms can drop items
     /// </summary>
-    private bool isRoomActive;
+    [SerializeField] private bool isRoomActive;
 
     private TilemapCollider2D tilemapCollider;
 
@@ -22,7 +24,9 @@ public class RoomManager : MonoBehaviour
     private float roomY;
     private Vector3 roomCenter;
 
-    private DoorController[] doors;
+    [SerializeField] private DoorController[] doors;
+
+    public Transform content;
 
     void Awake()
     {
@@ -34,6 +38,8 @@ public class RoomManager : MonoBehaviour
         }
 
         tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
+
+        Messenger.AddListener(GameEvent.LEVEL_GENERATED, OnLevelGenerated);
     }
 
     void Start()
@@ -45,21 +51,71 @@ public class RoomManager : MonoBehaviour
 
         isRoomActive = false;
 
-        // Trova tutti i nemici presenti nella stanza, se ce ne sono la stanza è attiva
+        content = transform.parent.Find("Conent");
+    }
+
+    void OnLevelGenerated(){
+        try{
+            if(!gameObject.activeSelf || !enabled) return;
+
+            if(!transform.parent.name.Equals("Room-1"))
+            {
+                Debug.Log("prima");
+                GameObject[] contents = Resources.LoadAll<GameObject>($"Prefabs/RoomContents/{transform.parent.name.Split(' ')[0]}");
+                Debug.Log("durante");
+                // GameObject[] contents = Resources.LoadAll<GameObject>($"Prefabs/RoomContents/{transform.parent.name.Split(' ')[0]}");
+                if(contents.Length>0)
+                    Instantiate(contents[Random.Range(0, contents.Length)], content);
+                Debug.Log("dopo");
+
+                GameObject[] enemies = Resources.LoadAll<GameObject>("Prefabs/Enemy/Common");
+
+                int totalCategory = System.Enum.GetValues(typeof(GenerationCategory)).Length;
+                GameObject[] enemiesForCategory = new GameObject[totalCategory];
+                
+                for (int i = 0; i < totalCategory; i++)
+                {
+                    enemiesForCategory[i] = enemies[Random.Range(0, enemies.Length)];
+                }
+
+                foreach (var spawner in content.GetComponentsInChildren<EnemySpawpoint>())
+                {
+                    Instantiate(enemiesForCategory[(int)spawner.generationCategory], spawner.transform.position, Quaternion.identity, content);
+                }
+
+
+                // Trova tutti i nemici presenti nella stanza, se ce ne sono la stanza è attiva
+                // FindEnemies();
+                // if(enemies.Length>0) isRoomActive = true;
+            }
+
+            StartCoroutine(WaitBeforeCheck());
+
+            // Trova tutte le porte presenti nella stanza e le apre o chiude in base alla stanza
+            // doors = transform.parent.GetComponentsInChildren<DoorController>();
+            // foreach (var door in doors)
+            // {
+            //     if(isRoomActive)    door.CloseDoor();
+            //     else                door.OpenDoor();
+            // }
+        } catch {
+            Debug.Log("Error in RoomManager");
+        }
+    }
+
+
+    IEnumerator WaitBeforeCheck(){
+        yield return new WaitForSeconds(.5f);
+
         FindEnemies();
         if(enemies.Length>0) isRoomActive = true;
 
-        // Trova tutte le porte presenti nella stanza e le apre o chiude in base alla stanza
-        doors = transform.parent.GetComponentsInChildren<DoorController>();
         foreach (var door in doors)
         {
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
         }
     }
-
-
-
 
 
 

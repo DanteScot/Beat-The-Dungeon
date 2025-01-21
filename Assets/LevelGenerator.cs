@@ -6,12 +6,12 @@ public class LevelGenerator : MonoBehaviour
 {
     [SerializeField] int seed;
 
-    [SerializeField] GameObject roomPrefab;
+    [SerializeField] GameObject[] roomPrefab;
     [SerializeField] private int minRooms = 10, maxRooms = 15;
 
     int roomWidth = 59, roomHeight = 32;
 
-    int gridSizeX = 10, gridSizeY = 10;
+    [SerializeField] int gridSizeX = 10, gridSizeY = 10;
 
     private List<GameObject> roomObject = new List<GameObject>();
 
@@ -24,32 +24,44 @@ public class LevelGenerator : MonoBehaviour
     private bool generationComplete = false;
 
     private void Start() {
-        Debug.Log(int.MaxValue);
+        if (seed < 0) seed *= -1;
+        else if (seed == 0) seed = Random.Range(1, int.MaxValue);
+
+        Random.InitState(seed);
+        Debug.Log(seed);
+        
         roomGrid = new int[gridSizeX, gridSizeY];
         roomQueue = new Queue<Vector2Int>();
 
         Vector2Int initialRoomIndex = new Vector2Int(gridSizeX / 2, gridSizeY / 2);
         StartRoomGenerationFromRoom(initialRoomIndex);
 
-        Random.InitState(seed);
+
+        StartCoroutine(FakeUpdate());
     }
 
-    private void Update() {
-        if(roomQueue.Count > 0 && roomCount < maxRooms && !generationComplete) {
-            Vector2Int currentRoomIndex = roomQueue.Dequeue();
-            
-            TryGenerateRoom(new Vector2Int(currentRoomIndex.x - 1, currentRoomIndex.y));
-            TryGenerateRoom(new Vector2Int(currentRoomIndex.x + 1, currentRoomIndex.y));
-            TryGenerateRoom(new Vector2Int(currentRoomIndex.x, currentRoomIndex.y - 1));
-            TryGenerateRoom(new Vector2Int(currentRoomIndex.x, currentRoomIndex.y + 1));
-        }
-        else if(roomCount < minRooms) {
-            Debug.Log("Too few rooms, regenerating");
-            RegenerateRooms();
-        } 
-        else if (!generationComplete){
-            Debug.Log($"Generation complete with {roomCount} rooms");
-            generationComplete = true;
+    IEnumerator FakeUpdate(){
+        while(!generationComplete){
+            if(roomQueue.Count > 0 && roomCount < maxRooms) {
+                Vector2Int currentRoomIndex = roomQueue.Dequeue();
+                
+                TryGenerateRoom(new Vector2Int(currentRoomIndex.x - 1, currentRoomIndex.y));
+                TryGenerateRoom(new Vector2Int(currentRoomIndex.x + 1, currentRoomIndex.y));
+                TryGenerateRoom(new Vector2Int(currentRoomIndex.x, currentRoomIndex.y - 1));
+                TryGenerateRoom(new Vector2Int(currentRoomIndex.x, currentRoomIndex.y + 1));
+            }
+            else if(roomCount < minRooms) {
+                Debug.Log("Too few rooms, regenerating");
+                RegenerateRooms();
+                break;
+            } 
+            else if (!generationComplete){
+                generationComplete = true;
+                Debug.Log($"Generation complete with {roomCount} rooms");
+                Messenger.Broadcast(GameEvent.LEVEL_GENERATED);
+            }
+
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -57,10 +69,26 @@ public class LevelGenerator : MonoBehaviour
         roomQueue.Enqueue(roomIndex);
         roomGrid[roomIndex.x, roomIndex.y] = 1;
         roomCount++;
-        var initialRoom = Instantiate(roomPrefab, GetPositionFromGridIndex(roomIndex), Quaternion.identity);
+        var initialRoom = Instantiate(roomPrefab[0], GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
         initialRoom.name = $"Room-{roomCount}";
         initialRoom.GetComponent<Room>().RoomIndex = roomIndex;
         roomObject.Add(initialRoom);
+    }
+
+    GameObject ChooseRoomPrefab(){
+        GameObject chosenRoom = null;
+
+        while(chosenRoom == null){
+            foreach (var room in roomPrefab)
+            {
+                if(Random.value < .6f){
+                    chosenRoom = room;
+                    break;
+                }
+            }
+        }
+
+        return chosenRoom;
     }
 
     private bool TryGenerateRoom(Vector2Int roomIndex){
@@ -74,8 +102,8 @@ public class LevelGenerator : MonoBehaviour
         roomGrid[roomIndex.x, roomIndex.y] = 1;
         roomCount++;
 
-        var newRoom = Instantiate(roomPrefab, GetPositionFromGridIndex(roomIndex), Quaternion.identity);
-        newRoom.name = $"Room-{roomCount}";
+        var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
+        newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
         newRoom.GetComponent<Room>().RoomIndex = roomIndex;
         roomObject.Add(newRoom);
 
@@ -85,15 +113,17 @@ public class LevelGenerator : MonoBehaviour
     }
 
     public void RegenerateRooms(){
+        generationComplete = false;
         roomObject.ForEach(Destroy);
         roomObject.Clear();
         roomGrid = new int[gridSizeX, gridSizeY];
         roomQueue.Clear();
         roomCount = 0;
-        generationComplete = false;
 
         Vector2Int initialRoomIndex = new Vector2Int(gridSizeX / 2, gridSizeY / 2);
         StartRoomGenerationFromRoom(initialRoomIndex);
+
+        StartCoroutine(FakeUpdate());
     }
 
     void CreateDoors(GameObject room, int x, int y){
@@ -105,20 +135,20 @@ public class LevelGenerator : MonoBehaviour
         Room bottomRoomScript = GetRoomScriptAt(new Vector2Int(x, y - 1));
 
         if (leftRoomScript != null) {
-            newRoomScript.OpenDoor(Vector2Int.left);
-            leftRoomScript.OpenDoor(Vector2Int.right);
+            newRoomScript.CreateDoor(Vector2Int.left, leftRoomScript);
+            leftRoomScript.CreateDoor(Vector2Int.right, newRoomScript);
         }
         if (rightRoomScript != null) {
-            newRoomScript.OpenDoor(Vector2Int.right);
-            rightRoomScript.OpenDoor(Vector2Int.left);
+            newRoomScript.CreateDoor(Vector2Int.right, rightRoomScript);
+            rightRoomScript.CreateDoor(Vector2Int.left, newRoomScript);
         }
         if (topRoomScript != null) {
-            newRoomScript.OpenDoor(Vector2Int.up);
-            topRoomScript.OpenDoor(Vector2Int.down);
+            newRoomScript.CreateDoor(Vector2Int.up, topRoomScript);
+            topRoomScript.CreateDoor(Vector2Int.down, newRoomScript);
         }
         if (bottomRoomScript != null) {
-            newRoomScript.OpenDoor(Vector2Int.down);
-            bottomRoomScript.OpenDoor(Vector2Int.up);
+            newRoomScript.CreateDoor(Vector2Int.down, bottomRoomScript);
+            bottomRoomScript.CreateDoor(Vector2Int.up, newRoomScript);
         }
     }
 
