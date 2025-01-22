@@ -1,27 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using NavMeshPlus.Components;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
+    #region Generator Variables
     [SerializeField] int seed;
 
     [SerializeField] GameObject[] roomPrefab;
+    [SerializeField] GameObject bossRoomPrefab;
     [SerializeField] private int minRooms = 10, maxRooms = 15;
-
-    int roomWidth = 59, roomHeight = 32;
-
     [SerializeField] int gridSizeX = 10, gridSizeY = 10;
 
+    int roomWidth = 59, roomHeight = 32;
     private List<GameObject> roomObject = new List<GameObject>();
-
     private Queue<Vector2Int> roomQueue = new Queue<Vector2Int>();
-
     private int[,] roomGrid;
-
     private int roomCount;
-
     private bool generationComplete = false;
+
+    static Random.State state;
+    #endregion
+
 
     private void Start() {
         if (seed < 0) seed *= -1;
@@ -56,6 +57,12 @@ public class LevelGenerator : MonoBehaviour
                 break;
             } 
             else if (!generationComplete){
+                if(!TryGenerateBossRoom()){
+                    Debug.Log("Failed to generate boss room, regenerating");
+                    RegenerateRooms();
+                    break;
+                }
+
                 generationComplete = true;
                 Debug.Log($"Generation complete with {roomCount} rooms");
                 Messenger.Broadcast(GameEvent.LEVEL_GENERATED);
@@ -108,6 +115,45 @@ public class LevelGenerator : MonoBehaviour
         roomObject.Add(newRoom);
 
         CreateDoors(newRoom, roomIndex.x, roomIndex.y);
+
+        return true;
+    }
+
+    private bool TryGenerateBossRoom(){
+        Vector2Int validIndex = Vector2Int.zero;
+        for(int i=1; i<roomObject.Count; i++){
+            Vector2Int checkedIndex = roomObject[roomObject.Count - i].GetComponent<Room>().RoomIndex;
+
+            if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y+1)) == 1){
+                validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y+1);
+                break;
+            }
+            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y-1)) == 1){
+                validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y-1);
+                break;
+            }
+            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x+1, checkedIndex.y)) == 1){
+                validIndex = new Vector2Int(checkedIndex.x+1, checkedIndex.y);
+                break;
+            }
+            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x-1, checkedIndex.y)) == 1){
+                validIndex = new Vector2Int(checkedIndex.x-1, checkedIndex.y);
+                break;
+            }
+        }
+
+        if(validIndex == Vector2Int.zero) return false;
+        
+        roomQueue.Enqueue(validIndex);
+        roomGrid[validIndex.x, validIndex.y] = 1;
+        roomCount++;
+
+        var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
+        newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
+        newRoom.GetComponent<Room>().RoomIndex = validIndex;
+        roomObject.Add(newRoom);
+
+        CreateDoors(newRoom, validIndex.x, validIndex.y);
 
         return true;
     }

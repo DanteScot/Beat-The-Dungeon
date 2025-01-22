@@ -45,7 +45,7 @@ public class ItemController : PickUp
 
         // Se non ci sono più oggetti disponibili, istanzia l'ingranaggio e distrugge l'oggetto
         if(availableItems.Count == 0){
-            Instantiate(gear, transform.position, Quaternion.identity);
+            transform.parent.parent.parent.parent.GetComponentInChildren<RoomManager>().SetReward(gear);
             Destroy(gameObject);
             return;
         }

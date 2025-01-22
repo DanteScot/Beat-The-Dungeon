@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NavMeshPlus.Components;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,6 +9,7 @@ public class RoomManager : MonoBehaviour
 {
     // Array contenente i possibili premi che possono essere droppati
     [SerializeField] private GameObject[] rewardPrefab;
+    GameObject reward;
     [SerializeField] private bool isLobbyRoom=false;
     public Collider2D[] enemies { get; private set; }
     
@@ -26,7 +28,9 @@ public class RoomManager : MonoBehaviour
 
     [SerializeField] private DoorController[] doors;
 
-    public Transform content;
+    List<NavMeshSurface> navMeshes;
+
+    Transform content;
 
     void Awake()
     {
@@ -38,6 +42,10 @@ public class RoomManager : MonoBehaviour
         }
 
         tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
+
+        if(isLobbyRoom) return;
+
+        navMeshes = new List<NavMeshSurface>();
 
         Messenger.AddListener(GameEvent.LEVEL_GENERATED, OnLevelGenerated);
     }
@@ -51,14 +59,20 @@ public class RoomManager : MonoBehaviour
 
         isRoomActive = false;
 
-        content = transform.parent.Find("Conent");
+        content = transform.parent.Find("Content");
+
+        foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
+            navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
+            navMeshes[navMeshes.Count-1].transform.position = roomCenter;
+            navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
+        }
     }
 
     void OnLevelGenerated(){
         try{
-            if(!gameObject.activeSelf || !enabled) return;
+            if (this == null || gameObject == null || !gameObject.activeSelf || !enabled) return;
 
-            if(!transform.parent.name.Equals("Room-1"))
+            if(!transform.parent.name.Equals("Room-1") && !isLobbyRoom && !transform.parent.name.Contains("BossRoom"))
             {
                 GameObject[] contents = Resources.LoadAll<GameObject>($"Prefabs/RoomContents/{transform.parent.name.Split(' ')[0]}");
 
@@ -68,37 +82,75 @@ public class RoomManager : MonoBehaviour
 
                 int totalGroups = System.Enum.GetValues(typeof(GenerationGroup)).Length;
                 GameObject[] enemiesForGroup = new GameObject[totalGroups];
-                
                 for (int i = 0; i < totalGroups; i++)
                 {
                     enemiesForGroup[i] = enemies[Random.Range(0, enemies.Length)];
                 }
 
+                if(navMeshes.Count>0)
+                {
+                    foreach (var nav in navMeshes)
+                    {
+                        nav.BuildNavMesh();
+                    }
+                }
+
                 foreach (var spawner in content.GetComponentsInChildren<EnemySpawpoint>())
                 {
+                    // if (NavMesh.SamplePosition(spawner.transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                    // {
+                    //     // Posiziona l'agente sul punto valido trovato
+                    //     GameObject agent = Instantiate(enemiesForGroup[(int)spawner.generationGroup], hit.position, Quaternion.identity, content);
+                    // }
                     Instantiate(enemiesForGroup[(int)spawner.generationGroup], spawner.transform.position, Quaternion.identity, content);
                 }
             }
 
             StartCoroutine(WaitBeforeCheck());
             
-        } catch {
-            Debug.Log("Error in RoomManager");
+        } catch (System.Exception ex) {
+            Debug.LogError($"Error in RoomManager: {ex.Message}\n{ex.StackTrace}");
         }
     }
 
 
     IEnumerator WaitBeforeCheck(){
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.05f);
 
         FindEnemies();
         if(enemies.Length>0) isRoomActive = true;
+
+        List<string> requiredMeshes = new List<string>();
+        foreach (var enemy in enemies)
+        {
+            requiredMeshes.Add(enemy.transform.GetComponent<Enemy>().requiredNavMesh.ToString());
+        }
+
+        List<NavMeshSurface> tmp = new List<NavMeshSurface>();
+        foreach (var nav in navMeshes)
+        {
+            // if(!requiredMeshes.Contains(nav.name.Replace("(Clone)",""))) nav.gameObject.SetActive(false);
+            if(!requiredMeshes.Contains(nav.name.Replace("(Clone)",""))){
+                Destroy(nav.gameObject);
+            } else {
+                tmp.Add(nav);
+            }
+        }
+        navMeshes = tmp;
+
+        if(isRoomActive && !isLobbyRoom){
+            if(Random.Range(0+PlayerManager.Instance.LuckLevelled*5, 100)>50) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
+        }
 
         foreach (var door in doors)
         {
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
         }
+    }
+
+    public void SetReward(GameObject reward){
+        this.reward = Instantiate(reward, content.GetChild(0).Find("Reward"));;
     }
 
 
@@ -133,7 +185,6 @@ public class RoomManager : MonoBehaviour
 
 
     // Finchè la stanza è attiva controlla se ci sono nemici al suo interno, se non ce ne sono più la stanza è stata completata
-
     void LateUpdate()
     {
         if(isRoomActive){
@@ -153,7 +204,7 @@ public class RoomManager : MonoBehaviour
     // Istanzia il premio e apre le porte della stanza
     void RoomCleared(){
         isRoomActive = false;
-        if(!isLobbyRoom) Instantiate(rewardPrefab[Random.Range(0,rewardPrefab.Length)], roomCenter, Quaternion.identity);
+        if(reward) reward.SetActive(true);
         foreach (var door in doors)
         {
             door.OpenDoor();
@@ -164,11 +215,14 @@ public class RoomManager : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
-            FindEnemies();
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
             PlayerManager.Instance.currentRoom = this;
 
             if(isLobbyRoom) return;
+            
+            FindEnemies();
+
+            if(reward && enemies.Length>0) reward.SetActive(false);
 
             foreach (var enemy in enemies)
             {
@@ -188,5 +242,11 @@ public class RoomManager : MonoBehaviour
                 enemy.GetComponent<Enemy>().isActive = false;
             }
         }
+    }
+
+    private void OnDestroy() {
+        Messenger.RemoveListener(GameEvent.LEVEL_GENERATED, OnLevelGenerated);
+
+        StopAllCoroutines();
     }
 }

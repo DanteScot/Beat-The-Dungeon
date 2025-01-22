@@ -49,4 +49,10 @@ public class Room : MonoBehaviour
         }
         return null;
     }
+
+    private void OnDestroy() {
+        foreach(Transform child in transform){
+            Destroy(child.gameObject);
+        }
+    }
 }

@@ -117,7 +117,6 @@ MonoBehaviour:
   - {fileID: 151385359859086453}
   - {fileID: 8758940987719694282}
   - {fileID: 4367414122271869783}
-  content: {fileID: 0}
 --- !u!1 &1769970367182747721
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,7 +127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7663039109843287412}
   m_Layer: 0
-  m_Name: Conent
+  m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

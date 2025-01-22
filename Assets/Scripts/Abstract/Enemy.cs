@@ -2,9 +2,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public enum RequiredNavMesh{
+    GROUND_SMALL,
+    GROUND_BIG,
+    FLY
+}
+
 // Classe astratta per i nemici, tutti i nemici devono ereditare da questa classe
 public class Enemy : RythmedObject
 {
+    public RequiredNavMesh requiredNavMesh;
+
     [Header("Common Stats")]
     [SerializeField] protected float health;
     [SerializeField] protected float damage;
