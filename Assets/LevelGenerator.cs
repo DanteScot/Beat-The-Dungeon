@@ -10,8 +10,10 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] GameObject[] roomPrefab;
     [SerializeField] GameObject bossRoomPrefab;
-    [SerializeField] private int minRooms = 10, maxRooms = 15;
-    [SerializeField] int gridSizeX = 10, gridSizeY = 10;
+    
+    private int minRooms, maxRooms;
+
+    int gridSizeX = 10, gridSizeY = 10;
 
     int roomWidth = 59, roomHeight = 32;
     private List<GameObject> roomObject = new List<GameObject>();
@@ -23,20 +25,34 @@ public class LevelGenerator : MonoBehaviour
     static Random.State state;
     #endregion
 
+    int roomGenerated;
+
+    private void Awake() {
+        Messenger.AddListener(GameEvent.ROOM_GENERATED, OnRoomGenerated);
+    }
 
     private void Start() {
-        if (seed < 0) seed *= -1;
-        else if (seed == 0) seed = Random.Range(1, int.MaxValue);
+        if (GameManager.Instance.GetLevel() <= 1){
+            if (seed < 0) seed *= -1;
+            else if (seed == 0) seed = Random.Range(1, int.MaxValue);
 
-        Random.InitState(seed);
-        Debug.Log(seed);
+            Random.InitState(seed);
+        } else {
+            Random.state = state;
+        }
         
+        minRooms = 5 + 5*GameManager.Instance.GetLevel();
+        maxRooms = minRooms + minRooms/2;
+        gridSizeX = maxRooms;
+        gridSizeY = maxRooms;
+
+        roomGenerated = 0;
+
         roomGrid = new int[gridSizeX, gridSizeY];
         roomQueue = new Queue<Vector2Int>();
 
         Vector2Int initialRoomIndex = new Vector2Int(gridSizeX / 2, gridSizeY / 2);
         StartRoomGenerationFromRoom(initialRoomIndex);
-
 
         StartCoroutine(FakeUpdate());
     }
@@ -99,7 +115,7 @@ public class LevelGenerator : MonoBehaviour
     }
 
     private bool TryGenerateRoom(Vector2Int roomIndex){
-        if (roomCount >= maxRooms) return false;
+        if (roomCount >= maxRooms || roomGrid[roomIndex.x, roomIndex.y] == 1) return false;
 
         if (Random.value < .5f && roomIndex != Vector2Int.zero) return false;
 
@@ -195,6 +211,19 @@ public class LevelGenerator : MonoBehaviour
         if (bottomRoomScript != null) {
             newRoomScript.CreateDoor(Vector2Int.down, bottomRoomScript);
             bottomRoomScript.CreateDoor(Vector2Int.up, newRoomScript);
+        }
+    }
+
+    private void OnRoomGenerated(){
+        roomGenerated++;
+
+        if(roomGenerated == roomCount){
+            Debug.Log("All rooms loaded correctly");
+            state = Random.state;
+            Messenger.Broadcast(GameEvent.LEVEL_LOADED);
+        }
+        else{
+            Debug.Log($"Loading room {roomGenerated} of {roomCount}");
         }
     }
 

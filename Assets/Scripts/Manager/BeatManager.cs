@@ -67,7 +67,7 @@ public class BeatManager : MonoBehaviour
     {
         audioSource.Play();
         // Per semplicità nella gestione del tempo, il gioco è stato impostato a 60fps
-        Application.targetFrameRate = 60;
+        // Application.targetFrameRate = 60;
     }
 
     // Ogni frame controlla se è passato un beat

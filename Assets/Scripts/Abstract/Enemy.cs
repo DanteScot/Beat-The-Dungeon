@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public enum RequiredNavMesh{
+    NONE,
     GROUND_SMALL,
     GROUND_BIG,
     FLY

@@ -63,6 +63,7 @@ public class RoomManager : MonoBehaviour
 
         foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
             navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
+            navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
             navMeshes[navMeshes.Count-1].transform.position = roomCenter;
             navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
         }
@@ -126,17 +127,11 @@ public class RoomManager : MonoBehaviour
             requiredMeshes.Add(enemy.transform.GetComponent<Enemy>().requiredNavMesh.ToString());
         }
 
-        List<NavMeshSurface> tmp = new List<NavMeshSurface>();
         foreach (var nav in navMeshes)
         {
-            // if(!requiredMeshes.Contains(nav.name.Replace("(Clone)",""))) nav.gameObject.SetActive(false);
-            if(!requiredMeshes.Contains(nav.name.Replace("(Clone)",""))){
-                Destroy(nav.gameObject);
-            } else {
-                tmp.Add(nav);
-            }
+            if (!requiredMeshes.Contains(nav.name)) nav.gameObject.SetActive(false);
+            // if (!requiredMeshes.Contains(nav.name)) Destroy(nav.gameObject);
         }
-        navMeshes = tmp;
 
         if(isRoomActive && !isLobbyRoom){
             if(Random.Range(0+PlayerManager.Instance.LuckLevelled*5, 100)>50) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
@@ -147,6 +142,8 @@ public class RoomManager : MonoBehaviour
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
         }
+
+        Messenger.Broadcast(GameEvent.ROOM_GENERATED);
     }
 
     public void SetReward(GameObject reward){
@@ -209,6 +206,11 @@ public class RoomManager : MonoBehaviour
         {
             door.OpenDoor();
         }
+
+        foreach (var nav in navMeshes)
+        {
+            Destroy(nav.gameObject);
+        }
     }
 
     // Quando il giocatore entra nella stanza, si imposta come stanza corrente e si attivano i nemici
@@ -227,6 +229,19 @@ public class RoomManager : MonoBehaviour
             foreach (var enemy in enemies)
             {
                 enemy.GetComponent<Enemy>().isActive = true;
+            }
+
+            foreach (Minion minion in PlayerManager.Instance.GetMinions().GetComponentsInChildren<Minion>())
+            {
+                if(minion.RequiredNavMesh != RequiredNavMesh.NONE){
+                    foreach (var nav in navMeshes)
+                    {
+                        if(nav.name.Equals(minion.RequiredNavMesh.ToString())){
+                            nav.gameObject.SetActive(true);
+                            break;
+                        }
+                    }
+                }
             }
         }
     }

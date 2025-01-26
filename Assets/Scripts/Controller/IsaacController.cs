@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 // Classe che gestisce il movimento e l'attacco di Isaac (Minion)
-public class IsaacController : MonoBehaviour, Observer
+public class IsaacController : MonoBehaviour, Observer, Minion
 {
     private NavMeshAgent agent;
 
@@ -11,6 +11,9 @@ public class IsaacController : MonoBehaviour, Observer
     private float damage;
 
     private bool canAttack = false;
+
+    private RequiredNavMesh requiredNavMesh = RequiredNavMesh.GROUND_SMALL;
+    public RequiredNavMesh RequiredNavMesh { get => requiredNavMesh; set => requiredNavMesh=value; }
 
     private void Awake() {
         PlayerManager.Instance.Attach(this);
@@ -56,10 +59,10 @@ public class IsaacController : MonoBehaviour, Observer
                 }
             }
 
-            if (closestEnemy != null) {
-                agent.SetDestination(closestEnemy.transform.position);
-            } else {
-                agent.SetDestination(transform.position);
+            if (closestEnemy != null) agent.SetDestination(closestEnemy.transform.position);
+            else {
+                // agent.SetDestination(transform.position);
+                // agent.isStopped = true;
             }
         }
     }

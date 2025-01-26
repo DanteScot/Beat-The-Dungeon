@@ -190,6 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   waitBeat: 0
+  requiredNavMesh: 1
   health: 10
   damage: 1
   isActive: 0

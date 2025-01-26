@@ -22,6 +22,8 @@ public static class GameEvent{
     }
 
     public const string LEVEL_GENERATED = "LEVEL_GENERATED";
+    public const string ROOM_GENERATED = "ROOM_GENERATED";
+    public const string LEVEL_LOADED = "LEVEL_LOADED";
 
     public const string PLAYER_HIT = "PLAYER_HIT";
     public const string ENEMY_HIT = "ENEMY_HIT";
