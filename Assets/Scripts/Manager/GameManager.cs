@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     private string basePath = "Sounds/";
 
-    private int level = 0; // -2 menu, -1 tutorial, 0 lobby, n level n
+    [SerializeField] private int level = 50; // -2 menu, -1 tutorial, 0 lobby, n level n
 
     // Variabili per evitare che un suono venga riprodotto più volte nello stesso frame
     bool playerHit = false, enemyHit = false, itemPicked = false, gearPicked = false, bulletShoot = false;

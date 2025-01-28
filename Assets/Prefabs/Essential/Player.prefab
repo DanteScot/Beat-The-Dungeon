@@ -9698,6 +9698,7 @@ GameObject:
   - component: {fileID: 2596750328573168802}
   - component: {fileID: 5820856199272435022}
   - component: {fileID: 7943219246833296696}
+  - component: {fileID: 1015601683730548342}
   m_Layer: 0
   m_Name: Cinemachine
   m_TagString: Untagged
@@ -9810,6 +9811,20 @@ MonoBehaviour:
     m_FrequencyGain: 1
     m_Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &1015601683730548342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8113908772665243147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8918a8f94a3b24d9b83d88b0bdbf86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orthoCamera: {fileID: 1571419585768497685}
+  targetWidth: 12
 --- !u!1 &8155591728708174357
 GameObject:
   m_ObjectHideFlags: 0

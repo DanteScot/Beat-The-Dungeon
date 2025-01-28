@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NavMeshPlus.Components;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -25,26 +26,35 @@ public class LevelGenerator : MonoBehaviour
     static Random.State state;
     #endregion
 
+    [SerializeField] Sprite[] loadingSprites;
+    GameObject loadingScreen;
+
     int roomGenerated;
 
     private void Awake() {
         Messenger.AddListener(GameEvent.ROOM_GENERATED, OnRoomGenerated);
+
+        loadingScreen = transform.GetChild(0).gameObject;
+        loadingScreen.SetActive(true);
+        StartCoroutine(LoadingAnimation());
     }
 
     private void Start() {
-        if (GameManager.Instance.GetLevel() <= 1){
-            if (seed < 0) seed *= -1;
-            else if (seed == 0) seed = Random.Range(1, int.MaxValue);
+        // TODO: decommentare
+        // if (GameManager.Instance.GetLevel() <= 1){
+        //     if (seed < 0) seed *= -1;
+        //     else if (seed == 0) seed = Random.Range(1, int.MaxValue);
 
-            Random.InitState(seed);
-        } else {
-            Random.state = state;
-        }
+        //     Random.InitState(seed);
+        // } else {
+        //     Random.state = state;
+        // }
+        if (seed == 0) seed = Random.Range(1, int.MaxValue);
         
-        minRooms = 5 + 5*GameManager.Instance.GetLevel();
+        minRooms = (int)(5 + 1.5f*GameManager.Instance.GetLevel());
         maxRooms = minRooms + minRooms/2;
-        gridSizeX = maxRooms;
-        gridSizeY = maxRooms;
+        gridSizeX = minRooms;
+        gridSizeY = minRooms;
 
         roomGenerated = 0;
 
@@ -93,7 +103,7 @@ public class LevelGenerator : MonoBehaviour
         roomGrid[roomIndex.x, roomIndex.y] = 1;
         roomCount++;
         var initialRoom = Instantiate(roomPrefab[0], GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
-        initialRoom.name = $"Room-{roomCount}";
+        initialRoom.name = $"Room - {roomCount}";
         initialRoom.GetComponent<Room>().RoomIndex = roomIndex;
         roomObject.Add(initialRoom);
     }
@@ -115,63 +125,71 @@ public class LevelGenerator : MonoBehaviour
     }
 
     private bool TryGenerateRoom(Vector2Int roomIndex){
-        if (roomCount >= maxRooms || roomGrid[roomIndex.x, roomIndex.y] == 1) return false;
+        try{
+            if (roomCount >= maxRooms || roomGrid[roomIndex.x, roomIndex.y] == 1) return false;
 
-        if (Random.value < .5f && roomIndex != Vector2Int.zero) return false;
+            if (Random.value < .5f && roomIndex != Vector2Int.zero) return false;
 
-        if (CountAdjacentRooms(roomIndex) > 1) return false;
+            if (CountAdjacentRooms(roomIndex) > 1) return false;
 
-        roomQueue.Enqueue(roomIndex);
-        roomGrid[roomIndex.x, roomIndex.y] = 1;
-        roomCount++;
+            roomQueue.Enqueue(roomIndex);
+            roomGrid[roomIndex.x, roomIndex.y] = 1;
+            roomCount++;
 
-        var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
-        newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
-        newRoom.GetComponent<Room>().RoomIndex = roomIndex;
-        roomObject.Add(newRoom);
+            var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
+            newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
+            newRoom.GetComponent<Room>().RoomIndex = roomIndex;
+            roomObject.Add(newRoom);
 
-        CreateDoors(newRoom, roomIndex.x, roomIndex.y);
+            CreateDoors(newRoom, roomIndex.x, roomIndex.y);
 
-        return true;
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     private bool TryGenerateBossRoom(){
-        Vector2Int validIndex = Vector2Int.zero;
-        for(int i=1; i<roomObject.Count; i++){
-            Vector2Int checkedIndex = roomObject[roomObject.Count - i].GetComponent<Room>().RoomIndex;
+        try{
+            Vector2Int validIndex = Vector2Int.zero;
+            for(int i=1; i<roomObject.Count; i++){
+                Vector2Int checkedIndex = roomObject[roomObject.Count - i].GetComponent<Room>().RoomIndex;
 
-            if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y+1)) == 1){
-                validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y+1);
-                break;
+                if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y+1)) == 1){
+                    validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y+1);
+                    break;
+                }
+                else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y-1)) == 1){
+                    validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y-1);
+                    break;
+                }
+                else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x+1, checkedIndex.y)) == 1){
+                    validIndex = new Vector2Int(checkedIndex.x+1, checkedIndex.y);
+                    break;
+                }
+                else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x-1, checkedIndex.y)) == 1){
+                    validIndex = new Vector2Int(checkedIndex.x-1, checkedIndex.y);
+                    break;
+                }
             }
-            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y-1)) == 1){
-                validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y-1);
-                break;
-            }
-            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x+1, checkedIndex.y)) == 1){
-                validIndex = new Vector2Int(checkedIndex.x+1, checkedIndex.y);
-                break;
-            }
-            else if(CountAdjacentRooms(new Vector2Int(checkedIndex.x-1, checkedIndex.y)) == 1){
-                validIndex = new Vector2Int(checkedIndex.x-1, checkedIndex.y);
-                break;
-            }
+
+            if(validIndex == Vector2Int.zero) return false;
+            
+            roomQueue.Enqueue(validIndex);
+            roomGrid[validIndex.x, validIndex.y] = 1;
+            roomCount++;
+
+            var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
+            newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
+            newRoom.GetComponent<Room>().RoomIndex = validIndex;
+            roomObject.Add(newRoom);
+
+            CreateDoors(newRoom, validIndex.x, validIndex.y);
+
+            return true;
+        } catch {
+            return false;
         }
-
-        if(validIndex == Vector2Int.zero) return false;
-        
-        roomQueue.Enqueue(validIndex);
-        roomGrid[validIndex.x, validIndex.y] = 1;
-        roomCount++;
-
-        var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
-        newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
-        newRoom.GetComponent<Room>().RoomIndex = validIndex;
-        roomObject.Add(newRoom);
-
-        CreateDoors(newRoom, validIndex.x, validIndex.y);
-
-        return true;
     }
 
     public void RegenerateRooms(){
@@ -218,12 +236,25 @@ public class LevelGenerator : MonoBehaviour
         roomGenerated++;
 
         if(roomGenerated == roomCount){
+            StopCoroutine(LoadingAnimation());
             Debug.Log("All rooms loaded correctly");
             state = Random.state;
-            Messenger.Broadcast(GameEvent.LEVEL_LOADED);
+            Destroy(loadingScreen);
+            // Messenger.Broadcast(GameEvent.LEVEL_LOADED);
         }
-        else{
-            Debug.Log($"Loading room {roomGenerated} of {roomCount}");
+    }
+
+    IEnumerator LoadingAnimation(){
+        Image image = loadingScreen.transform.GetChild(1).GetComponent<Image>();
+        while (true){
+            for(int i=0; i<loadingSprites.Length; i++){
+                try{
+                    image.sprite = loadingSprites[i];
+                } catch {
+                    break;
+                }
+                yield return new WaitForSeconds(.25f);
+            }
         }
     }
 

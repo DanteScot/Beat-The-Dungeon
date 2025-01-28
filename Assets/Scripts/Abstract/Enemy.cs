@@ -18,6 +18,13 @@ public class Enemy : RythmedObject
     [SerializeField] protected float health;
     [SerializeField] protected float damage;
 
+    private new void Awake() {
+        base.Awake();
+        
+        health *= GameManager.Instance.GetLevel();
+        damage *= GameManager.Instance.GetLevel();
+    }
+
     // Usato per evitare che il nemico si muova mentre il player è in un'altra stanza
     public bool isActive=false;
 
