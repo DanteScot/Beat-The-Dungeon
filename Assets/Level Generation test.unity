@@ -396,6 +396,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 219583923478637687, guid: e946e754e06a9ce4cacc55d183e58eb2, type: 3}
+      propertyPath: level
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 496386644457557434, guid: e946e754e06a9ce4cacc55d183e58eb2, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -1369,7 +1373,7 @@ Transform:
   - {fileID: 1231213337}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &1530783826
+--- !u!43 &1613035777
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

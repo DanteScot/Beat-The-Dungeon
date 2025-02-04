@@ -15,6 +15,7 @@ public enum GenerationGroup
 public class EnemySpawpoint : MonoBehaviour
 {
     public GenerationGroup generationGroup;
+    public bool isBossSpawner = false;
 
     private void OnValidate() {
         if (generationGroup == GenerationGroup.first) {

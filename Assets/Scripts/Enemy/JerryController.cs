@@ -2,6 +2,7 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 // Classe che si occupa di gestire il boss Jerry e che mi ha divertito davvero tanto scriverla come vedrete dai commenti
@@ -150,6 +151,22 @@ public class JerryController : Enemy
         yield return new WaitUntil(() => isActive);
         healthBar.gameObject.SetActive(true);
 
+        TilemapCollider2D tilemap = PlayerManager.Instance.currentRoom.TilemapCollider;
+        int xPoints = (int)((tilemap.bounds.size.x-2) / 7) + 1;
+        int yPoints = (int)((tilemap.bounds.size.y-2) / 3);
+
+        possiblePositions = new Transform[xPoints * yPoints];
+        int index = 0;
+
+        for (int i = 0; i < xPoints; i++) {
+            for (int j = 0; j < yPoints; j++) {
+                possiblePositions[index] = new GameObject($"Position {index+1}").transform;
+                possiblePositions[index].SetParent(transform.parent);
+                possiblePositions[index].position = new Vector3(tilemap.bounds.min.x + 3 + i * 7, tilemap.bounds.min.y + 3 + j * 3, 0);
+                index++;
+            }
+        }
+
         // La prima volta mette la prima canzone, la seconda non fa nulla
         if(BeatManager.Instance.audioSource.clip != secondPhaseSong) {
             oldSong = BeatManager.Instance.audioSource.clip;
@@ -169,8 +186,10 @@ public class JerryController : Enemy
     // Sceglie una posizione random e ci si muove, guardando verso quella posizione
     private IEnumerator Move() {
         isMoving = true;
+        Debug.Log($"Length: {possiblePositions.Length}");
         Vector3 targetPosition = possiblePositions[Random.Range(0, possiblePositions.Length)].position;
-        agent.SetDestination(targetPosition);
+        Debug.Log($"Target: {targetPosition}");
+        Debug.Log(agent.SetDestination(targetPosition));    //TODO: Fix this
 
         if(targetPosition.x < transform.position.x) transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); 
@@ -306,5 +325,14 @@ public class JerryController : Enemy
         if(other.gameObject.CompareTag("Player")){
             other.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
+    }
+
+    private void OnDrawGizmos() {
+        try{
+            foreach (var pos in possiblePositions)
+            {
+                Gizmos.DrawWireSphere(pos.position, .5f);
+            }
+        } catch {}
     }
 }

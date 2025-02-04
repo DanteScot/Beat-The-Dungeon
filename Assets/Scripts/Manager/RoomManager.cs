@@ -12,6 +12,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private GameObject[] rewardPrefab;
     GameObject reward;
     [SerializeField] private bool isLobbyRoom=false;
+    [SerializeField] private bool isBossRoom=false;
     public Collider2D[] enemies { get; private set; }
     
     /// <summary>
@@ -21,7 +22,7 @@ public class RoomManager : MonoBehaviour
     /// </summary>
     [SerializeField] private bool isRoomActive;
 
-    private TilemapCollider2D tilemapCollider;
+    public TilemapCollider2D TilemapCollider { get; private set; }
 
     private float roomX;
     private float roomY;
@@ -46,7 +47,7 @@ public class RoomManager : MonoBehaviour
             tilemap.CompressBounds();
         }
 
-        tilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
+        TilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
 
         if(isLobbyRoom) return;
 
@@ -61,9 +62,9 @@ public class RoomManager : MonoBehaviour
     void Start()
     {
         // Calcola le dimensioni della stanza ed il suo centro
-        roomX=tilemapCollider.bounds.size.x;
-        roomY=tilemapCollider.bounds.size.y;
-        roomCenter = tilemapCollider.bounds.center;
+        roomX=TilemapCollider.bounds.size.x;
+        roomY=TilemapCollider.bounds.size.y;
+        roomCenter = TilemapCollider.bounds.center;
 
         isRoomActive = false;
 
@@ -98,11 +99,15 @@ public class RoomManager : MonoBehaviour
         yield return new WaitUntil(() => currentLoadingRoom == selfIndex);
 
         if (this == null || gameObject == null || !gameObject.activeSelf || !enabled) yield break;
+        
+        isBossRoom = transform.parent.name.Contains("BossRoom");
 
-        if(!transform.parent.name.Equals("Room - 1") && !isLobbyRoom && !transform.parent.name.Contains("BossRoom"))
+        if(!transform.parent.name.Equals("Room - 1") && !isLobbyRoom && !isBossRoom)
         {
             if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
             EnemySpawpoint[] spawners = content.GetComponentsInChildren<EnemySpawpoint>().Where(x => x.CompareTag("EnemySpawner")).ToArray();
+
+            yield return null;
 
             if(navMeshes.Count>0)
             {
@@ -123,6 +128,26 @@ public class RoomManager : MonoBehaviour
                 // }
                 Instantiate(enemiesForGroup[(int)spawners[i].generationGroup], spawners[i].transform.position, Quaternion.identity, content);
             }
+            yield return null;
+        } else if (isBossRoom){
+            Debug.Log("rgbjgekb");
+            GameObject[] bossPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemy/Boss");
+
+            if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
+            EnemySpawpoint spawner = content.GetComponentInChildren<EnemySpawpoint>();
+
+            yield return null;
+
+            if(navMeshes.Count>0)
+            {
+                foreach (var nav in navMeshes)
+                {
+                    nav.BuildNavMesh();
+                    yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
+                }
+            }
+
+            Instantiate(bossPrefabs[Random.Range(0, bossPrefabs.Length)], spawner.transform.position, Quaternion.identity, content);
         }
         
         StartCoroutine(WaitBeforeCheck());
@@ -143,15 +168,22 @@ public class RoomManager : MonoBehaviour
             requiredMeshes.Add(enemy.transform.GetComponent<Enemy>().requiredNavMesh.ToString());
         }
 
+        yield return null;
+
         foreach (var nav in navMeshes)
         {
             if (!requiredMeshes.Contains(nav.name)) nav.gameObject.SetActive(false);
             // if (!requiredMeshes.Contains(nav.name)) Destroy(nav.gameObject);
         }
 
-        if(isRoomActive && !isLobbyRoom){
+        yield return null;
+
+        if(isBossRoom) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
+        else if(isRoomActive && !isLobbyRoom){
             if(Random.Range(0+PlayerManager.Instance.LuckLevelled*5, 100)>50) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
         }
+
+        yield return null;
 
         foreach (var door in doors)
         {

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generationGroup: 0
+  isBossSpawner: 0
 --- !u!212 &5978762942919507521
 SpriteRenderer:
   m_ObjectHideFlags: 0

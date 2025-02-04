@@ -10,7 +10,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] int seed;
 
     [SerializeField] GameObject[] roomPrefab;
-    [SerializeField] GameObject bossRoomPrefab;
+    // [SerializeField] GameObject bossRoomPrefab;
     
     private int minRooms, maxRooms;
 
@@ -50,6 +50,7 @@ public class LevelGenerator : MonoBehaviour
         //     Random.state = state;
         // }
         if (seed == 0) seed = Random.Range(1, int.MaxValue);
+        Random.InitState(seed);
         
         minRooms = (int)(5 + 1.5f*GameManager.Instance.GetLevel());
         maxRooms = minRooms + minRooms/2;
@@ -179,8 +180,9 @@ public class LevelGenerator : MonoBehaviour
             roomGrid[validIndex.x, validIndex.y] = 1;
             roomCount++;
 
-            var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
-            newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
+            // var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
+            var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
+            newRoom.name = newRoom.name = $"BossRoom - {roomCount}";
             newRoom.GetComponent<Room>().RoomIndex = validIndex;
             roomObject.Add(newRoom);
 
