@@ -27,7 +27,7 @@ public class JerryController : Enemy
 
     [Header("Other Things")]
     // Posizioni in cui Jerry può muoversi, rende il tutto più pulito
-    [SerializeField] private Transform[] possiblePositions;
+    [SerializeField] private Vector3[] possiblePositions;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Slider healthBar;
 
@@ -155,14 +155,12 @@ public class JerryController : Enemy
         int xPoints = (int)((tilemap.bounds.size.x-2) / 7) + 1;
         int yPoints = (int)((tilemap.bounds.size.y-2) / 3);
 
-        possiblePositions = new Transform[xPoints * yPoints];
+        possiblePositions = new Vector3[xPoints * yPoints];
         int index = 0;
 
         for (int i = 0; i < xPoints; i++) {
             for (int j = 0; j < yPoints; j++) {
-                possiblePositions[index] = new GameObject($"Position {index+1}").transform;
-                possiblePositions[index].SetParent(transform.parent);
-                possiblePositions[index].position = new Vector3(tilemap.bounds.min.x + 3 + i * 7, tilemap.bounds.min.y + 3 + j * 3, 0);
+                possiblePositions[index] = new Vector3(tilemap.bounds.min.x + 3 + i * 7, tilemap.bounds.min.y + 3 + j * 3, 0);
                 index++;
             }
         }
@@ -186,10 +184,8 @@ public class JerryController : Enemy
     // Sceglie una posizione random e ci si muove, guardando verso quella posizione
     private IEnumerator Move() {
         isMoving = true;
-        Debug.Log($"Length: {possiblePositions.Length}");
-        Vector3 targetPosition = possiblePositions[Random.Range(0, possiblePositions.Length)].position;
-        Debug.Log($"Target: {targetPosition}");
-        Debug.Log(agent.SetDestination(targetPosition));    //TODO: Fix this
+        Vector3 targetPosition = possiblePositions[Random.Range(0, possiblePositions.Length)];
+        agent.SetDestination(targetPosition);
 
         if(targetPosition.x < transform.position.x) transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); 
@@ -331,7 +327,7 @@ public class JerryController : Enemy
         try{
             foreach (var pos in possiblePositions)
             {
-                Gizmos.DrawWireSphere(pos.position, .5f);
+                Gizmos.DrawWireSphere(pos, .5f);
             }
         } catch {}
     }

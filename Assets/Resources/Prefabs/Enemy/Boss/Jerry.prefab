@@ -653,7 +653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   waitBeat: 0
-  requiredNavMesh: 1
+  requiredNavMesh: 2
   health: 100
   damage: 1
   isActive: 0
@@ -689,16 +689,7 @@ MonoBehaviour:
   secondSongBPM: 272
   attackSound: {fileID: 8300000, guid: 592a890d2e2dcb040825b69be16ee08b, type: 3}
   deathSound: {fileID: 8300000, guid: 2acc72fa03ee9544bb6b13ce94e55bb8, type: 3}
-  possiblePositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  possiblePositions: []
   bulletPrefab: {fileID: 6834046606578110456, guid: d5ca67690ad1c4941945960ababe7101, type: 3}
   healthBar: {fileID: 7275674040733767602}
   isFirstPhase: 1

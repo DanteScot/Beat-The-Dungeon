@@ -153,13 +153,16 @@ public class PlayerManager : MonoBehaviour, Subject
 
 
         if(Input.GetKeyDown(KeyCode.F1)){
-            MoveSpeed+=1;
+            MoveSpeed-=1;
         }
         if(Input.GetKeyDown(KeyCode.F2)){
-            MoveSpeed-=1;
+            MoveSpeed+=1;
         }
         if(Input.GetKeyDown(KeyCode.F10)){
             Gears+=100;
+        }
+        if(Input.GetKeyDown(KeyCode.F5)){
+            player.GetComponent<Collider2D>().enabled = !player.GetComponent<Collider2D>().enabled;
         }
         if(Input.GetKeyDown(KeyCode.F12)){
             SaveSystem.SaveGame(new GameData(this));

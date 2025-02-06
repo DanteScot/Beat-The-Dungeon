@@ -130,7 +130,6 @@ public class RoomManager : MonoBehaviour
             }
             yield return null;
         } else if (isBossRoom){
-            Debug.Log("rgbjgekb");
             GameObject[] bossPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemy/Boss");
 
             if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
