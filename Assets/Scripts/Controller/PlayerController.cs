@@ -203,7 +203,7 @@ public class PlayerController : RythmedObject, Observer
 
     // Resetta i bordi della camera in base alla stanza in cui si trova il giocatore
     // Senza questo metodo la camera rimarrebbe bloccata nei confini della stanza precedente
-    public void SetCurrentRoom(RoomManager roomManager)
+    public void SetCurrentRoom(MonoBehaviour roomManager)
     {
         var tmp=GetComponentsInChildren<CinemachineConfiner2D>()[0];
         tmp.m_BoundingShape2D = roomManager.GetComponent<PolygonCollider2D>();

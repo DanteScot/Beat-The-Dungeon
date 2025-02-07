@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-enum DoorType{
+public enum DoorType{
     NORMAL,
     NEXT_LEVEL,
     TUTORIAL,
@@ -20,7 +20,7 @@ public class DoorController : MonoBehaviour
     [SerializeField] private bool isOpen = true;
 
     // Gestisce diversamente il comportamento della porta se si trova in lobby
-    [SerializeField] private DoorType doorType;
+    public DoorType doorType;
 
     public void OpenDoor(){
         GetComponent<SpriteRenderer>().sprite = openDoor;

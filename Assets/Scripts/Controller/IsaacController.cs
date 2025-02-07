@@ -60,10 +60,6 @@ public class IsaacController : MonoBehaviour, Observer, Minion
             }
 
             if (closestEnemy != null) agent.SetDestination(closestEnemy.transform.position);
-            else {
-                // agent.SetDestination(transform.position);
-                // agent.isStopped = true;
-            }
         }
     }
 

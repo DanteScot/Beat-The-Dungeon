@@ -23,7 +23,6 @@ public class LevelGenerator : MonoBehaviour
     private int roomCount;
     private bool generationComplete = false;
 
-    static Random.State state;
     #endregion
 
     [SerializeField] Sprite[] loadingSprites;
@@ -40,7 +39,12 @@ public class LevelGenerator : MonoBehaviour
     }
 
     private void Start() {
-        // TODO: decommentare
+        GameEvent.canMove = false;
+        
+        
+        // SEMBREREBBE che non ci siano conflitti tra la generazione ed i movimenti dei nemici
+        // quindi non c'è bisogno salvare lo stato del random
+
         // if (GameManager.Instance.GetLevel() <= 1){
         //     if (seed < 0) seed *= -1;
         //     else if (seed == 0) seed = Random.Range(1, int.MaxValue);
@@ -49,6 +53,7 @@ public class LevelGenerator : MonoBehaviour
         // } else {
         //     Random.state = state;
         // }
+
         if (seed == 0) seed = Random.Range(1, int.MaxValue);
         Random.InitState(seed);
         
@@ -240,8 +245,8 @@ public class LevelGenerator : MonoBehaviour
         if(roomGenerated == roomCount){
             StopCoroutine(LoadingAnimation());
             Debug.Log("All rooms loaded correctly");
-            state = Random.state;
             Destroy(loadingScreen);
+            GameEvent.canMove = true;
             // Messenger.Broadcast(GameEvent.LEVEL_LOADED);
         }
     }
@@ -278,6 +283,10 @@ public class LevelGenerator : MonoBehaviour
 
     private Vector3 GetPositionFromGridIndex(Vector2Int gridIndex) {
         return new Vector3(roomWidth * (gridIndex.x - gridSizeX / 2), roomHeight * (gridIndex.y - gridSizeY / 2));
+    }
+
+    private void OnDestroy() {
+        Messenger.RemoveListener(GameEvent.ROOM_GENERATED, OnRoomGenerated);
     }
 
     private void OnDrawGizmos() {

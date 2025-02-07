@@ -9,7 +9,7 @@ using UnityEngine;
 // (non implementati al momento ma in questo modo permetti di modificare i dati del giocatore senza creare altre cose temporane in giro)
 // ES. Potenziamento range: range *= 2, il range sarà sempre il range base moltiplicato per il livello del potenziamento che verrà poi ripristinato a fine partita
 // Per evitare problemi nei vari Awake questa classe è stat impostata nei settaggi di unity come la seconda ad essere eseguita, subito dopo il BeatManager
-struct startingStats
+struct StartingStats
 {
     public float moveSpeed;
     public float maxHealth;
@@ -18,7 +18,7 @@ struct startingStats
     public float attackSpeed;
     public float attackRange;
 
-    public startingStats(float moveSpeed, float maxHealth, float luck, float baseAttackDamage, float attackSpeed, float attackRange)
+    public StartingStats(float moveSpeed, float maxHealth, float luck, float baseAttackDamage, float attackSpeed, float attackRange)
     {
         this.moveSpeed = moveSpeed;
         this.maxHealth = maxHealth;
@@ -34,7 +34,7 @@ public class PlayerManager : MonoBehaviour, Subject
 {
     public static PlayerManager Instance { get; private set; }
 
-    private startingStats startingStats;
+    private StartingStats startingStats;
     private List<Observer> observers = new List<Observer>();
     private Transform player;
     public RoomManager currentRoom;
@@ -99,8 +99,7 @@ public class PlayerManager : MonoBehaviour, Subject
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-            startingStats = new startingStats(moveSpeed, maxHealth, luck, baseAttackDamage, attackSpeed, attackRange);
+            startingStats = new StartingStats(moveSpeed, maxHealth, luck, baseAttackDamage, attackSpeed, attackRange);
             // HO DOVUTO INIZIALIZZARE IL SEED PERCHE' NON FUNZIONAVA RANDOM
             // QUANTOMENO NON NELLO START DI Lobby808Controller, DAVA SEMPRE LO STESSO NUMERO
             Random.InitState(System.DateTime.Now.Millisecond);
@@ -162,7 +161,7 @@ public class PlayerManager : MonoBehaviour, Subject
             Gears+=100;
         }
         if(Input.GetKeyDown(KeyCode.F5)){
-            player.GetComponent<Collider2D>().enabled = !player.GetComponent<Collider2D>().enabled;
+            GameManager.Instance.LoadNextLevel();
         }
         if(Input.GetKeyDown(KeyCode.F12)){
             SaveSystem.SaveGame(new GameData(this));

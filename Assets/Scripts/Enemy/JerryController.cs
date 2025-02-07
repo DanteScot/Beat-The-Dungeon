@@ -293,6 +293,8 @@ public class JerryController : Enemy
             yield return new WaitForSeconds(.25f);
         }
 
+        PlayerManager.Instance.currentRoom.GenerateExit();
+
         spriteRenderer.sprite = null;
         yield return StartCoroutine(ChangeSong(oldSong));
         BeatManager.Instance.SetBPM(oldBPM);

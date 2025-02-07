@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private AudioSource audioSource;
-    private CanvasGroup canvasGroup;
+    [SerializeField] private CanvasGroup canvasGroup;
 
-    private string basePath = "Sounds/";
+    private readonly string basePath = "Sounds/";
 
     [SerializeField] private int level = 50; // -2 menu, -1 tutorial, 0 lobby, n level n
 
@@ -20,10 +20,10 @@ public class GameManager : MonoBehaviour
     private void Awake() {
         if(Instance == null){
             Instance = this;
-            DontDestroyOnLoad(gameObject);
 
             audioSource = GetComponent<AudioSource>();
-            canvasGroup = GetComponentInChildren<CanvasGroup>();
+
+            if(canvasGroup == null) canvasGroup = GetComponentInChildren<CanvasGroup>();
 
             Messenger.AddListener(GameEvent.PLAYER_HIT, OnPlayerHit);
             Messenger.AddListener(GameEvent.ENEMY_HIT, OnEnemyHit);
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
     
     public void LoadNextLevel(){
         level++;
-        LoadScene("Level "+level);
+        LoadScene("Level");
     }
 
     public void LoadTutorial(){

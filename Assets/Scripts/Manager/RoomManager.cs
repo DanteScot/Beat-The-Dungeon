@@ -29,6 +29,7 @@ public class RoomManager : MonoBehaviour
     private Vector3 roomCenter;
 
     [SerializeField] private DoorController[] doors;
+    [SerializeField] private GameObject exitDoor;
 
     List<NavMeshSurface> navMeshes;
 
@@ -70,14 +71,16 @@ public class RoomManager : MonoBehaviour
 
         content = transform.parent.Find("Content");
 
-        foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
-            navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
-            navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
-            navMeshes[navMeshes.Count-1].transform.position = roomCenter;
-            navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
+        if(!isLobbyRoom){
+            foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
+                navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
+                navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
+                navMeshes[navMeshes.Count-1].transform.position = roomCenter;
+                navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
+            }
+            selfIndex = int.Parse(transform.parent.gameObject.name.Split(" - ")[1]);
         }
 
-        selfIndex = int.Parse(transform.parent.gameObject.name.Split(" - ")[1]);
 
         StartCoroutine(OnLevelGenerated());
     }
@@ -154,7 +157,7 @@ public class RoomManager : MonoBehaviour
 
 
     IEnumerator WaitBeforeCheck(){
-        Messenger.Broadcast(GameEvent.ROOM_GENERATED);
+        if(!isLobbyRoom) Messenger.Broadcast(GameEvent.ROOM_GENERATED);
 
         yield return new WaitForSeconds(.05f);
 
@@ -195,6 +198,17 @@ public class RoomManager : MonoBehaviour
         this.reward = Instantiate(reward, content.GetChild(0).Find("Reward"));;
     }
 
+    public void GenerateExit(){
+        foreach (var door in doors)
+        {
+            if(!door.gameObject.activeSelf){
+                door.doorType = DoorType.NEXT_LEVEL;
+                door.gameObject.SetActive(true);
+                break;
+            }
+        }
+    }
+
 
 
     
@@ -210,7 +224,10 @@ public class RoomManager : MonoBehaviour
                     foreach (var item in hit)
                     {
                         if(item.CompareTag("Enemy")){
-                            if(item.name.Contains("Jerry"))  return;
+                            if(item.name.Contains("Jerry")){
+                                item.GetComponent<Enemy>().TakeDamage(5);
+                                return;
+                            }
                             else item.GetComponent<Enemy>().TakeDamage(100);
                         }
                     }

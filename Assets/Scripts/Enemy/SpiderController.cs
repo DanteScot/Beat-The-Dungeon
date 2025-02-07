@@ -48,8 +48,7 @@ public class SpiderController : Enemy
             {
                 Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
                 randomDirection += transform.position;
-                NavMeshHit hit;
-                NavMesh.SamplePosition(randomDirection, out hit, walkRadius, 1);
+                NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, walkRadius, 1);
                 targetPosition = hit.position;
             }
             agent.SetDestination(targetPosition);

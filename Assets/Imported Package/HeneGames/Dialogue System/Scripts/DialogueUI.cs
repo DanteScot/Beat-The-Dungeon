@@ -18,7 +18,6 @@ namespace HeneGames.DialogueSystem
             if (instance == null)
             {
                 instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
