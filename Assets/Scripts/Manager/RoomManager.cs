@@ -11,7 +11,6 @@ public class RoomManager : MonoBehaviour
     // Array contenente i possibili premi che possono essere droppati
     [SerializeField] private GameObject[] rewardPrefab;
     GameObject reward;
-    [SerializeField] private bool isLobbyRoom=false;
     [SerializeField] private bool isBossRoom=false;
     public Collider2D[] enemies { get; private set; }
     
@@ -50,8 +49,6 @@ public class RoomManager : MonoBehaviour
 
         TilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
 
-        if(isLobbyRoom) return;
-
         navMeshes = new List<NavMeshSurface>();
 
         if(enemiesPrefab == null) enemiesPrefab = Resources.LoadAll<GameObject>("Prefabs/Enemy/Common");
@@ -71,15 +68,13 @@ public class RoomManager : MonoBehaviour
 
         content = transform.parent.Find("Content");
 
-        if(!isLobbyRoom){
-            foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
-                navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
-                navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
-                navMeshes[navMeshes.Count-1].transform.position = roomCenter;
-                navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
-            }
-            selfIndex = int.Parse(transform.parent.gameObject.name.Split(" - ")[1]);
+        foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
+            navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
+            navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
+            navMeshes[navMeshes.Count-1].transform.position = roomCenter;
+            navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
         }
+        selfIndex = int.Parse(transform.parent.gameObject.name.Split(" - ")[1]);
 
 
         StartCoroutine(OnLevelGenerated());
@@ -105,12 +100,25 @@ public class RoomManager : MonoBehaviour
         
         isBossRoom = transform.parent.name.Contains("BossRoom");
 
-        if(!transform.parent.name.Equals("Room - 1") && !isLobbyRoom && !isBossRoom)
+        if(!isBossRoom)
         {
-            if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
-            EnemySpawpoint[] spawners = content.GetComponentsInChildren<EnemySpawpoint>().Where(x => x.CompareTag("EnemySpawner")).ToArray();
+            if(!transform.parent.name.Equals("Room - 1")){
+                if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
+                EnemySpawpoint[] spawners = content.GetComponentsInChildren<EnemySpawpoint>().Where(x => x.CompareTag("EnemySpawner")).ToArray();
 
-            yield return null;
+                yield return null;
+                
+                for (int i = 0; i < spawners.Length; i++)
+                {
+                    // if (NavMesh.SamplePosition(spawner.transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                    // {
+                    //     // Posiziona l'agente sul punto valido trovato
+                    //     GameObject agent = Instantiate(enemiesForGroup[(int)spawner.generationGroup], hit.position, Quaternion.identity, content);
+                    // }
+                    Instantiate(enemiesForGroup[(int)spawners[i].generationGroup], spawners[i].transform.position, Quaternion.identity, content);
+                }
+                yield return null;
+            }
 
             if(navMeshes.Count>0)
             {
@@ -120,19 +128,7 @@ public class RoomManager : MonoBehaviour
                     yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
                 }
             }
-
-
-            for (int i = 0; i < spawners.Length; i++)
-            {
-                // if (NavMesh.SamplePosition(spawner.transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
-                // {
-                //     // Posiziona l'agente sul punto valido trovato
-                //     GameObject agent = Instantiate(enemiesForGroup[(int)spawner.generationGroup], hit.position, Quaternion.identity, content);
-                // }
-                Instantiate(enemiesForGroup[(int)spawners[i].generationGroup], spawners[i].transform.position, Quaternion.identity, content);
-            }
-            yield return null;
-        } else if (isBossRoom){
+        } else {
             GameObject[] bossPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemy/Boss");
 
             if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
@@ -157,7 +153,7 @@ public class RoomManager : MonoBehaviour
 
 
     IEnumerator WaitBeforeCheck(){
-        if(!isLobbyRoom) Messenger.Broadcast(GameEvent.ROOM_GENERATED);
+        Messenger.Broadcast(GameEvent.ROOM_GENERATED);
 
         yield return new WaitForSeconds(.05f);
 
@@ -181,7 +177,7 @@ public class RoomManager : MonoBehaviour
         yield return null;
 
         if(isBossRoom) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
-        else if(isRoomActive && !isLobbyRoom){
+        else if(isRoomActive){
             if(Random.Range(0+PlayerManager.Instance.LuckLevelled*5, 100)>50) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
         }
 
@@ -282,8 +278,6 @@ public class RoomManager : MonoBehaviour
             other.GetComponent<PlayerController>().SetCurrentRoom(this);
             PlayerManager.Instance.currentRoom = this;
 
-            if(isLobbyRoom) return;
-            
             FindEnemies();
 
             if(reward && enemies.Length>0) reward.SetActive(false);
@@ -311,8 +305,6 @@ public class RoomManager : MonoBehaviour
     // Quando il giocatore esce dalla stanza, si disattivano i nemici
     void OnTriggerExit2D(Collider2D other)
     {
-        if(isLobbyRoom) return;
-        
         if(other.CompareTag("Player")){
             foreach (var enemy in enemies)
             {

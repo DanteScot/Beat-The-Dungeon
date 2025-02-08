@@ -119,31 +119,31 @@ public class JerryController : Enemy
         isMoving = true;
         GameEvent.canMove = false;
         // Fade out
-        while (BeatManager.Instance.audioSource.volume > 0) {
-            BeatManager.Instance.audioSource.volume -= .01f;
+        while (BeatManager.Instance.AudioSource.volume > 0) {
+            BeatManager.Instance.AudioSource.volume -= .01f;
             yield return new WaitForSeconds(.025f);
         }
-        BeatManager.Instance.audioSource.volume = 0;
+        BeatManager.Instance.AudioSource.volume = 0;
 
         // Cambio canzone e relativo BPM
-        BeatManager.Instance.audioSource.Stop();
-        BeatManager.Instance.audioSource.clip = clip;
+        BeatManager.Instance.AudioSource.Stop();
+        BeatManager.Instance.AudioSource.clip = clip;
 
         if(clip == firstPhaseSong) BeatManager.Instance.SetBPM(firstSongBPM);
         else BeatManager.Instance.SetBPM(secondSongBPM);
 
         yield return new WaitForSeconds(.25f);
-        BeatManager.Instance.audioSource.Play();
+        BeatManager.Instance.AudioSource.Play();
 
         isMoving = false;
         GameEvent.canMove = true;
 
         // Fade in
-        while (BeatManager.Instance.audioSource.volume < .5f) {
-            BeatManager.Instance.audioSource.volume += .01f;
+        while (BeatManager.Instance.AudioSource.volume < .5f) {
+            BeatManager.Instance.AudioSource.volume += .01f;
             yield return new WaitForSeconds(.025f);
         }
-        BeatManager.Instance.audioSource.volume = .5f;
+        BeatManager.Instance.AudioSource.volume = .5f;
     }
 
     // Logica di Jerry, si muove, attacca e ricarica
@@ -166,8 +166,8 @@ public class JerryController : Enemy
         }
 
         // La prima volta mette la prima canzone, la seconda non fa nulla
-        if(BeatManager.Instance.audioSource.clip != secondPhaseSong) {
-            oldSong = BeatManager.Instance.audioSource.clip;
+        if(BeatManager.Instance.AudioSource.clip != secondPhaseSong) {
+            oldSong = BeatManager.Instance.AudioSource.clip;
             oldBPM = BeatManager.Instance.GetBPM();
             StartCoroutine(ChangeSong(firstPhaseSong));
         }

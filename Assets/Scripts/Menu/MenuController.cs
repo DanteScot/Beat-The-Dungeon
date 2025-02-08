@@ -70,7 +70,10 @@ public class MenuController : MonoBehaviour
 
     public void Start()
     {
-        BeatManager.Instance.audioSource.Stop();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        BeatManager.Instance.AudioSource.Stop();
         InitializeGraphicSettings();
         InitializeCredits();
         SetSceneTime();

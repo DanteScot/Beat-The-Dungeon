@@ -34,4 +34,7 @@ public static class GameEvent{
     public const string GAME_PAUSED = "GAME_PAUSED";
     public const string GAME_RESUMED = "GAME_RESUMED";
 
+    public const string ACTIVATE_LOBBY = "ACTIVATE_LOBBY";
+    public const string DEACTIVATE_LOBBY = "DEACTIVATE_LOBBY";
+
 }

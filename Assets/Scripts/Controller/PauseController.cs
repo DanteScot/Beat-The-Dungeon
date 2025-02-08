@@ -19,20 +19,30 @@ public class PauseController : MonoBehaviour
 
     // Attiva il menu di pausa
     void Pause(){
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         Time.timeScale = 0;
 
         canvasGroup.alpha = 1;
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = true;
+
+        BeatManager.Instance.AudioSource.Pause();
     }
 
     // Disattiva il menu di pausa
     void Resume(){
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         Time.timeScale = 1;
 
         canvasGroup.alpha = 0;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
+
+        BeatManager.Instance.AudioSource.UnPause();
     }
 
     // Riprende il gioco

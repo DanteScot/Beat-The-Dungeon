@@ -87,6 +87,7 @@ public class FirstTimeLobbyController : Interactable
         BeatManager.Instance.gameObject.SetActive(true);
         BeatManager.Instance.gameObject.GetComponent<AudioSource>().Play();
 
+        Messenger.Broadcast(GameEvent.ACTIVATE_LOBBY);
 
         Destroy(gameObject);
     }

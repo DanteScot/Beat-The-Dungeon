@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class LevelGenerator : MonoBehaviour
 {
     #region Generator Variables
-    [SerializeField] int seed;
+    int seed;
 
     [SerializeField] GameObject[] roomPrefab;
     // [SerializeField] GameObject bossRoomPrefab;
@@ -22,7 +22,7 @@ public class LevelGenerator : MonoBehaviour
     private int[,] roomGrid;
     private int roomCount;
     private bool generationComplete = false;
-
+    private static Random.State state;
     #endregion
 
     [SerializeField] Sprite[] loadingSprites;
@@ -40,22 +40,23 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start() {
         GameEvent.canMove = false;
+        seed = GameManager.Instance.seed;
         
         
         // SEMBREREBBE che non ci siano conflitti tra la generazione ed i movimenti dei nemici
         // quindi non c'è bisogno salvare lo stato del random
 
-        // if (GameManager.Instance.GetLevel() <= 1){
-        //     if (seed < 0) seed *= -1;
-        //     else if (seed == 0) seed = Random.Range(1, int.MaxValue);
+        if (GameManager.Instance.GetLevel() <= 1){
+            if (seed < 0) seed *= -1;
+            else if (seed == 0) seed = Random.Range(1, int.MaxValue);
 
-        //     Random.InitState(seed);
-        // } else {
-        //     Random.state = state;
-        // }
+            Random.InitState(seed);
+        } else {
+            Random.state = state;
+        }
 
-        if (seed == 0) seed = Random.Range(1, int.MaxValue);
-        Random.InitState(seed);
+        // if (seed == 0) seed = Random.Range(1, int.MaxValue);
+        // Random.InitState(seed);
         
         minRooms = (int)(5 + 1.5f*GameManager.Instance.GetLevel());
         maxRooms = minRooms + minRooms/2;
@@ -246,6 +247,7 @@ public class LevelGenerator : MonoBehaviour
             StopCoroutine(LoadingAnimation());
             Debug.Log("All rooms loaded correctly");
             Destroy(loadingScreen);
+            state = Random.state;
             GameEvent.canMove = true;
             // Messenger.Broadcast(GameEvent.LEVEL_LOADED);
         }

@@ -11,7 +11,7 @@ public class BeatManager : MonoBehaviour
     public static BeatManager Instance { get; private set; }
 
     [SerializeField] private float bpm;
-    public AudioSource audioSource { get; private set; }
+    public AudioSource AudioSource { get; private set; }
 
     // Numero in alto, giusto come debug per vedere il tempo
     [Header("Debug")]
@@ -39,7 +39,7 @@ public class BeatManager : MonoBehaviour
         {
             Instance = this;
 
-            audioSource = GetComponent<AudioSource>();
+            AudioSource = GetComponent<AudioSource>();
 
             // intervals = new Interval[3];
             // intervals[0] = new Interval(1);
@@ -64,15 +64,15 @@ public class BeatManager : MonoBehaviour
 
     private void Start()
     {
-        audioSource.Play();
+        AudioSource.Play();
         // Per semplicità nella gestione del tempo, il gioco è stato impostato a 60fps
-        // Application.targetFrameRate = 60;
+        Application.targetFrameRate = 60;
     }
 
     // Ogni frame controlla se è passato un beat
     private void Update()
     {
-        float sampledTime = audioSource.timeSamples / (audioSource.clip.frequency * interval.GetIntervalLength(bpm));
+        float sampledTime = AudioSource.timeSamples / (AudioSource.clip.frequency * interval.GetIntervalLength(bpm));
         interval.CheckForNewInterval((int)sampledTime);
         // foreach(Interval interval in intervals)
         // {

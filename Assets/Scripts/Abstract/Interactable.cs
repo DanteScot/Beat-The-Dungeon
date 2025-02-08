@@ -14,7 +14,11 @@ public class Interactable : MonoBehaviour
     private bool isPlayerInRange = false;
     protected bool isInteracting = false;
 
-    void Start(){
+    private void OnValidate() {
+        GetComponent<CircleCollider2D>().isTrigger = true;
+    }
+
+    public void Start(){
         if(enabled){
             interactMessageGameobject=PlayerManager.Instance.GetPlayer().Find("UI").Find("Interactable").gameObject;
             interactMessageText=interactMessageGameobject.GetComponentInChildren<TextMeshProUGUI>();
@@ -59,7 +63,7 @@ public class Interactable : MonoBehaviour
 
     // Si assicura che l'interazione avvenga solo se il giocatore è vicino all'oggetto e preme E
     // Per evitare che l'interazione venga chiamata più volte viene usata la variabile isInteracting
-    void Update()
+    void FixedUpdate()
     {
         if(isPlayerInRange && Input.GetKeyDown(KeyCode.E) && enabled  && !isInteracting)
         {

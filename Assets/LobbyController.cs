@@ -26,6 +26,9 @@ public class LobbyController : MonoBehaviour
         }
 
         TilemapCollider = transform.parent.GetComponentInChildren<TilemapCollider2D>();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Start()

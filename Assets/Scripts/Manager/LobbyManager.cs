@@ -43,16 +43,19 @@ public class LobbyManager : MonoBehaviour
             PlayerManager.Instance.LoadPlayerStats(data);
         }
         else{
+            Messenger.Broadcast(GameEvent.DEACTIVATE_LOBBY);
             BeatManager.Instance.gameObject.SetActive(false);
         }
     }
 
     // Imposta la lobby per evitare tutte le cose che avverrebbero al primo avvio del gioco
     void NotFirstTimeLobby(){
-        BeatManager.Instance.audioSource.Stop();
+        BeatManager.Instance.AudioSource.Stop();
         BeatManager.Instance.SetBPM(bpm);
-        BeatManager.Instance.audioSource.clip = lobbyMusic;
-        BeatManager.Instance.audioSource.Play();
+        BeatManager.Instance.AudioSource.clip = lobbyMusic;
+        BeatManager.Instance.AudioSource.Play();
+
+        Messenger.Broadcast(GameEvent.ACTIVATE_LOBBY);
 
         foreach (var item in itemToDestroy)
         {

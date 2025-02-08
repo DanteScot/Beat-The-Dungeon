@@ -7,6 +7,8 @@ public class EnemyBulletController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float damage;
 
+    float lifeTime = 10f;
+
     // Imposta la velocità, il danno e la grandezza del proiettile in base ai parametri passati e lo fa puntare verso il giocatore
     public void SetBullet(float speed, float damage, float sizeMultiplier, Vector3 player)
     {
@@ -23,7 +25,10 @@ public class EnemyBulletController : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.Translate(Vector2.up * speed * Time.deltaTime);
+        transform.Translate(speed * Time.deltaTime * Vector2.up);
+
+        lifeTime -= Time.deltaTime;
+        if (lifeTime <= 0) Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

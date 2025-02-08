@@ -8,11 +8,13 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private AudioSource audioSource;
-    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private GameObject canvas;
+    private CanvasGroup canvasGroup;
 
     private readonly string basePath = "Sounds/";
 
-    [SerializeField] private int level = 50; // -2 menu, -1 tutorial, 0 lobby, n level n
+    [SerializeField] private int level; // -2 menu, -1 tutorial, 0 lobby, n level n
+    public int seed = 0;
 
     // Variabili per evitare che un suono venga riprodotto più volte nello stesso frame
     bool playerHit = false, enemyHit = false, itemPicked = false, gearPicked = false, bulletShoot = false;
@@ -23,7 +25,8 @@ public class GameManager : MonoBehaviour
 
             audioSource = GetComponent<AudioSource>();
 
-            if(canvasGroup == null) canvasGroup = GetComponentInChildren<CanvasGroup>();
+            if(canvas == null) canvas = GameObject.Find("Canvas");
+            canvasGroup = canvas.GetComponent<CanvasGroup>();
 
             Messenger.AddListener(GameEvent.PLAYER_HIT, OnPlayerHit);
             Messenger.AddListener(GameEvent.ENEMY_HIT, OnEnemyHit);
@@ -46,7 +49,7 @@ public class GameManager : MonoBehaviour
     private void Start() {
         if(canvasGroup != null){
             canvasGroup.alpha = 0;
-            canvasGroup.gameObject.SetActive(false);
+            canvas.SetActive(false);
         }
         if(!(SceneManager.GetActiveScene().name.Equals("MainMenu") || SceneManager.GetActiveScene().name.Equals("Lobby"))){
 
@@ -64,7 +67,7 @@ public class GameManager : MonoBehaviour
             Destroy(Controller808.Instance.gameObject);
         } catch (System.Exception){}
 
-        canvasGroup.gameObject.SetActive(true);
+        canvas.SetActive(true);
         
         while(canvasGroup.alpha < 1){
             canvasGroup.alpha += .01f;
@@ -88,7 +91,7 @@ public class GameManager : MonoBehaviour
             await Task.Delay(5);
         }
 
-        canvasGroup.gameObject.SetActive(false);
+        canvas.SetActive(false);
 
         Time.timeScale = 1;
         GameEvent.canMove = true;
@@ -103,14 +106,14 @@ public class GameManager : MonoBehaviour
         LoadScene("Level");
     }
 
-    public void LoadTutorial(){
-        level = -1;
-        LoadScene("Tutorial");
-    }
-
     public void LoadLobby(){
         level = 0;
         LoadScene("Lobby");
+    }
+
+    public void LoadTutorial(){
+        level = -1;
+        LoadScene("Tutorial");
     }
 
     public void LoadMainMenu(){

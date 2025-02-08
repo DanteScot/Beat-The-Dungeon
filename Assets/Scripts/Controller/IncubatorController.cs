@@ -30,6 +30,9 @@ public class IncubatorController : Interactable
         GameEvent.canMove = false;
         incubatorUI.SetActive(true);
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         Coroutine tmp = StartCoroutine(AnalysisText());
 
         // Semplice transizione
@@ -56,6 +59,10 @@ public class IncubatorController : Interactable
         GameEvent.canMove = true;
         isInteracting = false;
         incubatorUI.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         yield return null;
     }
 
