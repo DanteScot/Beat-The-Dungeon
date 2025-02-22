@@ -12,6 +12,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private GameObject[] rewardPrefab;
     GameObject reward;
     [SerializeField] private bool isBossRoom=false;
+    [SerializeField] private bool isStartingRoom=false;
     public Collider2D[] enemies { get; private set; }
     
     /// <summary>
@@ -97,46 +98,26 @@ public class RoomManager : MonoBehaviour
         yield return new WaitUntil(() => currentLoadingRoom == selfIndex);
 
         if (this == null || gameObject == null || !gameObject.activeSelf || !enabled) yield break;
+
         
+        if(transform.parent.name.Equals("Room - 1")) {
+            isStartingRoom = true;
+            StartCoroutine(WaitBeforeCheck());
+            yield break;
+        }
+
+
         isBossRoom = transform.parent.name.Contains("BossRoom");
 
-        if(!isBossRoom)
-        {
-            if(!transform.parent.name.Equals("Room - 1")){
-                if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
-                EnemySpawpoint[] spawners = content.GetComponentsInChildren<EnemySpawpoint>().Where(x => x.CompareTag("EnemySpawner")).ToArray();
-
-                yield return null;
-                
-                for (int i = 0; i < spawners.Length; i++)
-                {
-                    // if (NavMesh.SamplePosition(spawner.transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
-                    // {
-                    //     // Posiziona l'agente sul punto valido trovato
-                    //     GameObject agent = Instantiate(enemiesForGroup[(int)spawner.generationGroup], hit.position, Quaternion.identity, content);
-                    // }
-                    Instantiate(enemiesForGroup[(int)spawners[i].generationGroup], spawners[i].transform.position, Quaternion.identity, content);
-                }
-                yield return null;
-            }
-
-            if(navMeshes.Count>0)
-            {
-                foreach (var nav in navMeshes)
-                {
-                    nav.BuildNavMesh();
-                    yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
-                }
-            }
-        } else {
+        if (isBossRoom) {
             GameObject[] bossPrefabs = Resources.LoadAll<GameObject>("Prefabs/Enemy/Boss");
 
-            if(contents.Length>0) Instantiate(contents[Random.Range(0, contents.Length)], content);
+            if (contents.Length > 0) Instantiate(contents[Random.Range(0, contents.Length)], content);
             EnemySpawpoint spawner = content.GetComponentInChildren<EnemySpawpoint>();
 
             yield return null;
 
-            if(navMeshes.Count>0)
+            if (navMeshes.Count > 0)
             {
                 foreach (var nav in navMeshes)
                 {
@@ -146,8 +127,35 @@ public class RoomManager : MonoBehaviour
             }
 
             Instantiate(bossPrefabs[Random.Range(0, bossPrefabs.Length)], spawner.transform.position, Quaternion.identity, content);
+        } 
+        else {
+            if (contents.Length > 0) Instantiate(contents[Random.Range(0, contents.Length)], content);
+            EnemySpawpoint[] spawners = content.GetComponentsInChildren<EnemySpawpoint>().Where(x => x.CompareTag("EnemySpawner")).ToArray();
+
+            yield return null;
+
+            if (navMeshes.Count > 0)
+            {
+                foreach (var nav in navMeshes)
+                {
+                    nav.BuildNavMesh();
+                    yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
+                }
+            }
+
+            for (int i = 0; i < spawners.Length; i++)
+            {
+                // if (NavMesh.SamplePosition(spawner.transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                // {
+                //     // Posiziona l'agente sul punto valido trovato
+                //     GameObject agent = Instantiate(enemiesForGroup[(int)spawner.generationGroup], hit.position, Quaternion.identity, content);
+                // }
+                Instantiate(enemiesForGroup[(int)spawners[i].generationGroup], spawners[i].transform.position, Quaternion.identity, content);
+            }
+            yield return null;
         }
-        
+
+
         StartCoroutine(WaitBeforeCheck());
     }
 
@@ -176,7 +184,10 @@ public class RoomManager : MonoBehaviour
 
         yield return null;
 
-        if(isBossRoom) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
+        if(isStartingRoom) Destroy(reward);
+
+        else if(isBossRoom) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
+
         else if(isRoomActive){
             if(Random.Range(0+PlayerManager.Instance.LuckLevelled*5, 100)>50) SetReward(rewardPrefab[Random.Range(0, rewardPrefab.Length)]);
         }
@@ -237,7 +248,12 @@ public class RoomManager : MonoBehaviour
 
 
 
-
+    public void ObstacleDestroyed(){
+        foreach (var nav in navMeshes)
+        {
+            if(nav != null && nav.gameObject != null && nav.gameObject.activeSelf) nav.BuildNavMesh();
+        }
+    }
 
     // Finchè la stanza è attiva controlla se ci sono nemici al suo interno, se non ce ne sono più la stanza è stata completata
     void LateUpdate()

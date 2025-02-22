@@ -157,6 +157,9 @@ public class PlayerManager : MonoBehaviour, Subject
         if(Input.GetKeyDown(KeyCode.F2)){
             MoveSpeed+=1;
         }
+        if(Input.GetKeyDown(KeyCode.F4)){
+            BeatManager.Instance.AudioSource.volume = 0;
+        }
         if(Input.GetKeyDown(KeyCode.F10)){
             Gears+=100;
         }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class LevelGenerator : MonoBehaviour
 {
     #region Generator Variables
-    int seed;
+    [SerializeField] int seed;
 
     [SerializeField] GameObject[] roomPrefab;
     // [SerializeField] GameObject bossRoomPrefab;

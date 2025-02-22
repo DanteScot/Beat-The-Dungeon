@@ -63,7 +63,12 @@ public class BulletController : MonoBehaviour
     // Logica di collisione del proiettile
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Wall")) Destroy(gameObject);     
+        if (other.CompareTag("Wall")) Destroy(gameObject);
+        if (other.CompareTag("Obstacle")) {
+            // TODO: Gestire proiettili perforanti
+            other.GetComponent<ObstacleController>().Hit();
+            Destroy(gameObject);
+        }
 
         var enemy=other.GetComponent<Enemy>();
         if(enemy!=null){
