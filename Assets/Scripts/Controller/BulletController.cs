@@ -17,7 +17,7 @@ public class BulletController : MonoBehaviour
     public int remainingBounces = 1;
     public Enemy closestEnemy = null;
     public Enemy lastEnemy = null;
-    public Color bulletColor = new Color(0, 0, 0);
+    public Color bulletColor = new(0, 0, 0);
 
     #endregion
 
@@ -70,7 +70,7 @@ public class BulletController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        var enemy=other.GetComponent<Enemy>();
+        Enemy enemy =other.GetComponent<Enemy>();
         if(enemy!=null){
             // Se l'enemy è lo stesso dell'ultima collisione, non lo colpisco
             if(lastEnemy!=null && lastEnemy.Id==enemy.Id) return;

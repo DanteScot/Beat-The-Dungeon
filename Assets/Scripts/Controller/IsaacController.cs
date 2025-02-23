@@ -40,22 +40,20 @@ public class IsaacController : MonoBehaviour, Observer, Minion
             yield return new WaitForSeconds(.5f);
             canAttack = true;
 
-            var enemies = PlayerManager.Instance.currentRoom.enemies;
+            Enemy[] enemies = PlayerManager.Instance.currentRoom.Enemies;
 
             Enemy closestEnemy = null;
             float closestDistance = float.MaxValue;
 
-            foreach (var foe in enemies) {
-                var tmp = foe.GetComponent<Enemy>();
-
+            foreach (Enemy foe in enemies) {
                 if (closestEnemy == null) {
-                    closestEnemy = tmp;
+                    closestEnemy = foe;
                     continue;
                 }
 
-                if (Vector2.Distance(transform.position, tmp.transform.position) < closestDistance) {
-                    closestEnemy = tmp;
-                    closestDistance = Vector2.Distance(transform.position, tmp.transform.position);
+                if (Vector2.Distance(transform.position, foe.transform.position) < closestDistance) {
+                    closestEnemy = foe;
+                    closestDistance = Vector2.Distance(transform.position, foe.transform.position);
                 }
             }
 

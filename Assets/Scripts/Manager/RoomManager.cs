@@ -13,7 +13,7 @@ public class RoomManager : MonoBehaviour
     GameObject reward;
     [SerializeField] private bool isBossRoom=false;
     [SerializeField] private bool isStartingRoom=false;
-    public Collider2D[] enemies { get; private set; }
+    public Enemy[] Enemies { get; private set; }
     
     /// <summary>
     /// This variable is used to check if the room is active or not
@@ -42,8 +42,8 @@ public class RoomManager : MonoBehaviour
     void Awake()
     {
         // Comprime i bordi dei tilemap per evitare che risultino più grandi di quanto siano realmente
-        var tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
-        foreach (var tilemap in tilemaps)
+        Tilemap[] tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
+        foreach (Tilemap tilemap in tilemaps)
         {
             tilemap.CompressBounds();
         }
@@ -71,9 +71,9 @@ public class RoomManager : MonoBehaviour
 
         foreach(GameObject obj in Resources.LoadAll<GameObject>("Prefabs/NavMeshes")){
             navMeshes.Add(Instantiate(obj, transform.parent).GetComponent<NavMeshSurface>());
-            navMeshes[navMeshes.Count-1].gameObject.name = navMeshes[navMeshes.Count-1].gameObject.name.Replace("(Clone)", "");
-            navMeshes[navMeshes.Count-1].transform.position = roomCenter;
-            navMeshes[navMeshes.Count-1].size = new Vector3(roomX-2, 1, roomY-2);
+            navMeshes[^1].gameObject.name = navMeshes[^1].gameObject.name.Replace("(Clone)", "");
+            navMeshes[^1].transform.position = roomCenter;
+            navMeshes[^1].size = new Vector3(roomX-2, 1, roomY-2);
         }
         selfIndex = int.Parse(transform.parent.gameObject.name.Split(" - ")[1]);
 
@@ -119,7 +119,7 @@ public class RoomManager : MonoBehaviour
 
             if (navMeshes.Count > 0)
             {
-                foreach (var nav in navMeshes)
+                foreach (NavMeshSurface nav in navMeshes)
                 {
                     nav.BuildNavMesh();
                     yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
@@ -136,7 +136,7 @@ public class RoomManager : MonoBehaviour
 
             if (navMeshes.Count > 0)
             {
-                foreach (var nav in navMeshes)
+                foreach (NavMeshSurface nav in navMeshes)
                 {
                     nav.BuildNavMesh();
                     yield return null; // Dato che il navmesh è pesante, appena è generato mostra il frame senza aspettare ulteriormente (riduce rischio di freeze)
@@ -166,17 +166,17 @@ public class RoomManager : MonoBehaviour
         yield return new WaitForSeconds(.05f);
 
         FindEnemies();
-        if(enemies.Length>0) isRoomActive = true;
+        if(Enemies.Length>0) isRoomActive = true;
 
-        List<string> requiredMeshes = new List<string>();
-        foreach (var enemy in enemies)
+        List<string> requiredMeshes = new();
+        foreach (Enemy enemy in Enemies)
         {
-            requiredMeshes.Add(enemy.transform.GetComponent<Enemy>().requiredNavMesh.ToString());
+            requiredMeshes.Add(enemy.requiredNavMesh.ToString());
         }
 
         yield return null;
 
-        foreach (var nav in navMeshes)
+        foreach (NavMeshSurface nav in navMeshes)
         {
             if (!requiredMeshes.Contains(nav.name)) nav.gameObject.SetActive(false);
             // if (!requiredMeshes.Contains(nav.name)) Destroy(nav.gameObject);
@@ -194,7 +194,7 @@ public class RoomManager : MonoBehaviour
 
         yield return null;
 
-        foreach (var door in doors)
+        foreach (DoorController door in doors)
         {
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
@@ -206,7 +206,7 @@ public class RoomManager : MonoBehaviour
     }
 
     public void GenerateExit(){
-        foreach (var door in doors)
+        foreach (DoorController door in doors)
         {
             if(!door.gameObject.activeSelf){
                 door.doorType = DoorType.NEXT_LEVEL;
@@ -223,12 +223,12 @@ public class RoomManager : MonoBehaviour
     // permette di eliminare tutti i nemici nella stanza con la barra spaziatrice, utile per testare cose
     void Update(){
         if(Input.GetKeyDown(KeyCode.Space)){
-            var hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
+            Collider2D[] hit = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0);
             
-            foreach (var player in hit)
+            foreach (Collider2D player in hit)
             {
                 if(player.CompareTag("Player")){
-                    foreach (var item in hit)
+                    foreach (Collider2D item in hit)
                     {
                         if(item.CompareTag("Enemy")){
                             if(item.name.Contains("Jerry")){
@@ -249,9 +249,9 @@ public class RoomManager : MonoBehaviour
 
 
     public void ObstacleDestroyed(){
-        foreach (var nav in navMeshes)
+        foreach (NavMeshSurface nav in navMeshes)
         {
-            if(nav != null && nav.gameObject != null && nav.gameObject.activeSelf) nav.BuildNavMesh();
+            if(nav != null && nav.gameObject != null && nav.gameObject.activeSelf) nav.UpdateNavMesh(nav.navMeshData);
         }
     }
 
@@ -264,24 +264,30 @@ public class RoomManager : MonoBehaviour
     }
 
     void FindEnemies(){
-        enemies = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0, LayerMask.GetMask("Enemy"));
+        Collider2D[] tmp = Physics2D.OverlapBoxAll(roomCenter, new Vector2(roomX, roomY), 0, LayerMask.GetMask("Enemy"));
+
+        Enemies = new Enemy[tmp.Length];
+        for (int i = 0; i < tmp.Length; i++)
+        {
+            Enemies[i] = tmp[i].GetComponent<Enemy>();
+        }
     }
 
     void CheckRoom(){
         FindEnemies();
-        if(enemies.Length==0) RoomCleared();
+        if(Enemies.Length==0) RoomCleared();
     }
 
     // Istanzia il premio e apre le porte della stanza
     void RoomCleared(){
         isRoomActive = false;
         if(reward) reward.SetActive(true);
-        foreach (var door in doors)
+        foreach (DoorController door in doors)
         {
             door.OpenDoor();
         }
 
-        foreach (var nav in navMeshes)
+        foreach (NavMeshSurface nav in navMeshes)
         {
             Destroy(nav.gameObject);
         }
@@ -296,17 +302,17 @@ public class RoomManager : MonoBehaviour
 
             FindEnemies();
 
-            if(reward && enemies.Length>0) reward.SetActive(false);
+            if(reward && Enemies.Length>0) reward.SetActive(false);
 
-            foreach (var enemy in enemies)
+            foreach (Enemy enemy in Enemies)
             {
-                enemy.GetComponent<Enemy>().isActive = true;
+                enemy.isActive = true;
             }
 
             foreach (Minion minion in PlayerManager.Instance.GetMinions().GetComponentsInChildren<Minion>())
             {
                 if(minion.RequiredNavMesh != RequiredNavMesh.NONE){
-                    foreach (var nav in navMeshes)
+                    foreach (NavMeshSurface nav in navMeshes)
                     {
                         if(nav.name.Equals(minion.RequiredNavMesh.ToString())){
                             nav.gameObject.SetActive(true);
@@ -322,9 +328,9 @@ public class RoomManager : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if(other.CompareTag("Player")){
-            foreach (var enemy in enemies)
+            foreach (Enemy enemy in Enemies)
             {
-                enemy.GetComponent<Enemy>().isActive = false;
+                enemy.isActive = false;
             }
         }
     }

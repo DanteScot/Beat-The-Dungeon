@@ -19,8 +19,8 @@ public class LobbyController : MonoBehaviour
     void Awake()
     {
         // Comprime i bordi dei tilemap per evitare che risultino più grandi di quanto siano realmente
-        var tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
-        foreach (var tilemap in tilemaps)
+        Tilemap[] tilemaps = transform.parent.GetComponentsInChildren<Tilemap>();
+        foreach (Tilemap tilemap in tilemaps)
         {
             tilemap.CompressBounds();
         }
@@ -43,7 +43,7 @@ public class LobbyController : MonoBehaviour
         FindEnemies();
         if(enemies.Length>0) isRoomActive = true;
 
-        foreach (var door in doors)
+        foreach (DoorController door in doors)
         {
             if(isRoomActive)    door.CloseDoor();
             else                door.OpenDoor();
@@ -70,7 +70,7 @@ public class LobbyController : MonoBehaviour
     // Istanzia il premio e apre le porte della stanza
     void RoomCleared(){
         isRoomActive = false;
-        foreach (var door in doors)
+        foreach (DoorController door in doors)
         {
             door.OpenDoor();
         }

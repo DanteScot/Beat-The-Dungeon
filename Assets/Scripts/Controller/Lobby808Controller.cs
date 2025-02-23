@@ -10,7 +10,7 @@ using UnityEngine;
 [System.Serializable]
 public class NPC_CentenceList
 {
-    public List<NPC_Centence> sentences = new List<NPC_Centence>();
+    public List<NPC_Centence> sentences = new();
 }
 
 // Classe che gestisce il comportamento di 808 nella lobby
@@ -23,15 +23,15 @@ public class Lobby808Controller : MonoBehaviour
 
     // Primo avvio del gioco
     [Header("First Time Sentences")]
-    [SerializeField] private NPC_CentenceList firstTimeSentences = new NPC_CentenceList();
+    [SerializeField] private NPC_CentenceList firstTimeSentences = new();
 
     // Frasi casuali mostrate a partire dal secondo avvio del gioco / dopo aver fatto almeno una partita
     [Header("Random Sentences")]
-    [SerializeField] private List<NPC_CentenceList> randomSentences = new List<NPC_CentenceList>();
+    [SerializeField] private List<NPC_CentenceList> randomSentences = new();
 
     // Giusto per ridere, non ripete le frasi le frasi randomiche
     [Header("Can't Repeat Sentences")]
-    [SerializeField] private List<NPC_CentenceList> doNotRepeatSentences = new List<NPC_CentenceList>();
+    [SerializeField] private List<NPC_CentenceList> doNotRepeatSentences = new();
 
 
     private Vector3 targetPosition;

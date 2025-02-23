@@ -79,6 +79,7 @@ public class Enemy : RythmedObject
     }
     
     public virtual void TakeDamage(float damage){
+        Debug.Log($"Ho {health} di vita, mi hanno colpito con {damage} di danno, ora ne ho {health-damage}");
         if(isDying) return;
 
         health-=damage;

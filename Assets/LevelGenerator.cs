@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using NavMeshPlus.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,8 +16,8 @@ public class LevelGenerator : MonoBehaviour
     int gridSizeX = 10, gridSizeY = 10;
 
     int roomWidth = 59, roomHeight = 32;
-    private List<GameObject> roomObject = new List<GameObject>();
-    private Queue<Vector2Int> roomQueue = new Queue<Vector2Int>();
+    private List<GameObject> roomObject = new();
+    private Queue<Vector2Int> roomQueue = new();
     private int[,] roomGrid;
     private int roomCount;
     private bool generationComplete = false;
@@ -30,22 +29,23 @@ public class LevelGenerator : MonoBehaviour
 
     int roomGenerated;
 
+
+    Coroutine loadingCoroutine;
+
     private void Awake() {
         Messenger.AddListener(GameEvent.ROOM_GENERATED, OnRoomGenerated);
 
         loadingScreen = transform.GetChild(0).gameObject;
         loadingScreen.SetActive(true);
-        StartCoroutine(LoadingAnimation());
+        loadingCoroutine = StartCoroutine(LoadingAnimation());
     }
 
     private void Start() {
+        BeatManager.Instance.AudioSource.Stop();
         GameEvent.canMove = false;
         seed = GameManager.Instance.seed;
         
         
-        // SEMBREREBBE che non ci siano conflitti tra la generazione ed i movimenti dei nemici
-        // quindi non c'è bisogno salvare lo stato del random
-
         if (GameManager.Instance.GetLevel() <= 1){
             if (seed < 0) seed *= -1;
             else if (seed == 0) seed = Random.Range(1, int.MaxValue);
@@ -68,7 +68,7 @@ public class LevelGenerator : MonoBehaviour
         roomGrid = new int[gridSizeX, gridSizeY];
         roomQueue = new Queue<Vector2Int>();
 
-        Vector2Int initialRoomIndex = new Vector2Int(gridSizeX / 2, gridSizeY / 2);
+        Vector2Int initialRoomIndex = new(gridSizeX / 2, gridSizeY / 2);
         StartRoomGenerationFromRoom(initialRoomIndex);
 
         StartCoroutine(FakeUpdate());
@@ -109,7 +109,7 @@ public class LevelGenerator : MonoBehaviour
         roomQueue.Enqueue(roomIndex);
         roomGrid[roomIndex.x, roomIndex.y] = 1;
         roomCount++;
-        var initialRoom = Instantiate(roomPrefab[0], GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
+        GameObject initialRoom = Instantiate(roomPrefab[0], GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
         initialRoom.name = $"Room - {roomCount}";
         initialRoom.GetComponent<Room>().RoomIndex = roomIndex;
         roomObject.Add(initialRoom);
@@ -119,7 +119,7 @@ public class LevelGenerator : MonoBehaviour
         GameObject chosenRoom = null;
 
         while(chosenRoom == null){
-            foreach (var room in roomPrefab)
+            foreach (GameObject room in roomPrefab)
             {
                 if(Random.value < .6f){
                     chosenRoom = room;
@@ -143,7 +143,7 @@ public class LevelGenerator : MonoBehaviour
             roomGrid[roomIndex.x, roomIndex.y] = 1;
             roomCount++;
 
-            var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
+            GameObject newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(roomIndex), Quaternion.identity, transform);
             newRoom.name = newRoom.name.Replace("(Clone)", $" - {roomCount}");
             newRoom.GetComponent<Room>().RoomIndex = roomIndex;
             roomObject.Add(newRoom);
@@ -160,7 +160,7 @@ public class LevelGenerator : MonoBehaviour
         try{
             Vector2Int validIndex = Vector2Int.zero;
             for(int i=1; i<roomObject.Count; i++){
-                Vector2Int checkedIndex = roomObject[roomObject.Count - i].GetComponent<Room>().RoomIndex;
+                Vector2Int checkedIndex = roomObject[^i].GetComponent<Room>().RoomIndex;
 
                 if(CountAdjacentRooms(new Vector2Int(checkedIndex.x, checkedIndex.y+1)) == 1){
                     validIndex = new Vector2Int(checkedIndex.x, checkedIndex.y+1);
@@ -187,7 +187,7 @@ public class LevelGenerator : MonoBehaviour
             roomCount++;
 
             // var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
-            var newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
+            GameObject newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
             newRoom.name = newRoom.name = $"BossRoom - {roomCount}";
             newRoom.GetComponent<Room>().RoomIndex = validIndex;
             roomObject.Add(newRoom);
@@ -208,7 +208,7 @@ public class LevelGenerator : MonoBehaviour
         roomQueue.Clear();
         roomCount = 0;
 
-        Vector2Int initialRoomIndex = new Vector2Int(gridSizeX / 2, gridSizeY / 2);
+        Vector2Int initialRoomIndex = new(gridSizeX / 2, gridSizeY / 2);
         StartRoomGenerationFromRoom(initialRoomIndex);
 
         StartCoroutine(FakeUpdate());
@@ -244,11 +244,12 @@ public class LevelGenerator : MonoBehaviour
         roomGenerated++;
 
         if(roomGenerated == roomCount){
-            StopCoroutine(LoadingAnimation());
+            StopCoroutine(loadingCoroutine);
             Debug.Log("All rooms loaded correctly");
             Destroy(loadingScreen);
             state = Random.state;
             GameEvent.canMove = true;
+            BeatManager.Instance.AudioSource.Play();
             // Messenger.Broadcast(GameEvent.LEVEL_LOADED);
         }
     }

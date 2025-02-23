@@ -55,7 +55,7 @@ public class Tooltip : MonoBehaviour
         text.text = GetTooltipText(skillType);
         
         float textPaddingSize = 4f;
-        Vector2 backgroundSize = new Vector2(text.preferredWidth + textPaddingSize * 2, text.preferredHeight + textPaddingSize * 2);
+        Vector2 backgroundSize = new(text.preferredWidth + textPaddingSize * 2, text.preferredHeight + textPaddingSize * 2);
         rectTransform.sizeDelta = backgroundSize;
 
     }

@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // Struttura per conservare i dati del giocatore tra una partita e l'altra
@@ -35,7 +33,7 @@ public class PlayerManager : MonoBehaviour, Subject
     public static PlayerManager Instance { get; private set; }
 
     private StartingStats startingStats;
-    private List<Observer> observers = new List<Observer>();
+    private List<Observer> observers = new();
     private Transform player;
     public RoomManager currentRoom;
     private Transform minions;

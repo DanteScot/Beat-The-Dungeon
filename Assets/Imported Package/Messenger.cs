@@ -8,7 +8,7 @@ public enum MessengerMode {
 }
 
 static internal class MessengerInternal {
-	readonly public static Dictionary<string, Delegate> eventTable = new Dictionary<string, Delegate>();
+	readonly public static Dictionary<string, Delegate> eventTable = new();
 	static public readonly MessengerMode DEFAULT_MODE = MessengerMode.REQUIRE_LISTENER;
 
 	static public void AddListener(string eventType, Delegate callback) {
@@ -39,7 +39,7 @@ static internal class MessengerInternal {
 			eventTable.Add(eventType, null);
 		}
 
-		var d = eventTable[eventType];
+        Delegate d = eventTable[eventType];
 		if (d != null && d.GetType() != listenerBeingAdded.GetType()) {
 			throw new ListenerException(string.Format("Attempting to add listener with inconsistent signature for event type {0}. Current listeners have type {1} and listener being added has type {2}", eventType, d.GetType().Name, listenerBeingAdded.GetType().Name));
 		}
@@ -47,7 +47,7 @@ static internal class MessengerInternal {
 
 	static public void OnListenerRemoving(string eventType, Delegate listenerBeingRemoved) {
 		if (eventTable.ContainsKey(eventType)) {
-			var d = eventTable[eventType];
+            Delegate d = eventTable[eventType];
 
 			if (d == null) {
 				throw new ListenerException(string.Format("Attempting to remove listener with for event type {0} but current listener is null.", eventType));
@@ -116,17 +116,17 @@ static public class Messenger {
 
 	static public void Broadcast(string eventType, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Action>(eventType);
+        Action[] invocationList = MessengerInternal.GetInvocationList<Action>(eventType);
 
-		foreach(var callback in invocationList)
+		foreach(Action callback in invocationList)
 			callback.Invoke();
 	}
 
 	static public void Broadcast<TReturn>(string eventType, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Func<TReturn>>(eventType);
+        Func<TReturn>[] invocationList = MessengerInternal.GetInvocationList<Func<TReturn>>(eventType);
 
-		foreach(var result in invocationList.Select(del => del.Invoke()).Cast<TReturn>()) {
+		foreach(TReturn result in invocationList.Select(del => del.Invoke()).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
 	}
@@ -160,17 +160,17 @@ static public class Messenger<T> {
 
 	static public void Broadcast(string eventType, T arg1, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Action<T>>(eventType);
+        Action<T>[] invocationList = MessengerInternal.GetInvocationList<Action<T>>(eventType);
 
-		foreach(var callback in invocationList)
+		foreach(Action<T> callback in invocationList)
 			callback.Invoke(arg1);
 	}
 
 	static public void Broadcast<TReturn>(string eventType, T arg1, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Func<T, TReturn>>(eventType);
+        Func<T, TReturn>[] invocationList = MessengerInternal.GetInvocationList<Func<T, TReturn>>(eventType);
 
-		foreach(var result in invocationList.Select(del => del.Invoke(arg1)).Cast<TReturn>()) {
+		foreach(TReturn result in invocationList.Select(del => del.Invoke(arg1)).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
 	}
@@ -205,17 +205,17 @@ static public class Messenger<T, U> {
 
 	static public void Broadcast(string eventType, T arg1, U arg2, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Action<T, U>>(eventType);
+        Action<T, U>[] invocationList = MessengerInternal.GetInvocationList<Action<T, U>>(eventType);
 
-		foreach(var callback in invocationList)
+		foreach(Action<T, U> callback in invocationList)
 			callback.Invoke(arg1, arg2);
 	}
 
 	static public void Broadcast<TReturn>(string eventType, T arg1, U arg2, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Func<T, U, TReturn>>(eventType);
+        Func<T, U, TReturn>[] invocationList = MessengerInternal.GetInvocationList<Func<T, U, TReturn>>(eventType);
 
-		foreach(var result in invocationList.Select(del => del.Invoke(arg1, arg2)).Cast<TReturn>()) {
+		foreach(TReturn result in invocationList.Select(del => del.Invoke(arg1, arg2)).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
 	}
@@ -250,17 +250,17 @@ static public class Messenger<T, U, V> {
 
 	static public void Broadcast(string eventType, T arg1, U arg2, V arg3, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Action<T, U, V>>(eventType);
+        Action<T, U, V>[] invocationList = MessengerInternal.GetInvocationList<Action<T, U, V>>(eventType);
 
-		foreach(var callback in invocationList)
+		foreach(Action<T, U, V> callback in invocationList)
 			callback.Invoke(arg1, arg2, arg3);
 	}
 
 	static public void Broadcast<TReturn>(string eventType, T arg1, U arg2, V arg3, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
-		var invocationList = MessengerInternal.GetInvocationList<Func<T, U, V, TReturn>>(eventType);
+        Func<T, U, V, TReturn>[] invocationList = MessengerInternal.GetInvocationList<Func<T, U, V, TReturn>>(eventType);
 
-		foreach(var result in invocationList.Select(del => del.Invoke(arg1, arg2, arg3)).Cast<TReturn>()) {
+		foreach(TReturn result in invocationList.Select(del => del.Invoke(arg1, arg2, arg3)).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
 	}

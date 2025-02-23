@@ -71,7 +71,7 @@ public class SpiderController : Enemy
     private IEnumerator Move()
     {
         animator.SetBool("isMoving", true);
-        var lastPosition = transform.position;
+        Vector3 lastPosition = transform.position;
         yield return new WaitForSeconds(0.1f);
         while(isMoving){
             if(lastPosition == transform.position){

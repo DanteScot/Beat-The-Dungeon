@@ -57,17 +57,17 @@ public class LobbyManager : MonoBehaviour
 
         Messenger.Broadcast(GameEvent.ACTIVATE_LOBBY);
 
-        foreach (var item in itemToDestroy)
+        foreach (GameObject item in itemToDestroy)
         {
             Destroy(item);
         }
 
-        foreach (var item in FindObjectsOfType<Light2D>())
+        foreach (Light2D item in FindObjectsOfType<Light2D>())
         {
             item.enabled = false;
         }
 
-        foreach (var item in FindObjectsOfType<Interactable>())
+        foreach (Interactable item in FindObjectsOfType<Interactable>())
         {
             item.enabled = true;
         }

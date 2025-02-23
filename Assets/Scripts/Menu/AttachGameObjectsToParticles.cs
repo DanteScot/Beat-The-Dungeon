@@ -9,7 +9,7 @@ public class AttachGameObjectsToParticles : MonoBehaviour
     public GameObject m_Prefab;
 
     private ParticleSystem m_ParticleSystem;
-    private List<GameObject> m_Instances = new List<GameObject>();
+    private List<GameObject> m_Instances = new();
     private ParticleSystem.Particle[] m_Particles;
 
     void Start()

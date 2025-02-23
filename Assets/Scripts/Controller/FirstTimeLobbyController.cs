@@ -36,10 +36,10 @@ public class FirstTimeLobbyController : Interactable
         float waitTime = 0.15f;
         yield return new WaitForSeconds(1f);
 
-        foreach (var light in lights)
+        foreach (GameObject light in lights)
         {
             // Le prime count luci si spengono più lentamente
-            var nextWaitTime = waitTime;
+            float nextWaitTime = waitTime;
             if(count>0) nextWaitTime = waitTime*count*2;
 
             // Spegne la luce e fa partire il suono, dopodiché aspetta nextWaitTime secondi
@@ -52,7 +52,7 @@ public class FirstTimeLobbyController : Interactable
 
         // Fa la stessa cosa per la luce principale
         yield return new WaitForSeconds(.85f);
-        var incubatorLight = transform.parent.GetComponentInChildren<Light2D>();
+        Light2D incubatorLight = transform.parent.GetComponentInChildren<Light2D>();
         incubatorLight.intensity = 0;
         transform.parent.GetComponent<AudioSource>().PlayOneShot(powerDownSound);
 

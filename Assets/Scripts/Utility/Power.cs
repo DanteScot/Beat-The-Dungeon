@@ -19,7 +19,7 @@ public static class Power
     private static int luck;
 
     // Dizionario per le descrizioni dei poteri
-    private static Dictionary<string, string> powerDescriptions = new Dictionary<string, string>
+    private static Dictionary<string, string> powerDescriptions = new()
     {
         { "Isaac", "Justice for Meat Boy" },
         { "Jack", "Share the sound with your friend!" },
@@ -86,19 +86,17 @@ public static class Power
     }
     // Setta closestEnemy sul proiettile in base al nemico più vicino al momento dell'impatto
     private static void Jack_OnHit(BulletController bullet, Enemy enemy) {
-        var enemies = PlayerManager.Instance.currentRoom.enemies;
+        Enemy[] enemies = PlayerManager.Instance.currentRoom.Enemies;
 
         Enemy closestEnemy = enemy;
         float closestDistance = float.MaxValue;
 
-        foreach (Collider2D foe in enemies) {
-            Enemy tmp = foe.GetComponent<Enemy>();
+        foreach (Enemy foe in enemies) {
+            if(foe.Id == closestEnemy.Id || foe.Id == enemy.Id) continue;
 
-            if(tmp.Id == closestEnemy.Id || tmp.Id == enemy.Id) continue;
-
-            if (Vector2.Distance(bullet.transform.position, tmp.transform.position) < closestDistance) {
-                closestEnemy = tmp;
-                closestDistance = Vector2.Distance(bullet.transform.position, tmp.transform.position);
+            if (Vector2.Distance(bullet.transform.position, foe.transform.position) < closestDistance) {
+                closestEnemy = foe;
+                closestDistance = Vector2.Distance(bullet.transform.position, foe.transform.position);
             }
         }
 

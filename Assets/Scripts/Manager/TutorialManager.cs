@@ -9,7 +9,7 @@ public class TutorialManager : MonoBehaviour
     public static TutorialManager Instance { get; private set; }
 
     // Lista di frasi che il tutorial deve dire
-    [SerializeField] private List<NPC_CentenceList> tutorialSentences = new List<NPC_CentenceList>();
+    [SerializeField] private List<NPC_CentenceList> tutorialSentences = new();
 
     private DialogueManager dialogueManager;
     private CircleCollider2D circleCollider;

@@ -11,8 +11,8 @@ public static class SaveSystem
     // Salva un oggetto in un file binario
     private static void Save<T>(T data, string path)
     {
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(path, FileMode.Create);
+        BinaryFormatter formatter = new();
+        FileStream stream = new(path, FileMode.Create);
 
         formatter.Serialize(stream, data);
         stream.Close();
@@ -22,8 +22,8 @@ public static class SaveSystem
     private static object Load(string path)
     {
         if (File.Exists(path)){
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Open);
+            BinaryFormatter formatter = new();
+            FileStream stream = new(path, FileMode.Open);
 
             object data = formatter.Deserialize(stream);
             stream.Close();

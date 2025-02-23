@@ -327,7 +327,7 @@ public class JerryController : Enemy
 
     private void OnDrawGizmos() {
         try{
-            foreach (var pos in possiblePositions)
+            foreach (Vector3 pos in possiblePositions)
             {
                 Gizmos.DrawWireSphere(pos, .5f);
             }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,7 +31,7 @@ namespace HeneGames.DialogueSystem
 
         [Header("Dialogue")]
         [SerializeField] private TriggerState triggerState;
-        public List<NPC_Centence> sentences = new List<NPC_Centence>();
+        public List<NPC_Centence> sentences = new();
 
         void OnValidate()
         {
@@ -301,7 +300,7 @@ namespace HeneGames.DialogueSystem
             {
                 TalkingCharacter("");
 
-                DialogueCharacter _dialogueCharacter = new DialogueCharacter();
+                DialogueCharacter _dialogueCharacter = new();
                 _dialogueCharacter.characterName = "";
                 _dialogueCharacter.characterPhoto = null;
 

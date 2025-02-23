@@ -33,7 +33,7 @@ public class PlayerController : RythmedObject, Observer
     private bool isAttacking = false;
     private AttackDirection attackDirection;
 
-    private List<string> powers = new List<string>();
+    private List<string> powers = new();
 
     private Vector2 movement;
 
@@ -120,7 +120,7 @@ public class PlayerController : RythmedObject, Observer
             isCrit=false;
 
             // Aspetta che si possa attaccare o che critTimeWindow secondi siano passati
-            var start=Time.time;
+            float start =Time.time;
             yield return new WaitUntil(() => canAttack || Time.time-start>critTimeWindow);
             
             // Se si può attaccare vuol dire che rientra nel tempo limite per il colpo critico
@@ -205,7 +205,7 @@ public class PlayerController : RythmedObject, Observer
     // Senza questo metodo la camera rimarrebbe bloccata nei confini della stanza precedente
     public void SetCurrentRoom(MonoBehaviour roomManager)
     {
-        var tmp=GetComponentsInChildren<CinemachineConfiner2D>()[0];
+        CinemachineConfiner2D tmp =GetComponentsInChildren<CinemachineConfiner2D>()[0];
         tmp.m_BoundingShape2D = roomManager.GetComponent<PolygonCollider2D>();
         tmp.InvalidateCache();
     }
