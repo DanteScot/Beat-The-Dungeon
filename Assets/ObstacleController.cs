@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ObstacleController : PulseToBeat
 {
+    [SerializeField] private GameObject gear;
     [SerializeField] private GameObject[] prefabs;
     [SerializeField] private int hitPoints = 1;
 
@@ -29,27 +30,10 @@ public class ObstacleController : PulseToBeat
         hitPoints--;
         if (hitPoints <= 0)
         {
+            if(Random.value < .2 + (PlayerManager.Instance.LuckLevel/10)) Instantiate(gear, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
-
-    // public void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag("Bullet"))
-    //     {
-    //         Hit();
-    //         Destroy(other.gameObject);
-    //     }
-    // }
-
-    // public void OnCollisionEnter2D(Collision2D other)
-    // {
-    //     if (other.gameObject.CompareTag("Bullet"))
-    //     {
-    //         Hit();
-    //         Destroy(other.gameObject);
-    //     }
-    // }
 
     new void OnDestroy()
     {

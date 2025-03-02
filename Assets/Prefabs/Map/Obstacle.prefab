@@ -111,6 +111,7 @@ MonoBehaviour:
   waitBeat: 0
   pulseSize: 1.15
   returnSpeed: 5
+  gear: {fileID: 4398481534150645789, guid: d04e9fb6d643d854c9ea3f220fae414b, type: 3}
   prefabs:
   - {fileID: 6436175003429685392, guid: ef143f40a4aaebd4993324c3d2d8a5c5, type: 3}
   - {fileID: 1292771138860156613, guid: 6972cfe2f4570914fb676028ec3e8b7f, type: 3}

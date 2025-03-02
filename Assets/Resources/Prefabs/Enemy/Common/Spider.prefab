@@ -195,4 +195,4 @@ MonoBehaviour:
   damage: 1
   isActive: 0
   walkRadius: 5
-  speed: 4
+  speed: 8

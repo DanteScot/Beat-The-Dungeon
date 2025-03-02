@@ -7,28 +7,25 @@ public class LevelGenerator : MonoBehaviour
 {
     #region Generator Variables
     [SerializeField] int seed;
-
     [SerializeField] GameObject[] roomPrefab;
-    // [SerializeField] GameObject bossRoomPrefab;
     
     private int minRooms, maxRooms;
-
     int gridSizeX = 10, gridSizeY = 10;
+    private readonly int roomWidth = 59;
+    private readonly int roomHeight = 32;
 
-    int roomWidth = 59, roomHeight = 32;
     private List<GameObject> roomObject = new();
     private Queue<Vector2Int> roomQueue = new();
     private int[,] roomGrid;
     private int roomCount;
-    private bool generationComplete = false;
     private static Random.State state;
     #endregion
 
     [SerializeField] Sprite[] loadingSprites;
     GameObject loadingScreen;
 
+    private bool generationComplete = false;
     int roomGenerated;
-
 
     Coroutine loadingCoroutine;
 
@@ -186,7 +183,6 @@ public class LevelGenerator : MonoBehaviour
             roomGrid[validIndex.x, validIndex.y] = 1;
             roomCount++;
 
-            // var newRoom = Instantiate(bossRoomPrefab, GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
             GameObject newRoom = Instantiate(ChooseRoomPrefab(), GetPositionFromGridIndex(validIndex), Quaternion.identity, transform);
             newRoom.name = newRoom.name = $"BossRoom - {roomCount}";
             newRoom.GetComponent<Room>().RoomIndex = validIndex;
@@ -245,12 +241,10 @@ public class LevelGenerator : MonoBehaviour
 
         if(roomGenerated == roomCount){
             StopCoroutine(loadingCoroutine);
-            Debug.Log("All rooms loaded correctly");
             Destroy(loadingScreen);
             state = Random.state;
             GameEvent.canMove = true;
             BeatManager.Instance.AudioSource.Play();
-            // Messenger.Broadcast(GameEvent.LEVEL_LOADED);
         }
     }
 
