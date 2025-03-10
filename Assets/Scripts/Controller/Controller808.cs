@@ -33,7 +33,7 @@ public class Controller808 : MonoBehaviour, Minion
         if(Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        BeatManager.Instance.GetInterval().AddListener(OnBeat);
+        BeatManager.Instance.AddListener(OnBeat);
 
         animator = GetComponent<Animator>();
     }
@@ -75,6 +75,6 @@ public class Controller808 : MonoBehaviour, Minion
 
     void OnDestroy()
     {
-        BeatManager.Instance.GetInterval().RemoveListener(OnBeat);
+        BeatManager.Instance.RemoveListener(OnBeat);
     }
 }

@@ -13,10 +13,10 @@ public class ObstacleController : PulseToBeat
 
         switch(n){
             case 0:
-                waitBeat = beatIndex.FirstBeat;
+                waitBeat = WaitBeforeStart.FirstBeat;
                 break;
             case 1:
-                waitBeat = beatIndex.SecondBeat;
+                waitBeat = WaitBeforeStart.SecondBeat;
                 break;
             default:
                 break;

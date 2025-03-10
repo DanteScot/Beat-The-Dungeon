@@ -129,8 +129,8 @@ public class JerryController : Enemy
         BeatManager.Instance.AudioSource.Stop();
         BeatManager.Instance.AudioSource.clip = clip;
 
-        if(clip == firstPhaseSong) BeatManager.Instance.SetBPM(firstSongBPM);
-        else BeatManager.Instance.SetBPM(secondSongBPM);
+        if(clip == firstPhaseSong) BeatManager.Instance.BPM = firstSongBPM;
+        else BeatManager.Instance.BPM = secondSongBPM;
 
         yield return new WaitForSeconds(.25f);
         BeatManager.Instance.AudioSource.Play();
@@ -168,7 +168,7 @@ public class JerryController : Enemy
         // La prima volta mette la prima canzone, la seconda non fa nulla
         if(BeatManager.Instance.AudioSource.clip != secondPhaseSong) {
             oldSong = BeatManager.Instance.AudioSource.clip;
-            oldBPM = BeatManager.Instance.GetBPM();
+            oldBPM = BeatManager.Instance.BPM;
             StartCoroutine(ChangeSong(firstPhaseSong));
         }
 
@@ -297,7 +297,7 @@ public class JerryController : Enemy
 
         spriteRenderer.sprite = null;
         yield return StartCoroutine(ChangeSong(oldSong));
-        BeatManager.Instance.SetBPM(oldBPM);
+        BeatManager.Instance.BPM = oldBPM;
         impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Rumble;
         GameEvent.canMove = true;
         base.Die();

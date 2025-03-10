@@ -6,7 +6,7 @@ public class IncubatorController : Interactable
 {
     [SerializeField] private GameObject incubatorUI;
     [SerializeField] private TextMeshProUGUI incubatorText;
-    [SerializeField] protected intervalIndex index;
+    [SerializeField] protected IntervalIndex index;
 
     private string playerName;
 
